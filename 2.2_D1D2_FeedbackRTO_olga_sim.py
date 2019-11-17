@@ -30,7 +30,8 @@ reload(DLQRControl)
 reload(Olga)
 reload(DaeModel)
 
-
+# measurementTagsModelica = ['net.w1.P_bh','net.w2.P_bh','net.w1.P_r_t','net.w2.P_r_t','net.w1.deltaP_valve','net.w2.deltaP_valve','net.p.deltaP_valve']
+# measurementTagsOlga =     ['BTH1.PT','BTH2.PT','WHD1.PT','WHD2.PT','Prod_Choke_1.VALVDP','Prod_Choke_2.VALVDP','Valve.VALVDP']
 measurementTagsModelica = ['net.w1.w_L_out', 'net.w1.w_G_out', 'net.w2.w_L_out', 'net.w2.w_G_out', 'net.w1.P_r_t',
                            'net.w2.P_r_t', 'net.w1.deltaP_valve', 'net.w2.deltaP_valve', 'net.p.deltaP_valve']
 measurementTagsOlga = ['WHD1.GLTHL', 'WHD1.GG', 'WHD2.GLTHL', 'WHD2.GG', 'WHD1.PT', 'WHD2.PT', 'Prod_Choke_1.VALVDP',
@@ -39,19 +40,19 @@ measurementTagsOlga = ['WHD1.GLTHL', 'WHD1.GG', 'WHD2.GLTHL', 'WHD2.GG', 'WHD1.P
 # measurementTagsModelica = ['net.w1.fin.p','net.w2.fin.p','net.w1.w_L_out','net.w1.w_G_out','net.w2.w_L_out','net.w2.w_G_out','net.p.w_L_out','net.p.w_G_out','net.w1.P_r_t','net.w2.P_r_t','net.w1.deltaP_valve','net.w2.deltaP_valve','net.p.deltaP_valve']
 # measurementTagsOlga =     ['ANN1.PT','ANN2.PT','WHD1.GLTHL','WHD1.GG','WHD2.GLTHL','WHD2.GG','TOP.GLTHL','TOP.GG','WHD1.PT','WHD2.PT','Prod_Choke_1.VALVDP','Prod_Choke_2.VALVDP','Valve.VALVDP']
 
-measurementsMonitorModelica = ['net.w1.fin.p', 'net.w2.fin.p', 'net.w1.P_bh_f', 'net.w2.P_bh_f', 'net.p.w_L_out',
+measurementsMonitorModelica = ['net.w1.fin.p', 'net.w2.fin.p', 'net.w1.P_bh', 'net.w2.P_bh', 'net.p.w_L_out',
                                'net.p.w_G_out', 'net.PCA1.u', 'net.PCA2.u', 'net.PCINL.u', 'net.p.fin.p',
-                               'net.w1.alpha_G_m_in', 'net.w2.alpha_G_m_in']
+                               'net.w1.P_res', 'net.w2.P_res']
 measurementsMonitorOlga = ['ANN1.PT', 'ANN2.PT', 'BTH1.PT', 'BTH2.PT', 'TOP.GLTHL', 'TOP.GG', 'PC-A1.CONTR',
-                           'PC-A2.CONTR', 'PC-INL.CONTR', 'PC-INL.MEASVAR', 'IPR_1.GASFRACTION', 'IPR_2.GASFRACTION']
+                           'PC-A2.CONTR', 'PC-INL.CONTR', 'PC-INL.MEASVAR',
+                           'IPR_1.RESPRESSURE', 'IPR_2.RESPRESSURE']
 
 controlTagsModelica = ['inputGas1', 'inputGas2', 'uTOP', 'uWHD1', 'uWHD2']
 controlTagsOlga = ['Gas_Source_1.MASSFLOW', 'Gas_Source_2.MASSFLOW', 'PC-TOP.SETPOINT', 'PC-T1.SETPOINT',
                    'PC-T2.SETPOINT']
 
-openLoopControlTagsModelica = ['alpha_G_m_in1', 'alpha_G_m_in2', 'inputGas1', 'inputGas2', 'net.p.z', 'net.w1.z1',
-                               'net.w2.z1']
-openLoopControlTagsOlga = ['IPR_1.GASFRACTION', 'IPR_2.GASFRACTION',
+openLoopControlTagsModelica = ['P_res1', 'P_res1', 'inputGas1', 'inputGas2', 'net.p.z', 'net.w1.z1', 'net.w2.z1']
+openLoopControlTagsOlga = ['P_res1', 'P_res1',
                            'Gas_Source_1.MASSFLOW',
                            'Gas_Source_2.MASSFLOW',
                            'PC-INL.CONTR',
@@ -59,7 +60,7 @@ openLoopControlTagsOlga = ['IPR_1.GASFRACTION', 'IPR_2.GASFRACTION',
                            'PC-A2.CONTR']
 
 models_list = modelCompiler.getModelList('.', True)
-ocp = modelCompiler.getOCP('ocpGaslift_GOR', models_list)
+ocp = modelCompiler.getOCP('ocpGaslift_Pres', models_list)
 
 ocp.makeSemiExplicit()
 ocp.eliminateIndependentParameters()
@@ -68,7 +69,6 @@ ocp.eliminateDependentParameterInterdependencies()
 ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
-DTMPC = 3*3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
 
 scaleXModelica = Ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = Ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -86,7 +86,6 @@ uOpt, xOpt, zOpt, yOpt = daeModel.findOptimalPoint(u, x0=x0, z0=z0, simCount=0,
                                                    consList=['net.w1.z1', 'net.w2.z1', 'net.p.z'])
 
 x0 = xOpt
-u0 = uOpt
 z0 = zOpt
 y0 = yOpt
 
@@ -95,7 +94,7 @@ print 'uOpt:', uOpt
 measurementTagsOpt = ['net.w1.fin.p', 'net.w1.P_r_t', 'net.w1.deltaP_valve', 'net.w1.w_G_out', 'net.w1.w_L_out',
                       'GOR_hw1', 'net.w2.fin.p', 'net.w2.P_r_t', 'net.w2.deltaP_valve', 'net.w2.w_G_out',
                       'net.w2.w_L_out', 'GOR_hw2', 'net.p.fin.p', 'net.p.P2_t', 'net.p.deltaP_valve', 'net.p.w_G_out',
-                      'net.p.w_L_out', 'net.p.w_mix_out', 'net.PCA1.u', 'net.PCA2.u', 'net.PCINL.u', 'Obj']
+                      'net.p.w_L_out', 'net.p.w_mix_out', 'Obj']
 
 measurementsEst = Ca.vertcat([ocp.variable(varName).v for varName in measurementTagsOpt])
 measure_funcEst = ocp.beq(measurementsEst)
@@ -140,6 +139,9 @@ scaleY = Ca.vertcat([ocp.variable(k).nominal for k in measurementTagsModelica])
 monitorScale = Ca.vertcat(
     [ocp.variable(measurementsMonitorModelica[k]).nominal for k in range(len(measurementsMonitorModelica))])
 
+uMin = Ca.vertcat([ocp.variable(ocp.u[k].getName()).min.getValue() for k in range(ocp.u.size())])
+uMax = Ca.vertcat([ocp.variable(ocp.u[k].getName()).max.getValue() for k in range(ocp.u.size())])
+
 # sanity check
 controlTagsOCP = [ocp.u[k].getName() for k in range(ocp.u.size())]
 for k in range(len(controlTagsModelica)):
@@ -155,9 +157,9 @@ rPid = 1
 Q = NP.diag([qPid, qPid, qPid, qPid, qPid, qPid,
              #             net.w1.m_Ga, net.w1.m_Gw, net.w1.m_Lw, net.w2.m_Ga, net.w2.m_Gw, net.w2.m_Lw, net.p.m_gp, net.p.m_lp, net.p.m_gr, net.p.m_lr]
              1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]) * 0.1
-#          ['WHD1.GLTHL','WHD1.GG','WHD2.GLTHL','WHD2.GG','WHD1.PT','WHD2.PT','Prod_Choke_1.VALVDP','Prod_Choke_2.VALVDP','Valve.VALVDP']
-#R0 = NP.diag([100, 100, 100, 100])
-R0 = NP.diag([100, 100, 100, 100, 1e5, 1e5, 1e4, 1e4, 1e4])
+
+# ['WHD1.GLTHL','WHD1.GG','WHD2.GLTHL','WHD2.GG','WHD1.PT','WHD2.PT','Prod_Choke_1.VALVDP','Prod_Choke_2.VALVDP','Valve.VALVDP']
+R0 = NP.diag([1, 1, 1, 1, 1, 1, 1, 1, 1]) * 100
 ## Start Kalman Filter
 KF = StateEstimator.StateEstimator()
 KF.initEstimator(ocp, DT, measurementTagsModelica, Q=Q, R=R0)
@@ -169,31 +171,6 @@ KF.setState(x0F, z0)
 print '----'
 sys.stdout.flush()
 
-Config = ConfigParser.ConfigParser()
-Config.read('config.ini')
-
-MPC = True
-
-if MPC:
-    #    controlCost = 10000*NP.diag([1,1,1,1,1])
-    #    finalStateCost = 0
-    #    ss = SingleShooting.SingleShooting()  ## the steady state optimizer is implemented here.
-    #    ss.defineOCP(ocp,DT=DTMPC,controlCost=controlCost,xOpt=xOpt,uOpt=uOpt,finalStateCost=finalStateCost)
-    if Config.getboolean('MultipleShooting', 'MS'):
-        solver = MultipleShooting.MultipleShooting()
-    else:
-        solver = SingleShooting.SingleShooting()
-
-    deltaUCons = NP.array([0.03, 0.03, 2.0e3, 5.0e3, 5.0e3]) / DTMPC  ## given in SI
-
-    ## check consistency
-    if deltaUCons.size != 0:
-        assert deltaUCons.size == ocp.u.size()
-    controlCost = NP.diag([20.0, 20.0, 1.0, 1.0, 1.0])
-    finalStateCost = 0.0
-    solver.defineOCP(ocp, DT=DTMPC, controlCost=controlCost, xOpt=x0, uOpt=u0, finalStateCost=finalStateCost,
-                     deltaUCons=deltaUCons)
-
 # flush print buffer
 print '----'
 sys.stdout.flush()
@@ -201,7 +178,7 @@ sys.stdout.flush()
 ## Start Simulator
 openLoop = False
 controlOlga = True
-NIT = int(NP.ceil((DTMPC * 43 + 100) / DT))
+NIT = int(NP.ceil((3600 * 55 + 100) / DT))
 xSh = []
 if not openLoop:
     if controlOlga:
@@ -242,7 +219,7 @@ else:
         zf = None
         for k in range(NIT):
             [x0k, zf, y] = daeModel.oneStep(x0k, u, zf)
-            mh.append(y)
+            mh.append(y);
             time.append((k + 1) * DT)
             xSh.append(x0k)
 
@@ -266,13 +243,12 @@ xh = []
 uh = []
 yh = []
 yPh = []
-Juh_NMPC = []
+Juh_OnSOC = []
+simTime = []
 monitoredOlgah = []
 monitoredModelicah = []
-Obj_total = 0
-Objh_NMPC = []
+Objh_OnSOC = []
 ObjTotalh = []
-simTime = []
 xh.append(Ca.DMatrix(x0))
 ULog = None
 
@@ -283,148 +259,111 @@ if monitor:
     HEst = Ca.SXFunction(Ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
     HEst.init()
 
+
 if openLoop or controlOlga:  # testing state estimation on
     if controlOlga and not openLoop:
         y0Olga = Olga.OLGA_read_tags(da, measurementTagsOlga)
 
 extendedKalman = True
-# u0 =  Ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
-# x0,z0,y0 = daeModel.findSteadyState(u0,None,None,0,consList=['net.w1.z1','net.w2.z1','net.p.z'])
 
 
 KF.setState(x0, z0)
 x_hat = KF.getState()
 z_hat = Ca.vertcat([ocp.variable(ocp.z[k].getName()).start for k in range(ocp.z.size())])
 
-uk = u0
+
 
 # MPC = False
 nX = ocp.x.size()
-xMin = Ca.DMatrix(NP.zeros(nX))
-xMax = Ca.DMatrix(NP.zeros(nX))
-for ix in range(nX):
-    xMin[ix] = ocp.variable(ocp.x[ix].getName()).min.getValue()
-    xMax[ix] = ocp.variable(ocp.x[ix].getName()).max.getValue()
+xMin = NP.zeros(nX)
+xMax = NP.zeros(nX)
 
-if MPC:
-    ocp.variable('net.w1.alpha_G_m_in').min = x_hat[6]
-    ocp.variable('net.w1.alpha_G_m_in').max = x_hat[6]
-    ocp.variable('net.w2.alpha_G_m_in').min = x_hat[12]
-    ocp.variable('net.w2.alpha_G_m_in').max = x_hat[12]
-    for ix in [6, 12]:
-        xMin[ix] = ocp.variable(ocp.x[ix].getName()).min.getValue()
-        xMax[ix] = ocp.variable(ocp.x[ix].getName()).max.getValue()
-    print 'xMax:', xMax[6], ',', xMax[12]
-    print 'x0:', x_hat[6], ',', x_hat[12]
-    print 'xMin:', xMin[6], ',', xMin[12]
-    uk, objValue, stats = solver.solveProblem(x0=x_hat, u0=uk)
-    print 'controlInput', uk  # /scaleU
-    print 'Obj. Value:', objValue/(3600*16)
-    print 'Iterations:', stats['iter_count']
-    print 'Comp. Time:', stats['t_mainloop']
-    if 'return_status' in stats:
-        exit_msg = stats['return_status']
-    else:
-        exit_msg = 'Max_CPU_time_exceeded'
-    print 'Exit:', exit_msg
+KalmanStopk = 2 * NIT
 
-    if exit_msg == 'Infeasible_Problem_Detected':
-        # uk = uk_1
-        print 'shit happens!'
-        solver.plotNLP(x_hat, DTplot=10, additionalplottags=None)
-        solver.plotFigures()
-        solver.stop_me_please()
-    else:
-        funcJacs.setInput(x_hat, 'x')
-        funcJacs.setInput(uk, 'p')
-        funcJacs.evaluate()
-        a = funcJacs.getOutput(0)
-        b = funcJacs.getOutput(1)
-        c = funcJacs.getOutput(2)
-        d = funcJacs.getOutput(3)
-        sys_nm = control.StateSpace(a, b, c, d)
-        sys_m = sys_nm.minreal()
-        A = sys_m.A
-        B = sys_m.B
-        C = sys_m.C
-        D = sys_m.D
-        A_inv = NP.linalg.inv(-A)
-        Ju = NP.array(C * (A_inv * B) + D)[0]
-
-alpha_Gm1 = 0.0
-alpha_Gm2 = 0.0
-
-d_alpha = 0.03/(10.0*DTMPC)
-
+P_res1 = 160.0
+P_res2 = 170.0
+Obj_total = 0.0
+dP_res = 5.0 / (10 * 3600)
 gasPrice = ocp.variable('gasPrice').start
 
+
+u_k = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+u_k_1 = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+u0 = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+NP.copyto(u_k, NP.reshape(NP.array(uOpt), ocp.u.size()))
+NP.copyto(u_k_1, NP.reshape(NP.array(uOpt), ocp.u.size()))
+NP.copyto(u0, NP.reshape(NP.array(uOpt), ocp.u.size()))
 k0 = int(0)
-k0MPC = 2*DTMPC / DT
+k0Control = 5*3600 / DT
+
+
+uk = Ca.DMatrix(u_k)
+
+
+IntegralError = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+Error_k = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+Error_k_1 = NP.array(NP.zeros(ocp.u.size()), NP.float64)
+
+Kp = 0.05*NP.array([1, 1, 0.2, 3, 3], NP.float64)
+scale_U = NP.transpose(NP.array(scaleUModelica))[0]
+Ti = 14
+Td = 0
+du_max = NP.array([3e-4,   3e-4,   1.0e2,   2.0e2,   2.0e2])
+
+
 for k in range(k0, NIT+1):
     sys.stdout.flush()
 
-    if (k > DTMPC * 2 / DT) and (k <= DTMPC * 12 / DT):
-        KF.R = R0 - 0.0275 * (k - 10*DTMPC / DT) * NP.diag(NP.ones(len(measurementTagsOlga)))
+    if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
+        KF.R = R0 - 0.0275 * (k - 10*3600 / DT) * NP.diag(NP.ones(len(measurementTagsOlga)))
 
-    if (k > DTMPC * 5 / DT) and (k <= DTMPC * 15 / DT):
-        alpha_Gm1 += d_alpha * DT
-    if (k > DTMPC * 23 / DT) and (k <= DTMPC * 33 / DT):
-        alpha_Gm2 += d_alpha * DT
+    if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
+        P_res1 -= dP_res * DT
+    if (k > 3600 * 30 / DT) and (k <= 3600 * 40 / DT):
+        P_res2 -= dP_res * DT
 
-    x_hat[6] = max(x_hat[6], 0)
-    x_hat[12] = max(x_hat[12], 0)
+    funcJacs.setInput(x_hat, 'x')
+    funcJacs.setInput(uk, 'p')
 
-    if (NP.mod((k - k0MPC) * DT, DTMPC) == 0) and (k >= k0MPC):
-        ocp.variable('net.w1.alpha_G_m_in').min = x_hat[6]
-        ocp.variable('net.w1.alpha_G_m_in').max = x_hat[6]
-        ocp.variable('net.w2.alpha_G_m_in').min = x_hat[12]
-        ocp.variable('net.w2.alpha_G_m_in').max = x_hat[12]
-        solver.moveHorizion()
-        for ix in [6, 12]:
-            xMin[ix] = ocp.variable(ocp.x[ix].getName()).min.getValue()
-            xMax[ix] = ocp.variable(ocp.x[ix].getName()).max.getValue()
+    funcJacs.evaluate()
 
-        print 'xMax:', xMax[6], ',', xMax[12]
-        print 'x0:', x_hat[6], ',', x_hat[12]
-        print 'xMin:', xMin[6], ',', xMin[12]
-        uk, objValue, stats = solver.solveProblem(x_hat, uk)
-        print 'controlInput', uk  # /scaleU
-        print 'Obj. Value:', objValue/(3600*16)
-        print 'Iterations:', stats['iter_count']
-        print 'Comp. Time:', stats['t_mainloop']
-        if 'return_status' in stats:
-            exit_msg = stats['return_status']
-        else:
-            exit_msg = 'Max_CPU_time_exceeded'
-        print 'Exit:', exit_msg
+    a = funcJacs.getOutput(0)
+    b = funcJacs.getOutput(1)
+    c = funcJacs.getOutput(2)
+    d = funcJacs.getOutput(3)
 
-        if exit_msg == 'Infeasible_Problem_Detected' or exit_msg == 'Invalid_Number_Detected':
-            # uk = uk_1
-            print 'shit happens!'
-            solver.plotNLP(x_hat, DTplot=10, additionalplottags=None)
-            solver.plotFigures()
-            solver.stop_me_please()
-        else:
-            funcJacs.setInput(x_hat, 'x')
-            funcJacs.setInput(uk, 'p')
+    sys_nm = control.StateSpace(a, b, c, d)
+    sys_m = sys_nm.minreal()
+    A = sys_m.A
+    B = sys_m.B
+    C = sys_m.C
+    D = sys_m.D
 
-            funcJacs.evaluate()
+    A_inv = NP.linalg.inv(-A)
+    Ju = NP.array(C * (A_inv * B) + D)[0]
 
-            a = funcJacs.getOutput(0)
-            b = funcJacs.getOutput(1)
-            c = funcJacs.getOutput(2)
-            d = funcJacs.getOutput(3)
+    if (k >= k0Control):
+        Error_k = -Ju * scale_U
+        IntegralError += Error_k
+        d_Error_dt = (Error_k - Error_k_1) / DT
+        uk_PID = u0 + Kp * scale_U * (Error_k + IntegralError / Ti + Td * d_Error_dt)
 
-            sys_nm = control.StateSpace(a, b, c, d)
-            sys_m = sys_nm.minreal()
-            A = sys_m.A
-            B = sys_m.B
-            C = sys_m.C
-            D = sys_m.D
+        du = uk_PID - u_k_1
 
-            A_inv = NP.linalg.inv(-A)
-            Ju = NP.array(C * (A_inv * B) + D)[0]
-        Olga.OLGA_write_tags(da, dict(zip(controlTagsOlga, NP.array(uk))))
+        for i in range(ocp.u.size()):
+            if NP.abs(du[i]) < du_max[i]:
+                u_k[i] = uk_PID[i]
+            else:
+                u_k[i] = u_k_1[i] + NP.sign(du[i]) * du_max[i]
+
+            if u_k[i] < uMin[i]: u_k[i] = uMin[i]
+            if u_k[i] > uMax[i]: u_k[i] = uMax[i]
+
+        u_k_1 = u_k
+        Error_k_1 = Error_k
+
+    uk = Ca.DMatrix([u_k[0], u_k[1], u_k[2], u_k[3], u_k[4]])
+    Olga.OLGA_write_tags(da, dict(zip(controlTagsOlga, uk)))
 
     Olga.OLGA_simulate_step(da, stepsize=DT)
     y = Olga.OLGA_read_tags(da, measurementTagsOlga)
@@ -444,19 +383,20 @@ for k in range(k0, NIT+1):
 
         yMonitor = Olga.OLGA_read_tags(da, measurementsMonitorOlga)
 
-        yMonitor[-2] = alpha_Gm1
-        yMonitor[-1] = alpha_Gm2
+        yMonitor[-2] = P_res1
+        yMonitor[-1] = P_res2
 
         Obj_k = gasPrice * (uk[0] + uk[1]) - (y[0] + y[2])
         Obj_total = Obj_total + Obj_k
 
         doPrint = True
-        if doPrint and NP.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+        if doPrint and NP.mod(k * DT, 360.0) == 0:
             print "====================================================="
-            print 'Simulation time:', (k + 1) * DT / 3600.0, 'hours'
+            print 'Simulation time:', k * DT / (3600.0), 'hours'
             print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling
-            print 'OptimControl', uOpt  # /scaleU
+            print 'Control Input', uk  # /scaleU
             print 'Objective', Ca.DMatrix([Obj_k, Obj_total])
+            print 'Gradients', Ca.DMatrix(Ju)
             # print 'steadyStates',xOpt/scaleX
             # print '      states',x_hat
             # print 'steadyAlgStates',zOpt/scaleZ
@@ -465,21 +405,21 @@ for k in range(k0, NIT+1):
             print 'MonitorModelica', HEst.getOutput()  # /monitorScale
             sys.stdout.flush()
 
-    if k % 36 == 0:
+    if k % 10 == 0:
         if monitor:
             monitoredOlgah.append(yMonitor)
             monitoredModelicah.append(HEst.getOutput())
-            Objh_NMPC.append(Obj_k)
+            Objh_OnSOC.append(Obj_k)
             ObjTotalh.append(Obj_total)
         uh.append(uk)
         yPh.append(yP)
         xh.append(x_hat)
         yh.append(y)
-        Juh_NMPC.append(Ju)
+        Juh_OnSOC.append(Ju)
         simTime.append(k * DT)
 
     # if(k==359):
     #    thebug
 
 execfile('plotCurves_struc2.py')
-execfile('SaveSimData_NMPC_olga.py')
+execfile('SaveSimData_MESC_olga.py')

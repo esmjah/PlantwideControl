@@ -1,32 +1,35 @@
 # -*- coding: utf-8 -*-
 import sys
-import casadi as Ca
-import control
-import matplotlib.pyplot as plt
+import os
+import casadi as ca
 import scipy.io as sio
-import numpy as NP
-from scipy import signal
-import modelCompiler
-import matplotlib.pyplot as plt
+import control
+import numpy as np
 from scipy.interpolate import interp1d
+import ConfigParser
+
+_path = os.path.dirname(os.path.realpath(__file__))
+
+os.chdir(_path)
+sys.path.append(_path+'\\NMPC')
+sys.path.append(_path+'\\modelCompiler')
+sys.path.append(_path+'\\StateEstimator')
+sys.path.append(_path+'\\DaeModel')
+sys.path.append(_path+'\\Olga_sim')
+
 import SingleShooting
 import MultipleShooting
-import DLQRControl
+import modelCompiler
 import StateEstimator
 import DaeModel
 import Olga_sim as Olga
-import ConfigParser
-
-# import ConfigParser
 
 model = 'OlgaNet.ServerDemo.'
 # serverIP = 'olga.itk.ntnu.no'
 serverIP = 'localhost'
-NP.set_printoptions(precision=3)
+np.set_printoptions(precision=3)
 reload(StateEstimator)
 reload(SingleShooting)
-reload(MultipleShooting)
-reload(DLQRControl)
 reload(Olga)
 reload(DaeModel)
 
@@ -59,7 +62,7 @@ openLoopControlTagsOlga = ['P_res1', 'P_res1',
                            'PC-A2.CONTR']
 
 models_list = modelCompiler.getModelList('.', True)
-ocp = modelCompiler.getOCP('ocpGasliftNet', models_list)
+ocp = modelCompiler.getOCP('ocpGaslift_Nominal', models_list)
 
 ocp.makeSemiExplicit()
 ocp.eliminateIndependentParameters()
@@ -70,12 +73,12 @@ ocp.eliminateAlgebraic()
 DT = 10  # for simulation and kalman filtering
 DTMPC = 3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
 
-scaleXModelica = Ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
-scaleZModelica = Ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
-scaleUModelica = Ca.vertcat([ocp.variable(ocp.u[k].getName()).nominal for k in range(ocp.u.size())])
+scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
+scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
+scaleUModelica = ca.vertcat([ocp.variable(ocp.u[k].getName()).nominal for k in range(ocp.u.size())])
 
 ## Start Kalman Filter
-u = Ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
+u = ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
 
 daeModel = DaeModel.DaeModel()
 daeModel.init(ocp, DT, measurementTagsModelica)
@@ -92,9 +95,9 @@ measurementTagsOpt = ['net.w1.fin.p', 'net.w1.P_r_t', 'net.w1.deltaP_valve', 'ne
                       'net.w2.w_L_out', 'GOR_hw2', 'net.p.fin.p', 'net.p.P2_t', 'net.p.deltaP_valve', 'net.p.w_G_out',
                       'net.p.w_L_out', 'net.p.w_mix_out', 'Obj']
 
-measurementsEst = Ca.vertcat([ocp.variable(varName).v for varName in measurementTagsOpt])
+measurementsEst = ca.vertcat([ocp.variable(varName).v for varName in measurementTagsOpt])
 measure_funcEst = ocp.beq(measurementsEst)
-G = Ca.SXFunction(Ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
+G = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
 G.init()
 G.setInput(xOpt, 'x')
 G.setInput(zOpt, 'z')
@@ -109,14 +112,14 @@ sys.stdout.flush()
 
 ## jacobian calculation Test
 
-sysIn = Ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t)
-sysOut = Ca.daeOut(ode=ocp.ode(ocp.x), alg=ocp.alg)
-odeF = Ca.SXFunction(sysIn, sysOut)
+sysIn = ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t)
+sysOut = ca.daeOut(ode=ocp.ode(ocp.x), alg=ocp.alg)
+odeF = ca.SXFunction(sysIn, sysOut)
 odeF.init()
 
 measTags = ['Obj']
-mSX = Ca.vertcat([ocp.variable(measTags[k]).beq for k in range(len(measTags))])
-mSXF = Ca.SXFunction(sysIn, [mSX])
+mSX = ca.vertcat([ocp.variable(measTags[k]).beq for k in range(len(measTags))])
+mSXF = ca.SXFunction(sysIn, [mSX])
 mSXF.init()
 
 AS = odeF.jac('x', 'ode')
@@ -124,15 +127,15 @@ BS = odeF.jac('p', 'ode')
 CS = mSXF.jac('x', 0)
 DS = mSXF.jac('p', 0)
 
-funcJacs = Ca.SXFunction(sysIn, [AS, BS, CS, DS])
+funcJacs = ca.SXFunction(sysIn, [AS, BS, CS, DS])
 funcJacs.init()
 
-scaleX = Ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
-scaleZ = Ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
-scaleU = Ca.vertcat([ocp.variable(ocp.u[k].getName()).nominal for k in range(ocp.u.size())])
-scaleY = Ca.vertcat([ocp.variable(k).nominal for k in measurementTagsModelica])
+scaleX = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
+scaleZ = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
+scaleU = ca.vertcat([ocp.variable(ocp.u[k].getName()).nominal for k in range(ocp.u.size())])
+scaleY = ca.vertcat([ocp.variable(k).nominal for k in measurementTagsModelica])
 
-monitorScale = Ca.vertcat(
+monitorScale = ca.vertcat(
     [ocp.variable(measurementsMonitorModelica[k]).nominal for k in range(len(measurementsMonitorModelica))])
 
 # sanity check
@@ -147,17 +150,17 @@ rPid = 1
 # ocp.x =  [net.PCINL.intError, net.PCTOP.intError, net.PCA1.intError, net.PCT1.intError, net.PCA2.intError, net.PCT2.intError, net.PCT1Filter.y, net.PCT2Filter.y
 # , net.PCTOPFilter.y, net.PCA1Filter.y, net.PCA2Filter.y, net.PCINLFilter.y, net.w1.m_Ga, net.w1.m_Gw, net.w1.m_Lw, net.w2.m_Ga, net.w2.m_Gw, net.w2.m_Lw, net.p.m_gp, net.p.m_lp, net.p.m_gr, net.p.m_lr]
 
-Q = NP.diag([qPid, qPid, qPid, qPid, qPid, qPid,
+Q = np.diag([qPid, qPid, qPid, qPid, qPid, qPid,
              # net.w1.m_Ga, net.w1.m_Gw, net.w1.m_Lw, net.w2.m_Ga, net.w2.m_Gw, net.w2.m_Lw, net.p.m_gp, net.p.m_lp, net.p.m_gr, net.p.m_lr]
              1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]) * 0.1
 
 # ['WHD1.GLTHL','WHD1.GG','WHD2.GLTHL','WHD2.GG','WHD1.PT','WHD2.PT','Prod_Choke_1.VALVDP','Prod_Choke_2.VALVDP','Valve.VALVDP']
-R0 = NP.diag([1, 1, 1, 1, 1, 1, 1, 1, 1]) * 100
+R0 = np.diag([1, 1, 1, 1, 1, 1, 1, 1, 1]) * 100
 # Start Kalman Filter
 KF = StateEstimator.StateEstimator()
 KF.initEstimator(ocp, DT, measurementTagsModelica, Q=Q, R=R0)
-u = Ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
-x0F = xOpt  # + [NP.random.normal()*scaleX[k]/10 for k in range(ocp.x.size())]
+u = ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
+x0F = xOpt  # + [np.random.normal()*scaleX[k]/10 for k in range(ocp.x.size())]
 KF.setState(x0F, z0)
 # KF.computeKalmanSystem(u,x0)
 # flush print buffer
@@ -170,7 +173,7 @@ Config.read('config.ini')
 MPC = True
 
 if MPC:
-    #  controlCost = 10000*NP.diag([1,1,1,1,1])
+    #  controlCost = 10000*np.diag([1,1,1,1,1])
     #  finalStateCost = 0
     #  ss = SingleShooting.SingleShooting()  ## the steady state optimizer is implemented here.
     #  ss.defineOCP(ocp,DT=DTMPC,controlCost=controlCost,xOpt=xOpt,uOpt=uOpt,finalStateCost=finalStateCost)
@@ -178,13 +181,13 @@ if MPC:
         solver = MultipleShooting.MultipleShooting()
     else:
         solver = SingleShooting.SingleShooting()
-    deltaUCons = NP.array([0.03, 0.03, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
+    deltaUCons = np.array([0.03, 0.03, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
 
     # check consistency
     if deltaUCons.size != 0:
         assert deltaUCons.size == ocp.u.size()
 
-    controlCost = 2e3 * NP.diag([10.0, 10.0, 1.0, 1.0, 1.0])
+    controlCost = 2e3 * np.diag([10.0, 10.0, 1.0, 1.0, 1.0])
     finalStateCost = 0.0
     solver.defineOCP(ocp, DT=DTMPC, controlCost=controlCost, xOpt=x0, uOpt=u, finalStateCost=finalStateCost,
                      deltaUCons=deltaUCons)
@@ -196,15 +199,15 @@ sys.stdout.flush()
 # Start Simulator
 openLoop = False
 controlOlga = True
-NIT = int(NP.ceil(3600 * 30 / DT))
+NIT = int(np.ceil(3600 * 30 / DT))
 xSh = []
 if not openLoop:
     if controlOlga:
         da = Olga.OLGA_connect(serverIP=serverIP, modelPrefix=model)
         # Olga.OLGA_restart_time(da,True)
     else:
-        xSim = NP.copy(x0) + Ca.vertcat([NP.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())])
-        zSim = NP.copy(z0)
+        xSim = np.copy(x0) + ca.vertcat([np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())])
+        zSim = np.copy(z0)
         xSh.append(xSim)
 
 else:
@@ -223,7 +226,7 @@ else:
         for k in range(len(olgaTags)):
             OlgaTagIndex[olgaTags[k]] = k
 
-        NIT = min(int(NP.floor(yh[-1][OlgaTagIndex["TIME"]] / DT)), NIT)
+        NIT = min(int(np.floor(yh[-1][OlgaTagIndex["TIME"]] / DT)), NIT)
 
         OlgaF = {}
         for k in olgaTags:
@@ -232,7 +235,7 @@ else:
     else:
         mh = []
         time = []
-        x0k = x0 + [NP.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())]
+        x0k = x0 + [np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())]
         xSh.append(x0k)
         zf = None
         for k in range(NIT):
@@ -267,14 +270,14 @@ monitoredModelicah = []
 Objh_NMPC = []
 simTime = []
 ObjTotalh = []
-xh.append(Ca.DMatrix(x0))
+xh.append(ca.DMatrix(x0))
 ULog = None
 
 monitor = True
 if monitor:
-    measurementsEst = Ca.vertcat([ocp.variable(varName).v for varName in measurementsMonitorModelica])
+    measurementsEst = ca.vertcat([ocp.variable(varName).v for varName in measurementsMonitorModelica])
     measure_funcEst = ocp.beq(measurementsEst)
-    HEst = Ca.SXFunction(Ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
+    HEst = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
     HEst.init()
 
     A_g = ocp.beq('net.p.A_g')
@@ -288,8 +291,8 @@ if monitor:
     Alpha_Lt = ocp.beq('net.p.Alpha_Lt')
     Alpha_L2_av = ocp.beq('net.p.Alpha_L2_av')
 
-    check = Ca.SXFunction(Ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [
-        Ca.vertcat([A_g / A_1 * 100, A_l / A_1 * 100, h1 / hc * 100, h1ss / hc * 100, Alpha_Lt, Alpha_L2_av])])
+    check = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [
+        ca.vertcat([A_g / A_1 * 100, A_l / A_1 * 100, h1 / hc * 100, h1ss / hc * 100, Alpha_Lt, Alpha_L2_av])])
     check.init()
 
 if openLoop or controlOlga:  # testing state estimation on
@@ -297,18 +300,18 @@ if openLoop or controlOlga:  # testing state estimation on
         y0Olga = Olga.OLGA_read_tags(da, measurementTagsOlga)
 
 extendedKalman = True
-# u0 =  Ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
+# u0 =  ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
 # x0,z0,y0 = daeModel.findSteadyState(u0,None,None,0,consList=['net.w1.z1','net.w2.z1','net.p.z'])
 
 
 KF.setState(x0, z0)
 x_hat = KF.getState()
-z_hat = Ca.vertcat([ocp.variable(ocp.z[k].getName()).start for k in range(ocp.z.size())])
+z_hat = ca.vertcat([ocp.variable(ocp.z[k].getName()).start for k in range(ocp.z.size())])
 
 # MPC = False
 nX = ocp.x.size()
-xMin = NP.zeros(nX)
-xMax = NP.zeros(nX)
+xMin = np.zeros(nX)
+xMax = np.zeros(nX)
 for k in range(nX):
     xMin[k] = ocp.variable(ocp.x[k].getName()).min.getValue()
     xMax[k] = ocp.variable(ocp.x[k].getName()).max.getValue()
@@ -349,8 +352,8 @@ if MPC:
         C = sys_m.C
         D = sys_m.D
 
-        A_inv = NP.linalg.inv(-A)
-        Ju = NP.array(C * (A_inv * B) + D)[0]
+        A_inv = np.linalg.inv(-A)
+        Ju = np.array(C * (A_inv * B) + D)[0]
 
 KalmanStopk = 2 * NIT
 
@@ -364,9 +367,9 @@ for k in range(k0, NIT+1):
     sys.stdout.flush()
 
     if (k > 3600 * 1 / DT) and (k <= 3600 * 11 / DT):
-        KF.R = R0 - 0.027 * (k - 3600 / DT) * NP.diag(NP.ones(len(measurementTagsOlga)))
+        KF.R = R0 - 0.027 * (k - 3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
 
-    if (NP.mod((k - k0MPC) * DT, DTMPC) == 0) and (k >= k0MPC):
+    if (np.mod((k - k0MPC) * DT, DTMPC) == 0) and (k >= k0MPC):
         uk, objValue, stats = solver.solveProblem(x_hat, uk)
         print 'controlInput', uk  # /scaleU
         print 'Obj. Value:', objValue / (3600 * 16)
@@ -402,9 +405,9 @@ for k in range(k0, NIT+1):
             C = sys_m.C
             D = sys_m.D
 
-            A_inv = NP.linalg.inv(-A)
-            Ju = NP.array(C * (A_inv * B) + D)[0]
-        Olga.OLGA_write_tags(da, dict(zip(controlTagsOlga, NP.array(uk))))
+            A_inv = np.linalg.inv(-A)
+            Ju = np.array(C * (A_inv * B) + D)[0]
+        Olga.OLGA_write_tags(da, dict(zip(controlTagsOlga, np.array(uk))))
 
     Olga.OLGA_simulate_step(da, stepsize=DT)
     y = Olga.OLGA_read_tags(da, measurementTagsOlga)
@@ -434,17 +437,17 @@ for k in range(k0, NIT+1):
         Obj_total = Obj_total + Obj_k
 
         doPrint = True
-        if doPrint and NP.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+        if doPrint and np.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
             print "====================================================="
             print 'Simulation time:', (k + 1) * DT / (3600.0), 'hours'
             print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling
             print 'Control input', uk  # /scaleU
-            print 'Objective', Ca.DMatrix([Obj_k, Obj_total])
+            print 'Objective', ca.DMatrix([Obj_k, Obj_total])
             # print 'steadyStates',xOpt/scaleX
             print '      states', x_hat
             # print 'steadyAlgStates',zOpt/scaleZ
             # print 'Alg      States',z_hat/scaleZ
-            print 'Monitor    Olga', Ca.DMatrix(yMonitor)  # /monitorScale
+            print 'Monitor    Olga', ca.DMatrix(yMonitor)  # /monitorScale
             print 'MonitorModelica', HEst.getOutput()  # /monitorScale
             sys.stdout.flush()
 

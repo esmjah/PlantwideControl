@@ -61,7 +61,7 @@ openLoopControlTagsOlga = ['P_res1', 'P_res1',
                            'PC-A2.CONTR']
 
 models_list = modelCompiler.getModelList('.', True)
-ocp = modelCompiler.getOCP('ocpGaslift_Pres', models_list)
+ocp = modelCompiler.getOCP('ocpGaslift_D1D2', models_list)
 
 ocp.makeSemiExplicit()
 ocp.eliminateIndependentParameters()

@@ -1,0 +1,6 @@
+within networkModels;
+model singleWellPipelineApprox
+  extends singleWellPipeline;
+  redeclare package components = networkModels.networkComponentsApproximation;
+  annotation(experiment(StopTime = 7000, Interval = 1), __Dymola_experimentSetupOutput);
+end singleWellPipelineApprox;

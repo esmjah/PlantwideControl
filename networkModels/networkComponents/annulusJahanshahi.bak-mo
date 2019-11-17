@@ -1,0 +1,31 @@
+within networkModels.networkComponents;
+model annulusJahanshahi
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  parameter networkModels.networkComponents.annulusJahanshahiParameters par;
+  parameter networkModels.networkComponents.annulusJahanshahiTuner tun(par=par);
+  Interfaces.GasFluidPortIn fin(p(start=6.5e6,nominal=1e5),w(start=1.4,nominal=1));
+  Interfaces.GasFluidPortOut fout(p(start=5.6e6),w(start=-1.4));
+  parameter Real softApprox(fixed = true) = 0.01;
+  parameter SI.Volume V_a = par.L_a*pi*((par.D_a/2)^2);
+  SI.Pressure P_a_b(start=7.5e6);
+  SI.Density rho_G_a_b(start=56);
+  SI.Mass m_Ga(start = 2473.91014142211,nominal = 1000, fixed = true);
+
+equation
+  // ********* Pressure at bottom of annulus *********************
+  fin.p = R * par.T_a * m_Ga / (par.M_G_a * V_a);
+  P_a_b = fin.p + m_Ga * g * par.L_a / V_a;
+  // ********** Injected gas into annulus ******************
+  //fin.w = w_G_a_in = par.K_s*u*sqrt(rho_G_in*max(par.P_gs-P_a_t,0));
+  // This is now an input
+  // ********** Density of gas in bottom of annulus **********
+  rho_G_a_b = P_a_b * par.M_G_a / (R * par.T_a);
+
+  //w_G_a_out = par.K_a*sqrt(max(rho_G_a_b*(P_a_b - P_r_b),0));
+  fout.w = -tun.K_a * sqrt((((rho_G_a_b *(P_a_b - fout.p) - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (rho_G_a_b *(P_a_b - fout.p) + 0) / 2));
+  der(m_Ga) = fin.w + fout.w;
+end annulusJahanshahi;
+

@@ -1,0 +1,78 @@
+within networkModels.networkComponents;
+record newPipelineJahanshahiParameters
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  //////////////
+  // ********** Constants and parameters for New simple model ***********
+  parameter SI.Density rho_L(min = 700, max = 830) = 735;
+  // Liquid density (Kg/m3)
+  parameter SI.Density rho_w(min = 900, max = 1100) = 1000;
+  // TODO check units
+  parameter SI.Angle theta(min = 0.5 * pi / 180, max = 2 * pi / 180) = pi / 180;
+  // Feed pipe inclination (Rad) = 1 Deg
+  parameter SI.Radius r1(min = 0.05, max = 0.2) = 8*0.0254/2;
+  // Radius of pipe (m)
+  parameter SI.Radius r2(min = 0.04, max = 0.2) = 8*0.0254/2;
+  // Radius of riser (m)
+  parameter SI.Length Lm(min = 100, max = 400) = 700;
+  // Length of pipe from well to manifold (m) - used as a tuning
+  parameter SI.Length L1(min = 4100, max = 4400) = 4300;
+  // Length of upstream pipe (m)
+  parameter SI.Height L2(min = 280, max = 320) = 300;
+  // Height of riser
+  parameter SI.Length L3(min = 90, max = 110) = 100;
+  // length of horozontal top section (m)
+  parameter SI.Temperature T1(min = 320, max = 370,nominal = 100) = 273+95;
+  // Pipeline temprature (K)
+  parameter SI.Temperature T2(min = 320, max = 370,nominal = 100) = 273+71.5;// 298.3;
+  // Riser temprature (K)
+  // TODO: discuss units of M_G with Esmaeil
+  parameter SI.MolarMass M_Gp(min = 0.020, max = 0.025) = 0.019; //0.02143;
+  parameter SI.MolarMass M_Gr(min = 0.020, max = 0.025) = 0.023; //0.02143;
+  // Molecular weight of Gas (kg/kmol)
+  //Boundary Condition in ss
+  // *************************************************************************
+  // TODO: what is this?
+  parameter SI.DynamicViscosity visl(min = 1.2260e-4, max = 1.6260e-4) = 1.4260e-4;
+
+  parameter SI.DynamicViscosity visg = 1.39e-5;
+
+  parameter SI.Length eps(min = 2.6e-5, max = 3.0e-5) = 2.8e-5;
+  // Roughness of pipe
+  parameter Real k_h(min = 0.4, max = 1.2, nominal=1) = 1;//0.65;
+  parameter Real Cd = 0.84; // Choke valve discharge coefficient
+  parameter SI.Length D_c = 7*0.0254;  // Choke valve dimatere
+  parameter SI.Area A_c = pi*(7*0.0254/2)^2;  // Choke valve dimatere
+  parameter Real Alpha_L1_av(min = 0.2, max = 0.4) = 0.2576; // 0.257937;
+  parameter Real K_alpha(min = 0.5, max = 1.5) = 0.65;//0.64;
+  parameter SI.Time Tau_alpha(min = 600, max = 7200, nominal=1000) = 3600;
+  // correction factor
+  // *************** Finding Orifice Coefficients ****************************
+  // ******** Steady State Values Baesd on OLGA *************
+  parameter Real z0(min = 0.03, max = 1) = 0.5;
+  parameter SI.Pressure P0(min = 2.0e5, max = 70.2e5) = 5.156e5;
+  // Pressure after choke valve (Pa)
+  parameter SI.Pressure P1(min = 10e5, max = 40e5) = 22.7905e5;
+  parameter SI.Pressure P2_t(min = 5e5, max = 7e5) = 5.96184e5;
+  parameter SI.MassFlowRate wG_in(min = 0, max = 100) = 2.104;
+  // TODO: check units!
+  parameter SI.MassFlowRate wL_in(min = 0, max = 100) = 29.8761;
+  // TODO: check units!
+  parameter Real K_gT(min = 0.4, max = 2, nominal=1) = 1;//0.8;
+  parameter Real K_oT(min = 0.4, max = 4, nominal=1) = 2;//1.2;
+  parameter Real K_pcT(min = 0.4, max = 2, nominal=1) = 0.8;//1.5;
+
+  // calculated parameters
+  parameter Real K_g = 1.05*0.0223328;
+  parameter Real K_o = 1.25*0.174109;
+  parameter Real K_pc = 0.0225062;
+  // these are initial guess (start values)!!!
+  parameter SI.Mass m_gp0 = 1687.42;
+  // mass of gas in the horizontal pipeline
+  parameter SI.Mass m_lp0 = 26303.4;
+  // mass of oil in the horizontal pipeline
+  parameter SI.Mass m_gr0 = 50.1943;
+  // mass of gas in the riser
+  parameter SI.Mass m_lr0 = 808.57;
+  // mass of oil in the riser
+end newPipelineJahanshahiParameters;

@@ -1,0 +1,43 @@
+within networkModels.networkComponents;
+record wellParameters
+  import SI = Modelica.SIunits;
+  //Initialization
+  parameter SI.Mass m_ga0(nominal = 1e3) = 6040.17;
+  parameter SI.Mass m_gt0(nominal = 1e3) = 1253.05;
+  parameter SI.Mass m_lt0(nominal = 1e3) = 1453.56;
+  parameter SI.Temperature T_a = 350;
+  // [K]        // annular temperature
+  parameter SI.Temperature T_t = 350;
+  // [K]        // tubing temperature
+  parameter SI.MolarMass M_g = 0.0195;
+  // [kg/mol]        // lift gas molecular weight (Molar Mass)
+  parameter SI.Area A_a = 0.02;
+  // [m^2]        // annular cross sectional area
+  parameter SI.Area A_t = 0.012;
+  // [m^2]        // tubing cross sectional area
+  parameter SI.Pressure p_r = 25e6;
+  // [Pa]                // reservoir pressure
+  parameter SI.Volume V_a = 30;
+  // [m^3]                // Annular volume
+  parameter SI.Volume V_t = 18;
+  // [m^3]                // Tubing volume
+  parameter SI.Length L_w = 400;
+  // [m]                // tubing length from the injection point to the reservoir
+  parameter SI.VolumeFraction r_wc = 0.4;
+  // [-]                // well water cut. Volume or Weight?
+  parameter Real r_gor = 0.08;
+  // [-]                // well gor
+  parameter Real Q_max = 0.025;
+  // [m^3/s]                // Empirical constant representing the theoretical absolute open flow (AOF)
+  parameter SI.Density rho_w = 1030;
+  // [kg/m^3]                // water density
+  parameter SI.Density rho_o = 930;
+  // [kg/m^3]                // oil density
+  parameter Real C = 0.8;
+  // [-]
+  parameter Real C_iv = 0.00016;
+  // [m^2]        // gas injection valve constant
+  parameter Real C_pc = 0.0014;
+  // [m^2]        // production choke valve constant
+end wellParameters;
+

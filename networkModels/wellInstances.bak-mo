@@ -1,0 +1,10 @@
+within networkModels;
+package wellInstances
+  record well1
+    extends networkModels.networkComponents.gasliftWellParameters(P_r=160e5, k1=1.1, M_G_a=0.02, K_alpha=1.006, K_f=1.12, rho_L=750, M_G_r_t=0.0198);
+  end well1;
+
+  record well2
+    extends networkModels.networkComponents.gasliftWellParameters(P_r=170e5, k1=1.1, M_G_a=0.02, K_alpha=1.001, K_f=1.04, rho_L=765, M_G_r_t=0.0198);
+  end well2;
+end wellInstances;

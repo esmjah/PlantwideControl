@@ -1,0 +1,185 @@
+within networkModels.networkComponents;
+model wellHansen
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  // Simplified model for riser slugging
+  // Oil well added as inlet boundary condition
+  // By: Esmaeil Jahanshahi
+  // August 2011, NTNU, Norway
+  // x1: Mass of gas in the well (m_Gw)
+  // x2: Mass of liquid in the well (m_Lw)
+
+  parameter wellHansenParameters par;
+  parameter wellHansenTuner tun(par=par);
+
+  parameter Real softApprox(fixed = true) = 0.00001;
+  parameter Real softApproxP(fixed = true) = 1;
+  parameter Real softDivision(fixed = true) = 0.000001;
+
+  Modelica.Blocks.Interfaces.RealInput z1(min = 0, max = 1,start=0.7);
+
+  SI.MassFlowRate uInjAnnulus(min = 0, max = 3,start=0.7);
+
+  Interfaces.GasFluidPortIn inj(p(start=5.6e6,nominal=1e5),w(start=1.4,nominal=1));
+  Interfaces.TwoPhaseFluidPortOut fout(p(start=2.18e6),w(start={-0.00001,-0.000001}));
+
+//// ************  Calculating Friction of Riser NOMINAL **********
+parameter SI.Density rho_G_r_in = (par.P_r - par.rho_L*g*par.L_bh)*par.M_G_r/(R*par.T_r);
+
+parameter SI.Length r_r=par.D_w/2;
+parameter SI.Volume V_r=pi*((par.D_w/2)^2)*par.L_h+pi*((par.D_w/2)^2)*par.L_r;
+parameter SI.Volume V_bh = par.L_bh*par.S_bh;
+
+parameter Real alpha_G_m_in(min=0,max=1) = par.GOR/(par.GOR+1);
+
+// Should this be an average?
+parameter SI.Velocity Usl_av=(1-alpha_G_m_in)*par.w_res_in/(par.rho_L*pi*(r_r^2));
+SI.Velocity Usg_av(start=10,nominal=10,min=0);
+SI.Velocity U_M_av(start=11,nominal=10,min=0);
+
+//// Density of gas inside riser
+SI.Density rho_G_r(start=11,min=0);
+
+//// ************* Average mixture density ***************
+SI.Density rho_mix(min=0);
+//// Pressure riser top
+Real alpha_L_av(min=0,max=1);
+SI.Pressure P_r_t(start=2.16e6,nominal=1e5,min=0);
+
+SI.DynamicViscosity my_mix(start=1.0e-4);
+
+SI.ReynoldsNumber Re(start=2e6,nominal=1e5,min=0);
+
+Real lambda(min = 0,start=0.15,nominal=1e-2);
+
+SI.Pressure F_riser(start=6.6e6,nominal=1e5,min=0);
+//// *********** Pressure at bottom of riser ******************
+
+//// Liquid velocity at bottom hole
+SI.Velocity Ul_b(start=2.07);
+//// Reynolds number at bottom-hole:
+SI.ReynoldsNumber Re_b(start=5.1e5);
+//// Darcy Friction Factor
+Real lambda_b(min= 0,start=0.015);
+//// Pressure loss due to friction from injection point to bottom-hole:
+SI.Pressure F_b(start=14e5);
+//// Bottom-hole pressure
+SI.Pressure P_bh(start=6.13e6,min=0);
+
+//// Liquid Inflow rate
+
+SI.MassFlowRate w_r_in(start=17,min=0);
+SI.MassFlowRate w_L_r_in(start=1,min=07);
+SI.MassFlowRate w_G_r_in(start=0,min=0);
+//// **********  Gas density in bottom of riser **************
+SI.Density rho_G_r_b(start=30,min=0);
+
+//// Alpha liquid in
+Real alpha_L_in(min=0,max=1,start=0.33);
+
+//// ******** Liquid volume fraction top of riser ****************
+Real alpha_L_t(min=0,max=1,start=0.16);
+
+//// ***********  Density mixture top of riser *************************
+SI.Density rho_M_t(start=126,min=0);
+
+//// **********  Mixture flow out of riser ****************************
+SI.MassFlowRate w_mix_r_out(start=0.001,min=0);
+
+//// ********* Liquid mass fraction top of riser ********************
+
+Real alpha_L_m_t(min=0,max=1,start=0.9);
+
+  SI.Mass m_Gw(start = 238,nominal = 10, fixed = true,min=0);
+  SI.Mass m_Lw(start = 4247,nominal = 100,fixed = true,min=0,max=par.rho_L*(V_r+par.L_bh*par.S_bh));
+
+equation
+//// Density of gas inside riser
+//rho_G_r=m_Gw/(V_r + par.L_bh*par.S_bh - m_Lw/par.rho_L);
+rho_G_r=m_Gw/(V_r - (m_Lw-par.rho_L*par.L_bh*par.S_bh)/par.rho_L);
+
+//// ************* Average mixture density ***************
+//rho_mix=(m_Gw+m_Lw-par.rho_L*par.L_bh*par.S_bh)/(V_r);
+rho_mix=(m_Gw+m_Lw-par.rho_L*par.L_bh*par.S_bh)/(par.L_r*pi*r_r^2);
+alpha_L_av= m_Lw/(par.rho_L*(V_bh+V_r));
+//// Pressure riser top
+P_r_t=rho_G_r*R*par.T_r/(par.M_G_r_t);
+//P_r_t = max(fout.p,P_r_t);
+
+//Usg_av= (alpha_G_m_in*par.w_res_in+par.w_g_a_in)/(rho_G_r*pi*(r_r^2));
+Usg_av*(rho_G_r*pi*(r_r^2)) = (alpha_G_m_in*par.w_res_in+uInjAnnulus);
+
+U_M_av = Usl_av+Usg_av;
+
+my_mix = alpha_L_av*par.my_L+(1-alpha_L_av)*par.my_G;
+
+Re*my_mix=(2*rho_mix*U_M_av*r_r);
+
+//lambda=0.0056+(0.5*(Re^(-0.32)));
+//// Darcy Friction Factor
+
+lambda=(1/(1.8*log((par.ew/par.D_w/3.7)^1.11+6.9/Re)/log(10)))^2;
+//F_riser=(alpha_L_r_avg*lambda*rho_mix*(U_M_av^2)*(par.L_r+par.L_h))/(4*r_r);
+F_riser=alpha_L_av*(lambda*rho_mix*(U_M_av^2)*(par.L_r+par.L_h))/(4*r_r);
+//// *********** Pressure at bottom of riser ******************
+inj.p=P_r_t + (rho_mix*g*par.L_r) +F_riser;
+
+//// Liquid velocity at bottom hole
+Ul_b= par.w_res_in/(par.rho_L*pi*(r_r^2));
+//// Reynolds number at bottom-hole:
+Re_b=(2*par.rho_L*Ul_b*r_r)/par.my_L;
+//// Friction factor at bottom-hole:
+//lambda_b=0.0056+(0.5*(Re_b^(-0.32)));
+//// Darcy Friction Factor
+lambda_b=(1/(1.8*log((par.ew/par.D_b/3.7)^1.11+6.9/Re_b)/log(10)))^2;
+//// Pressure loss due to friction from injection point to bottom-hole:
+F_b=(lambda_b*par.rho_L*(Ul_b^2)*(par.L_bh))/(4*r_r);
+//// Bottom-hole pressure
+P_bh=inj.p+par.rho_L*g*par.L_bh +F_b;
+
+//// Liquid Inflow rate
+
+//w_r_in=par.PI*(max(par.P_r-P_bh,0));
+w_r_in=par.PI*(((((par.P_r-P_bh) - 0) ^ 2 + softApproxP) ^ 0.5 / 2 + ((par.P_r-P_bh) + 0) / 2));
+
+w_L_r_in = (1-alpha_G_m_in)*w_r_in;
+w_G_r_in = alpha_G_m_in*w_r_in;
+//// **********  Gas density in bottom of riser **************
+rho_G_r_b=inj.p*par.M_G_r/(R*par.T_r);
+
+//// Alpha liquid in
+//alpha_G = m_Gw/(m_gw+m_Lw);
+
+alpha_L_in*(w_L_r_in*rho_G_r_b+(inj.w+w_G_r_in)*par.rho_L)= (w_L_r_in*rho_G_r_b);
+//alpha_L_in= (w_L_r_in*rho_G_r_b)/(w_L_r_in*rho_G_r_b+(inj.w+w_G_r_in)*par.rho_L+softDivision);
+
+//// ******** Liquid volume fraction top of riser ****************
+//alpha_L_t=min(max((2*alpha_L_av - alpha_L_in),0),alpha_L_av);
+  alpha_L_t=(-((((((2*alpha_L_av - alpha_L_in))    ^2   + softApprox)^0.5/2     + ((2*alpha_L_av - alpha_L_in))     / 2)-alpha_L_av)^2+softApprox)^0.5/2+(((((2*alpha_L_av - alpha_L_in))^2 + softApprox)^0.5/2+((2*alpha_L_av - alpha_L_in))/2)+alpha_L_av)/2);
+rho_M_t= alpha_L_t*par.rho_L +(1-alpha_L_t)*rho_G_r;
+
+//// ***********  Density mixture top of riser *************************
+//rho_M_t=max(0.1,rho_M_t);
+
+//// **********  Mixture flow out of riser ****************************
+
+// w_mix_r_out=tun.K_r*z1*sqrt(rho_M_t*(max(P_r_t-fout.p,0)));
+ w_mix_r_out=tun.K_r*z1*sqrt(rho_M_t*(((((P_r_t-fout.p) - 0) ^ 2 + softApproxP) ^ 0.5 / 2 + ((P_r_t-fout.p) + 0) / 2)));
+
+//// ********* Liquid mass fraction top of riser ********************
+
+alpha_L_m_t*(alpha_L_t*par.rho_L +(1-alpha_L_t)*rho_G_r)=(alpha_L_t*par.rho_L);
+
+//// Mass liquid flow rate out of riser
+fout.w[2]=-alpha_L_m_t*w_mix_r_out;
+
+//// Mass gas flow rate out of riser
+fout.w[1]=-(1-alpha_L_m_t)*w_mix_r_out;
+
+//// Derivatives
+der(m_Gw) = (inj.w+w_G_r_in) + fout.w[1];
+der(m_Lw) = w_L_r_in + fout.w[2];
+
+end wellHansen;

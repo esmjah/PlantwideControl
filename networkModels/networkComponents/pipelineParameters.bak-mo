@@ -1,0 +1,50 @@
+within networkModels.networkComponents;
+record pipelineParameters
+  import SI = Modelica.SIunits;
+  parameter SI.Mass m_gp0(nominal = 1e3) = 24550.3;
+  // mass of gas in the horizontal pipeline
+  parameter SI.Mass m_op0(nominal = 1e3) = 7229.52;
+  // mass of oil in the horizontal pipeline
+  parameter SI.Mass m_wp0(nominal = 1e3) = 3699.01;
+  // mass of water in the horizontal pipeline
+  parameter SI.Mass m_gr0(nominal = 1e3) = 680.629;
+  // mass of gas in the riser
+  parameter SI.Mass m_or0(nominal = 1e3) = 1246.35;
+  // mass of oil in the riser
+  parameter SI.Mass m_wr0(nominal = 1e3) = 671.113;
+  // mass of water in the riser
+  parameter SI.Length L_p = 13000;
+  // [m]// horizontal pipeline liength
+  parameter SI.Radius r_p = 0.10;
+  // [m] // pipeline radius
+  parameter SI.Temperature T_p = 330;
+  // [K]        // pipeline temperatur
+  parameter SI.Temperature T_r = 330;
+  // [K]        // riser temperature
+  parameter SI.DynamicViscosity mu_w = 8.94e-4;
+  // [Pa*s]        // water dynamic viscosity
+  parameter SI.DynamicViscosity mu_o = 1e-4;
+  // [Pa*s]        // oil dynamic viscosity
+  parameter SI.Length L_r = 600;
+  // [m]        // Riser length
+  parameter SI.Radius r_r = 0.10;
+  // [m]        // Riser radius
+  parameter SI.Length epsilon = 2.8e-5;
+  // [m]        // Pipeline roughness
+  parameter Real K_gp = 0.03;
+  // [-]        // Orifice equation parameters
+  parameter Real K_lp = 1;
+  // [-]
+  parameter Real K_gr = 0.0034;
+  // [m^2]        // Valve coefficient for gas/liquid flow through the choke valve at top of riser
+  parameter Real K_lr = 0.0014;
+  // [m^2]
+  parameter SI.MolarMass M_g = 0.0195;
+  // [kg/mol]        // gas molar
+  parameter SI.Density rho_w = 1030;
+  // [kg/m^3]        // water density
+  parameter SI.Density rho_o = 930;
+  // [kg/m^3]        // oil density
+  annotation(Icon(graphics));
+end pipelineParameters;
+

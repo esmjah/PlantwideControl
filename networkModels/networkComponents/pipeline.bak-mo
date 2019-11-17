@@ -1,0 +1,166 @@
+within networkModels.networkComponents;
+model pipeline
+  //******************//***********************//
+  //               Parameters                                         //
+  //******************//***********************//
+  parameter pipelineParameters p;
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  // Iniital Conditions
+  parameter SI.Area A_p = Modelica.Constants.pi * p.r_p ^ 2;
+  // [m^2]        // pipeline cross sectional area
+  parameter SI.Diameter D_p = 2 * p.r_p;
+  // [m]        // pipeline diameter
+  parameter SI.Volume V_p = p.L_p * A_p;
+  // [m^3]        // horizontal pipeline volume
+  parameter SI.Area A_r = Modelica.Constants.pi * p.r_r ^ 2;
+  // [m^2]         // Riser sectional area
+  parameter SI.Diameter D_r = 2 * p.r_r;
+  // [m]        // Riser diameter
+  parameter SI.Volume V_r = A_r * p.L_r;
+  // [m^3]        // Riser volume
+  //******************//***********************//
+  //               States & Variables                         //
+  //******************//***********************//
+  //States
+  SI.Mass m_gp(start = p.m_gp0, fixed = true, nominal = 1e3, min = 0);
+  // mass of gas in the horizontal pipeline
+  SI.Mass m_op(start = p.m_op0, fixed = true, nominal = 1e3, min = 0);
+  // mass of oil in the horizontal pipeline
+  SI.Mass m_wp(start = p.m_wp0, fixed = true, nominal = 1e3, min = 0);
+  // mass of water in the horizontal pipeline
+  SI.Mass m_gr(start = p.m_gr0, fixed = true, nominal = 1e3, min = 0);
+  // mass of gas in the riser
+  SI.Mass m_or(start = p.m_or0, fixed = true, nominal = 1e3, min = 0);
+  // mass of oil in the riser
+  SI.Mass m_wr(start = p.m_wr0, fixed = true, nominal = 1e3, min = 0);
+  // mass of water in the riser
+  //******************//***********************//
+  //                 Auxiliary Variables                                 //
+  //******************//***********************//
+  // Pipeline
+  SI.Volume V_gp(nominal = 1e3, min = 0, start = 397.042);
+  SI.Density rho_gp(nominal = 1e1, min = 0, start = 61.833);
+  SI.Density rho_lp(nominal = 1e3, min = min(p.rho_o, p.rho_w), max = max(p.rho_o, p.rho_w), start = 961.6);
+  SI.VolumeFraction alpha_lp(nominal = 1e-2, min = 0, start = 0.0278275);
+  SI.Velocity U_slp(nominal = 0.1, min = 0, start = 0.408169);
+  SI.DynamicViscosity mu_lp(nominal = 1e-3, min = 0, start = 0.000368748);
+  SI.ReynoldsNumber Re_p(nominal = 1e5, min = 0, start = 212880);
+  SI.CoefficientOfFriction f_p(nominal = 1e-2, min = 0, start = 0.0163174);
+  SI.Pressure DP_fp(nominal = 1e3, min = 0, start = 2364.18);
+  // Riser
+  SI.Volume V_gr(nominal = 10, min = 0, start = 16.8578);
+  SI.Pressure P_r(nominal = 1e6, min = 0, start = 5.68097e+06);
+  SI.Density rho_gr(nominal = 10, min = 0, start = 40.3746);
+  SI.Density rho_lr(nominal = 1e3, min = min(p.rho_o, p.rho_w), max = max(p.rho_o, p.rho_w), start = 962.714);
+  SI.Density rho_mr(nominal = 1e2, min = 0, start = 137.833);
+  SI.Density rho_t(nominal = 1e2, min = 0, start = 209.625);
+  SI.Velocity U_slr(nominal = 0.1, min = 0, start = 0.408169);
+  SI.Velocity U_sgr(nominal = 1, min = 0, start = 8.39);
+  SI.Velocity U_mr(nominal = 1, min = 0, start = 8.79817);
+  SI.DynamicViscosity mu_lr(nominal = 1e-4, min = 0, start = 0.0003779);
+  SI.ReynoldsNumber Re_r(nominal = 1e6, min = 0, start = 641799);
+  SI.CoefficientOfFriction f_r(nominal = 1e-2, min = 0, start = 0.0143576);
+  SI.VolumeFraction alpha_lr(nominal = 1e-1, min = 0, start = 0.105664);
+  SI.Pressure DP_fr(nominal = 1e3, min = 0, start = 24279.6);
+  SI.CoefficientOfFriction alpha_lt(nominal = 1e-1, min = 0, start = 0.183502);
+  // Relations
+  SI.Pressure p_lp(nominal = 1e6, min = 0, start = 8.69794e+06);
+  SI.Pressure p_lr(nominal = 1e6, min = 0, start = 6.51626e+06);
+  SI.Area A_gp(nominal = 1e-2, min = 0, start = 0.0305417);
+  SI.Area A_lp(nominal = 1e-3, min = 0, start = 0.000874226);
+  SI.MassFlowRate w_glp(nominal = 10, min = 0, start = 10.6419);
+  SI.MassFlowRate w_olp(nominal = 10, min = 0, start = 8.02417);
+  SI.MassFlowRate w_wlp(nominal = 10, min = 0, start = 4.32071);
+  Interfaces.ThreePhaseFluidPortIn fin;
+  Interfaces.ThreePhaseFluidPortOut fout;
+  //******************//***********************//
+  //                       Equations                                 //
+  //******************//***********************//
+equation
+  //// Horizontal Pipeline Equations
+  V_gp = V_p - m_op / p.rho_o - m_wp / p.rho_w;
+  // A.7a - Volume of gas in pipeline
+  fin.p = m_gp * R * p.T_p / (V_gp * p.M_g);
+  // A.7b - Pressure at pipeline inlet (manifold pressure)
+  rho_gp = m_gp / V_gp;
+  // A.7c - Density of gas in pipeline
+  rho_lp = p.rho_o * p.rho_w / (p.rho_w * m_op + p.rho_o * m_wp) * (m_op + m_wp);
+  // A.7d - Density of liquid in pipeline
+  alpha_lp = (p.rho_w * m_op + p.rho_o * m_wp) / (p.rho_o * p.rho_w * V_p);
+  // A.7e - Average liquid volume fraction pipeline
+  U_slp = (p.rho_w * fin.w[2] + p.rho_o * fin.w[3]) / (p.rho_o * p.rho_w * pi * p.r_p ^ 2);
+  // A.7f - Superficial velocity of liquid in pipeline
+  mu_lp = m_op / (m_wp + m_op) * p.mu_o + m_wp / (m_wp + m_op) * p.mu_w;
+  // A.7g - Liquid dynamic viscosity
+  Re_p = 2 * rho_lp * U_slp * p.r_p / mu_lp;
+  // A.7h - Reynolds number
+  f_p = (-1.8 * log((p.epsilon / (3.7 * D_p)) ^ 1.11 + 6.9 / Re_p) / log(10)) ^ (-2);
+  // A.7i - Friction coefficient pipeline
+  DP_fp = alpha_lp * p.L_p * rho_lp * f_p * U_slp ^ 2 / (4 * p.r_p);
+  // A.7j - Pressure drop due to friction in pipeline
+  // Riser
+  V_gr = V_r - m_or / p.rho_o - m_wr / p.rho_w;
+  // A.8a - Volume of gas in riser
+  P_r = m_gr * R * p.T_r / (p.M_g * V_gr);
+  // A.8b - Pressure at top of riser
+  rho_gr = m_gr / V_gr;
+  // A.8c - Density of gas at top of riser
+  rho_lr = p.rho_o * p.rho_w / (p.rho_w * m_or + p.rho_o * m_wr) * (m_or + m_wr);
+  // A.8d - Density of liquid in riser
+  rho_mr = (m_gr + m_or + m_wr) / V_r;
+  // A.8e - Average density of mix in riser
+  alpha_lr = (p.rho_w * m_or + p.rho_o * m_wr) / (p.rho_w * p.rho_o * V_r);
+  // A.8f - Average liquid volume fraction in riser
+  U_slr = (p.rho_w * fin.w[2] + p.rho_o * fin.w[3]) / (p.rho_w * p.rho_o * A_r);
+  // A.8g - Average superficial velocity of liquid in riser
+  U_sgr = fin.w[1] / (rho_gr * A_r);
+  // A.8h - Average superficial velocity of gas in riser
+  U_mr = U_slr + U_sgr;
+  // A.8i - Average superficial velocity of fluid in riser
+  mu_lr = m_wr / (m_wr + m_or) * p.mu_w + m_or / (m_wr + m_or) * p.mu_o;
+  // A.8j - Viscosity of liquid in riser
+  Re_r = 2 * rho_mr * U_mr * p.r_r / mu_lr;
+  // A.8k - Reynolds number of mixed fluid in riser
+  f_r = (-1.8 * log((p.epsilon / (3.7 * D_r)) ^ 1.11 + 6.9 / Re_r) / log(10)) ^ (-2);
+  // A.8l - Friction coefficient riser
+  DP_fr = alpha_lr * f_r * rho_mr * U_mr ^ 2 * p.L_r / (4 * p.r_r);
+  // A.8m - Pressure drop due to friction in riser
+  // Pipeline-Riser Relation
+  p_lp = fin.p - DP_fp;
+  // A.9a - Pressure low point pipeline
+  p_lr = P_r + DP_fr + rho_mr * g * p.L_r;
+  // A.9b - Pressure low point riser
+  A_gp = V_gp / V_p * A_p;
+  // A.9c - Cross-sectional area of gas at low point
+  A_lp = A_p - A_gp;
+  // A.9d - Cross-sectional area of liqud at low point
+  alpha_lt = 2 * (m_or + m_wr) / (V_r * rho_lr) - A_lp / A_p;
+  // A.9e - Liquid volume fraction at top of riser
+  rho_t = alpha_lt * rho_lr + (1 - alpha_lt) * rho_gr;
+  // A9.f - Density of mixed fluid at top of riser
+  // Mass flow of gas, oil and water through low point
+  w_glp = p.K_gp * A_gp * sqrt(rho_gp * maxFunc(p_lp - p_lr, 0.01));
+  //A.9g -
+  w_olp = p.K_lp * A_lp * sqrt(p.rho_o * maxFunc(p_lp - p_lr, 0.01)) * (m_op / (m_gp + m_op + m_wp));
+  //A.9h -
+  w_wlp = p.K_lp * A_lp * sqrt(p.rho_w * maxFunc(p_lp - p_lr, 0.01)) * (m_wp / (m_gp + m_op + m_wp));
+  //A.9i -
+  // Mass flow of mixed fluid at riser outlet
+  fout.w[1] = -p.K_gr * sqrt(rho_t * maxFunc(P_r - fout.p, 0.01)) * (m_gr / (m_gr + m_or + m_wr));
+  //A.9j
+  fout.w[2] = -p.K_lr * sqrt(rho_t * maxFunc(P_r - fout.p, 0.01)) * (m_or / (m_gr + m_or + m_wr));
+  //A.9k
+  fout.w[3] = -p.K_lr * sqrt(rho_t * maxFunc(P_r - fout.p, 0.01)) * (m_wr / (m_gr + m_or + m_wr));
+  //A.9l
+  //State Equaitons
+  der(m_gp) = fin.w[1] - w_glp;
+  der(m_op) = fin.w[2] - w_olp;
+  der(m_wp) = fin.w[3] - w_wlp;
+  der(m_gr) = w_glp + fout.w[1];
+  der(m_or) = w_olp + fout.w[2];
+  der(m_wr) = w_wlp + fout.w[3];
+end pipeline;
+

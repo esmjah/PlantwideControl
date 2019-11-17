@@ -1,0 +1,8 @@
+within networkModels.networkComponents;
+model liquidManifold
+  import SI = Modelica.SIunits;
+  Interfaces.GasFluidPortOut fout(w(start=-constantOutput),p(start=6.8e6));
+  parameter SI.MassFlowRate constantOutput = 0.5;
+equation
+  fout.w = -constantOutput;
+end liquidManifold;

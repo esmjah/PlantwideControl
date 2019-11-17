@@ -1,0 +1,2355 @@
+#1
+char Aclass(3,24)
+Adymosim
+1.4
+Modelica experiment file
+
+
+#    Experiment parameters
+double experiment(7,1)
+       0                   # StartTime    Time at which integration starts
+                           #              (and linearization and trimming time)
+   36000                   # StopTime     Time at which integration stops
+      10                   # Increment    Communication step size, if > 0
+       0                   # nInterval    Number of communication intervals, if > 0
+ 1.0000000000000000E-008   # Tolerance    Relative precision of signals for
+                           #              simulation, linearization and trimming
+       0                   # MaxFixedStep Maximum step size of fixed step size
+                           #              integrators, if > 0.0
+       8                   # Algorithm    Integration algorithm as integer (1...28)
+                           #
+                           #             | model|       |        | dense | state |
+                           # Algorithm   | typ  | stiff | order  | output| event |
+                           # ------------+------+-------+--------+-------+-------+
+                           #  1 | deabm  |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  2 | lsode1 |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  3 | lsode2 |  ode |  yes  |  1-5   |  yes  |   no  |
+                           #  4 | lsodar |  ode |  both |1-12,1-5|  yes  |  yes  |
+                           #  5 | dopri5 |  ode |   no  |   5    |   no  |   no  |
+                           #  6 | dopri8 |  ode |   no  |   8    |   no  |   no  |
+                           #  7 | grk4t  |  ode |  yes  |   4    |   no  |   no  |
+                           #  8 | dassl  |  dae |  yes  |  1-5   |  yes  |  yes  |
+                           #  9 | odassl | hdae |  yes  |  1-5   |  yes  |  yes  |
+                           # 10 | mexx   | hdae |   no  |  2-24  |   no  |   no  |
+                           # 11 | euler  |  ode |   no  |   1    |   no  |  yes  |
+                           # 12 | rkfix2 |  ode |   no  |   2    |   no  |  yes  |
+                           # 13 | rkfix3 |  ode |   no  |   3    |   no  |  yes  |
+                           # 14 | rkfix4 |  ode |   no  |   4    |   no  |  yes  |
+                           #>=14| others |  ode |yes/no |  2-5   |   yes |  yes  |
+                           # ---+--------+------+-------+--------+-------+-------+
+                           # euler and rkfix have fixed stepsize.
+
+
+#    Method tuning parameters
+double method(27,1)
+       1                   # grid     type of communication time grid, defined by
+                           #          = 1: equidistant points ("Increment/nInterval")
+                           #          = 2: vector of grid points ("tgrid")
+                           #          = 3: variable step integrator (automatically)
+                           #          = 4: model (call of "increment" in Dymola, e.g.
+                           #                      incr=Time > 2 then 0 else 0.1
+                           #                      dummy=increment(incr))
+                           #          grid = 1,3 is stopped by "StopTime"
+                           #          grid = 2   is stopped by "tgrid(last)"
+                           #          grid = 4   runs forever (stopped by model)
+       1                   # nt       Use every NT time instant, if grid = 3
+       3                   # dense    1/2/3 restart/step/interpolate GRID points
+       1                   # evgrid   0/1 do not/save event points in comm. time grid
+       1                   # evu      0/1 U-discontinuity does not/trigger events
+       0                   # evuord       U-discontinuity order to consider (0,1,...)
+       0                   # error    0/1/2 One message/warning/error messages
+       0                   # jac      0/1 Compute jacobian numerically/by BLOCKJ
+       0                   # xd0c     0/1 Compute/set XD0
+       0                   # f3       0/1 Ignore/use F3 of HDAE (= index 1)
+       0                   # f4       0/1 Ignore/use F4 of HDAE (= index 2)
+       0                   # f5       0/1 Ignore/use F5 of HDAE (= invar.)
+       0                   # debug    flags for debug information (1<<0 uses pdebug) 
+     100                   # pdebug       priority of debug information (1...100)
+       0                   # fmax     Maximum number of evaluations of BLOCKF, if > 0
+       0                   # ordmax   Maximum allowed integration order, if > 0
+       0                   # hmax     Maximum absolute stepsize, if > 0
+       0                   # hmin     Minimum absolute stepsize, if > 0 (use with care!)
+       0                   # h0       Stepsize to be attempted on first step, if > 0
+ 2.0000000000000000E-014   # teps     Bound to check, if 2 equal time instants
+ 1.0000000000000000E-010   # eveps    Hysteresis epsilon at event points
+      20                   # eviter   Maximum number of event iterations
+ 9.9999999999999995E-007   # delaym   Minimum time increment in delay buffers
+       1                   # fexcep   0/1 floating exception crashes/stops dymosim
+       1                   # tscale   clock-time = tscale*simulation-time, if grid = 5
+                           #          > 1: simulation too slow
+                           #          = 1: simulation-time = real-time
+                           #          < 1: simulation too fast
+       1                   # shared   (not used)
+    2473                   # memkey   (not used)
+
+
+#    Output parameters
+int settings(13,1)
+ 0                         # lprec    0/1 do not/store result data in double
+ 1                         # lx       0/1 do not/store x  (state variables)
+ 1                         # lxd      0/1 do not/store xd (derivative of states)
+ 1                         # lu       0/1 do not/store u  (input     signals)
+ 1                         # ly       0/1 do not/store y  (output    signals)
+ 0                         # lz       0/1 do not/store z  (indicator signals)
+ 1                         # lw       0/1 do not/store w  (auxiliary signals)
+ 1                         # la       0/1 do not/store a  (alias     signals)
+ 0                         # lperf    0/1 do not/store performance indicators
+ 0                         # levent   0/1 do not/store event point
+ 1                         # lres     0/1 do not/store results on result file
+ 0                         # lshare   0/1 do not/store info data for shared memory on dsshare.txt
+ 1                         # lform    0/1 ASCII/Matlab-binary storage format of results
+                           #              (for simulation/linearization; not for trimming)
+
+
+#    Names of initial variables
+char initialName(549,28)
+netPid.x0[1]
+netPid.x0[2]
+netPid.x0[3]
+netPid.x0[4]
+netPid.x0[5]
+netPid.x0[6]
+netPid.x0[7]
+netPid.x0[8]
+netPid.x0[9]
+netPid.x0[10]
+netPid.x0[11]
+netPid.x0[12]
+netPid.x0[13]
+netPid.x0[14]
+netPid.x0[15]
+netPid.x0[16]
+netPid.x0[17]
+netPid.Dp_w1
+netPid.Dp_w2
+netPid.w1.par.T_a
+netPid.w1.par.M_G_a
+netPid.w1.par.L_a
+netPid.w1.par.D_a
+netPid.w1.par.V_a
+netPid.w1.par.P_gs
+netPid.w1.par.K_a
+netPid.w1.par.K_f
+netPid.w1.par.K_i
+netPid.w1.par.Gamma
+netPid.w1.par.k1
+netPid.w1.par.k2
+netPid.w1.par.K_alpha
+netPid.w1.par.Tp1
+netPid.w1.par.Tp2
+netPid.w1.par.Slope_z
+netPid.w1.par.P_z
+netPid.w1.par.Z_ca
+netPid.w1.par.Z_ct
+netPid.w1.par.w_g_a_in
+netPid.w1.par.Pat
+netPid.w1.par.my_L
+netPid.w1.par.my_G
+netPid.w1.par.rho_L
+netPid.w1.par.T_r
+netPid.w1.par.M_G_r_t
+netPid.w1.par.M_G_r
+netPid.w1.par.PI_nom
+netPid.w1.par.D_w
+netPid.w1.par.L_r
+netPid.w1.par.L_h
+netPid.w1.par.ew
+netPid.w1.par.ep
+netPid.w1.par.L_bh
+netPid.w1.par.S_bh
+netPid.w1.par.D_b
+netPid.w1.par.P_r
+netPid.w1.par.GOR_nom
+netPid.w1.par.w_res_in
+netPid.w1.par.z1
+netPid.w1.par.Pbh
+netPid.w1.par.Ptt
+netPid.w1.par.Ptb
+netPid.w1.par.CD
+netPid.w1.par.D_c
+netPid.w1.par.A_c
+netPid.w1.softApprox
+netPid.w1.softPApprox
+netPid.w1.softDivision
+netPid.w1.ORF
+netPid.w1.PI
+netPid.w1.fout.p
+netPid.w1.fout.w[1]
+netPid.w1.fout.w[2]
+netPid.w1.P_a_b
+netPid.w1.rho_G_a_b
+netPid.w1.r_r
+netPid.w1.V_r
+netPid.w1.V_bh
+netPid.w1.alpha_G_m_in
+netPid.w1.Usl_av
+netPid.w1.Usg_av
+netPid.w1.U_M_av
+netPid.w1.rho_G_r
+netPid.w1.rho_mix
+netPid.w1.alpha_L_av
+netPid.w1.P_r_t
+netPid.w1.my_mix
+netPid.w1.Re
+netPid.w1.lambda
+netPid.w1.u
+netPid.w1.F_riser
+netPid.w1.deltaP_valve
+netPid.w1.Ul_b
+netPid.w1.Re_b
+netPid.w1.lambda_b
+netPid.w1.F_b
+netPid.w1.P_bh
+netPid.w1.P_bh_f
+netPid.w1.der(P_bh_f)
+netPid.w1.P_r_b
+netPid.w1.P_res
+netPid.w1.der(P_res)
+netPid.w1.w_r_in
+netPid.w1.w_L_r_in
+netPid.w1.w_G_r_in
+netPid.w1.w_G_iph
+netPid.w1.w_G_inj
+netPid.w1.w_G_f
+netPid.w1.der(w_G_f)
+netPid.w1.rho_G_r_b
+netPid.w1.alpha_L_in
+netPid.w1.alpha_L_t_max
+netPid.w1.alpha_L_t_min
+netPid.w1.alpha_L_t
+netPid.w1.alpha_G_t
+netPid.w1.rho_M_t
+netPid.w1.w_mix_out
+netPid.w1.alpha_L_m_t
+netPid.w1.GOR_m_t
+netPid.w1.delta_p_inj
+netPid.w1.m_Ga
+netPid.w1.der(m_Ga)
+netPid.w1.m_Gw
+netPid.w1.der(m_Gw)
+netPid.w1.m_Lw
+netPid.w1.der(m_Lw)
+netPid.w2.par.T_a
+netPid.w2.par.M_G_a
+netPid.w2.par.L_a
+netPid.w2.par.D_a
+netPid.w2.par.V_a
+netPid.w2.par.P_gs
+netPid.w2.par.K_a
+netPid.w2.par.K_f
+netPid.w2.par.K_i
+netPid.w2.par.Gamma
+netPid.w2.par.k1
+netPid.w2.par.k2
+netPid.w2.par.K_alpha
+netPid.w2.par.Tp1
+netPid.w2.par.Tp2
+netPid.w2.par.Slope_z
+netPid.w2.par.P_z
+netPid.w2.par.Z_ca
+netPid.w2.par.Z_ct
+netPid.w2.par.w_g_a_in
+netPid.w2.par.Pat
+netPid.w2.par.my_L
+netPid.w2.par.my_G
+netPid.w2.par.rho_L
+netPid.w2.par.T_r
+netPid.w2.par.M_G_r_t
+netPid.w2.par.M_G_r
+netPid.w2.par.PI_nom
+netPid.w2.par.D_w
+netPid.w2.par.L_r
+netPid.w2.par.L_h
+netPid.w2.par.ew
+netPid.w2.par.ep
+netPid.w2.par.L_bh
+netPid.w2.par.S_bh
+netPid.w2.par.D_b
+netPid.w2.par.P_r
+netPid.w2.par.GOR_nom
+netPid.w2.par.w_res_in
+netPid.w2.par.z1
+netPid.w2.par.Pbh
+netPid.w2.par.Ptt
+netPid.w2.par.Ptb
+netPid.w2.par.CD
+netPid.w2.par.D_c
+netPid.w2.par.A_c
+netPid.w2.softApprox
+netPid.w2.softPApprox
+netPid.w2.softDivision
+netPid.w2.ORF
+netPid.w2.PI
+netPid.w2.fout.w[1]
+netPid.w2.fout.w[2]
+netPid.w2.P_a_b
+netPid.w2.rho_G_a_b
+netPid.w2.r_r
+netPid.w2.V_r
+netPid.w2.V_bh
+netPid.w2.alpha_G_m_in
+netPid.w2.Usl_av
+netPid.w2.Usg_av
+netPid.w2.U_M_av
+netPid.w2.rho_G_r
+netPid.w2.rho_mix
+netPid.w2.alpha_L_av
+netPid.w2.P_r_t
+netPid.w2.my_mix
+netPid.w2.Re
+netPid.w2.lambda
+netPid.w2.u
+netPid.w2.F_riser
+netPid.w2.deltaP_valve
+netPid.w2.Ul_b
+netPid.w2.Re_b
+netPid.w2.lambda_b
+netPid.w2.F_b
+netPid.w2.P_bh
+netPid.w2.P_bh_f
+netPid.w2.der(P_bh_f)
+netPid.w2.P_r_b
+netPid.w2.P_res
+netPid.w2.der(P_res)
+netPid.w2.w_r_in
+netPid.w2.w_L_r_in
+netPid.w2.w_G_r_in
+netPid.w2.w_G_iph
+netPid.w2.w_G_inj
+netPid.w2.w_G_f
+netPid.w2.der(w_G_f)
+netPid.w2.rho_G_r_b
+netPid.w2.alpha_L_in
+netPid.w2.alpha_L_t_max
+netPid.w2.alpha_L_t_min
+netPid.w2.alpha_L_t
+netPid.w2.alpha_G_t
+netPid.w2.rho_M_t
+netPid.w2.w_mix_out
+netPid.w2.alpha_L_m_t
+netPid.w2.GOR_m_t
+netPid.w2.delta_p_inj
+netPid.w2.m_Ga
+netPid.w2.der(m_Ga)
+netPid.w2.m_Gw
+netPid.w2.der(m_Gw)
+netPid.w2.m_Lw
+netPid.w2.der(m_Lw)
+netPid.m.par.rho_L
+netPid.m.par.r
+netPid.m.par.L
+netPid.m.par.T
+netPid.m.par.M_G
+netPid.m.par.visl
+netPid.m.par.visg
+netPid.m.par.eps
+netPid.m.par.Alpha_L_av
+netPid.m.A
+netPid.m.softPApprox
+netPid.m.softApprox
+netPid.m.fin.w[1]
+netPid.m.fin.w[2]
+netPid.m.Fric
+netPid.p.par.k_h
+netPid.p.par.K_gT
+netPid.p.par.K_oT
+netPid.p.par.K_alpha
+netPid.p.par.K_i
+netPid.p.par.Gamma
+netPid.p.par.K_f
+netPid.p.par.Slope_z
+netPid.p.par.P_z
+netPid.p.par.Z_c0
+netPid.p.par.rho_L
+netPid.p.par.rho_w
+netPid.p.par.theta
+netPid.p.par.r1
+netPid.p.par.r2
+netPid.p.par.Lm
+netPid.p.par.L1
+netPid.p.par.L2
+netPid.p.par.L3
+netPid.p.par.T1
+netPid.p.par.T2
+netPid.p.par.M_Gp
+netPid.p.par.M_Gr
+netPid.p.par.Tf
+netPid.p.par.visl
+netPid.p.par.visg
+netPid.p.par.eps
+netPid.p.par.Cd
+netPid.p.par.D_c
+netPid.p.par.A_c
+netPid.p.par.Alpha_L1_ss
+netPid.p.par.z0
+netPid.p.par.P0
+netPid.p.par.P1
+netPid.p.par.P2_t
+netPid.p.par.wG_in
+netPid.p.par.wL_in
+netPid.p.par.K_g
+netPid.p.par.K_o
+netPid.p.par.softApprox
+netPid.p.par.A1
+netPid.p.par.A2
+netPid.p.par.hc
+netPid.p.par.w_mix
+netPid.p.par.rho_G1
+netPid.p.par.h1ss
+netPid.p.par.rho_mix1
+netPid.p.par.Uslin
+netPid.p.par.Usgin
+netPid.p.par.Umin
+netPid.p.par.vism_p
+netPid.p.par.Re1
+netPid.p.par.Lambda1
+netPid.p.par.Fric_pipe
+netPid.p.par.P2_av
+netPid.p.par.rho_G2_av
+netPid.p.par.Alpha_L2_av
+netPid.p.par.rho_mix_av
+netPid.p.par.Usl2
+netPid.p.par.Usg2
+netPid.p.par.Um
+netPid.p.par.vism_r
+netPid.p.par.Re2
+netPid.p.par.Lambda2
+netPid.p.par.Fric_riser
+netPid.p.par.P2_b
+netPid.p.par.rho_G2
+netPid.p.par.Alpha_Lt
+netPid.p.par.rho_t
+netPid.p.par.A_g
+netPid.p.par.A_l
+netPid.p.par.v_G1
+netPid.p.A1
+netPid.p.A2
+netPid.p.V2
+netPid.p.V1
+netPid.p.hc
+netPid.p.softApprox
+netPid.p.softPApprox
+netPid.p.fout.p
+netPid.p.fout.w[1]
+netPid.p.fout.w[2]
+netPid.p.ORF
+netPid.p.h1
+netPid.p.rho_G1
+netPid.p.Uslin
+netPid.p.Re1
+netPid.p.Lambda1
+netPid.p.Fric_pipe
+netPid.p.V_G2
+netPid.p.P2_t
+netPid.p.P1
+netPid.p.P1_f
+netPid.p.der(P1_f)
+netPid.p.rho_G2
+netPid.p.Alpha_L2_av
+netPid.p.rho_mix_av
+netPid.p.Usl2
+netPid.p.Usg2
+netPid.p.Um
+netPid.p.Re2
+netPid.p.u
+netPid.p.Lambda2
+netPid.p.Fric_riser
+netPid.p.A_g
+netPid.p.A_l
+netPid.p.P2_b
+netPid.p.w_G1
+netPid.p.w_L1
+netPid.p.w_G_iph
+netPid.p.Alpha_Lb
+netPid.p.Alpha_LbMax
+netPid.p.Alpha_L1_av
+netPid.p.Alpha_Lt_max
+netPid.p.Alpha_Lt_min
+netPid.p.Alpha_Lt
+netPid.p.Alpha_Gt
+netPid.p.Alpha_Lmt
+netPid.p.rho_t
+netPid.p.w_mix_out
+netPid.p.rho_mix1
+netPid.p.vism_p
+netPid.p.Usgin
+netPid.p.Umin
+netPid.p.vism_r
+netPid.p.m_lp0t
+netPid.p.h1ss
+netPid.p.deltaP_G
+netPid.p.deltaP_L
+netPid.p.deltaP_valve
+netPid.p.m_gp
+netPid.p.der(m_gp)
+netPid.p.m_lp
+netPid.p.der(m_lp)
+netPid.p.m_gr
+netPid.p.der(m_gr)
+netPid.p.m_lr
+netPid.p.der(m_lr)
+netPid.sep.Psep_nom
+netPid.u0PCINL
+netPid.ZcINL
+netPid.y0PCINL
+netPid.KcPCINL
+netPid.TiPCINL
+netPid.x0PCINL
+netPid.PCINL.Kc
+netPid.PCINL.Ti
+netPid.PCINL.maxSetPoint
+netPid.PCINL.minSetPoint
+netPid.PCINL.softApprox
+netPid.PCINL.satMax
+netPid.PCINL.satMin
+netPid.PCINL.intError
+netPid.PCINL.der(intError)
+netPid.PCINL.setPoint
+netPid.PCINL.u
+netPid.PCINL.u0
+netPid.PCINL.uSatMax
+netPid.u0PCTOP
+netPid.ZcTOP
+netPid.y0PCTOP
+netPid.valveDP_top_SetPoint
+netPid.KcPCTOP
+netPid.TiPCTOP
+netPid.x0PCTOP
+netPid.PCTOP.Kc
+netPid.PCTOP.Ti
+netPid.PCTOP.maxSetPoint
+netPid.PCTOP.minSetPoint
+netPid.PCTOP.softApprox
+netPid.PCTOP.satMax
+netPid.PCTOP.satMin
+netPid.PCTOP.intError
+netPid.PCTOP.der(intError)
+netPid.PCTOP.setPoint
+netPid.PCTOP.u
+netPid.PCTOP.u0
+netPid.PCTOP.uSatMax
+netPid.u0PCA1
+netPid.ZcA1
+netPid.y0PCA1
+netPid.KcPCA1
+netPid.TiPCA1
+netPid.x0PCA1
+netPid.PCA1.Kc
+netPid.PCA1.Ti
+netPid.PCA1.maxSetPoint
+netPid.PCA1.minSetPoint
+netPid.PCA1.softApprox
+netPid.PCA1.satMax
+netPid.PCA1.satMin
+netPid.PCA1.intError
+netPid.PCA1.der(intError)
+netPid.PCA1.setPoint
+netPid.PCA1.u
+netPid.PCA1.u0
+netPid.PCA1.uSatMax
+netPid.u0PCT1
+netPid.ZcT1
+netPid.y0PCT1
+netPid.valveDP_whd1_SetPoint
+netPid.KcPCT1
+netPid.TiPCT1
+netPid.x0PCT1
+netPid.PCT1.Kc
+netPid.PCT1.Ti
+netPid.PCT1.maxSetPoint
+netPid.PCT1.minSetPoint
+netPid.PCT1.softApprox
+netPid.PCT1.satMax
+netPid.PCT1.satMin
+netPid.PCT1.intError
+netPid.PCT1.der(intError)
+netPid.PCT1.setPoint
+netPid.PCT1.u
+netPid.PCT1.u0
+netPid.PCT1.uSatMax
+netPid.u0PCA2
+netPid.ZcA2
+netPid.y0PCA2
+netPid.KcPCA2
+netPid.TiPCA2
+netPid.x0PCA2
+netPid.PCA2.Kc
+netPid.PCA2.Ti
+netPid.PCA2.maxSetPoint
+netPid.PCA2.minSetPoint
+netPid.PCA2.softApprox
+netPid.PCA2.satMax
+netPid.PCA2.satMin
+netPid.PCA2.intError
+netPid.PCA2.der(intError)
+netPid.PCA2.setPoint
+netPid.PCA2.u
+netPid.PCA2.u0
+netPid.PCA2.uSatMax
+netPid.u0PCT2
+netPid.ZcT2
+netPid.y0PCT2
+netPid.valveDP_whd2_SetPoint
+netPid.KcPCT2
+netPid.TiPCT2
+netPid.x0PCT2
+netPid.PCT2.Kc
+netPid.PCT2.Ti
+netPid.PCT2.maxSetPoint
+netPid.PCT2.minSetPoint
+netPid.PCT2.softApprox
+netPid.PCT2.satMax
+netPid.PCT2.satMin
+netPid.PCT2.intError
+netPid.PCT2.der(intError)
+netPid.PCT2.setPoint
+netPid.PCT2.u
+netPid.PCT2.u0
+netPid.PCT2.uSatMax
+netPid.PCT1Filter.k
+netPid.PCT1Filter.T
+netPid.PCT1Filter.y
+netPid.PCT1Filter.der(y)
+netPid.PCT2Filter.k
+netPid.PCT2Filter.T
+netPid.PCT2Filter.y
+netPid.PCT2Filter.der(y)
+netPid.PCTOPFilter.k
+netPid.PCTOPFilter.T
+netPid.PCTOPFilter.y
+netPid.PCTOPFilter.der(y)
+PCT1SetPoint
+PCT2SetPoint
+PCTOPSetPoint
+gm1.fout.p
+gm1.fout.w
+gm1.offset
+gm1.height
+gm1.startTime
+gm2.fout.p
+gm2.fout.w
+gm2.offset
+gm2.height
+gm2.startTime
+step1.height
+step1.y
+step1.offset
+step1.startTime
+step2.height
+step2.y
+step2.offset
+step2.startTime
+u3.k1
+u3.k2
+u4.height
+u4.offset
+u4.startTime
+u5.height
+u5.offset
+u5.startTime
+GOR1.k
+GOR2.k
+d_PI1.k
+d_PI2.k
+d_Psep.k
+
+double initialValue(549,6)
+  0     160                       0                       0                
+  6   256   # netPid.x0[1]
+  0 1.2802300000000000E+000       0                       0                
+  6   256   # netPid.x0[2]
+  0 1.0001700000000000E+007       0                       0                
+  6   256   # netPid.x0[3]
+  0 4.7464099999999999E+003       0                       0                
+  6   256   # netPid.x0[4]
+  0 3.3248000000000002E+002       0                       0                
+  6   256   # netPid.x0[5]
+  0 8.0623999999999996E+003       0                       0                
+  6   256   # netPid.x0[6]
+  0     170                       0                       0                
+  6   256   # netPid.x0[7]
+  0 1.3008200000000001E+000       0                       0                
+  6   256   # netPid.x0[8]
+  0 1.0439100000000000E+007       0                       0                
+  6   256   # netPid.x0[9]
+  0 4.9195500000000002E+003       0                       0                
+  6   256   # netPid.x0[10]
+  0 3.2329300000000001E+002       0                       0                
+  6   256   # netPid.x0[11]
+  0 8.5422600000000002E+003       0                       0                
+  6   256   # netPid.x0[12]
+  0 2.5192900000000000E+006       0                       0                
+  6   256   # netPid.x0[13]
+  0 1.7952400000000000E+003       0                       0                
+  6   256   # netPid.x0[14]
+  0 2.6909200000000001E+004       0                       0                
+  6   256   # netPid.x0[15]
+  0 4.6339799999999997E+001       0                       0                
+  6   256   # netPid.x0[16]
+  0 1.5760200000000000E+003       0                       0                
+  6   256   # netPid.x0[17]
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.Dp_w1
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.Dp_w2
+ -1     323                     315                     350                
+  1   280   # netPid.w1.par.T_a
+ -1 2.1000000000000001E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w1.par.M_G_a
+ -1    2048                       0                       0                
+  1   280   # netPid.w1.par.L_a
+ -1 2.0000000000000001E-001       0                       0                
+  1   280   # netPid.w1.par.D_a
+ -1 6.5989153688653616E+001       0                       0                
+  1   280   # netPid.w1.par.V_a
+ -1 1.4000000000000000E+007       0                       0                
+  1   280   # netPid.w1.par.P_gs
+ -1 1.5558999999999999E-004       0                       0                
+  1   280   # netPid.w1.par.K_a
+ -1 9.1000000000000003E-001       0                       0                
+  1   280   # netPid.w1.par.K_f
+ -1 6.7000000000000002E-004       0                       0                
+  1   280   # netPid.w1.par.K_i
+ -1 1.7000000000000000E+000       0                       0                
+  1   280   # netPid.w1.par.Gamma
+ -1 1.1000000000000001E+000 6.9999999999999996E-001 1.5000000000000000E+000
+  1   280   # netPid.w1.par.k1
+ -1 9.0000000000000002E-001       0                       0                
+  1   280   # netPid.w1.par.k2
+ -1 9.4699999999999995E-001 5.0000000000000000E-001 1.5000000000000000E+000
+  1   280   # netPid.w1.par.K_alpha
+ -1     600                       0                       0                
+  1   280   # netPid.w1.par.Tp1
+ -1     900                       0                       0                
+  1   280   # netPid.w1.par.Tp2
+ -1 1.4000000000000000E-008       0                       0                
+  1   280   # netPid.w1.par.Slope_z
+ -1 1.0001700000000000E+007 8.0000000000000000E+006 1.5500000000000000E+007
+  1   280   # netPid.w1.par.P_z
+ -1 9.2700000000000005E-001       0                       0                
+  1   280   # netPid.w1.par.Z_ca
+ -1 9.8999999999999999E-001       0                       0                
+  1   280   # netPid.w1.par.Z_ct
+ -1 1.0120000000000000E+000       0                       0                
+  1   280   # netPid.w1.par.w_g_a_in
+ -1 8.6300000000000000E+006       0                       0                
+  1   280   # netPid.w1.par.Pat
+ -1 3.6400000000000001E-004       0                 1.0000000000000000E+100
+  1   280   # netPid.w1.par.my_L
+ -1 1.5000000000000000E-005       0                 1.0000000000000000E+100
+  1   280   # netPid.w1.par.my_G
+ -1     760                     740                     800                
+  1   280   # netPid.w1.par.rho_L
+ -1     369                     340                     380                
+  1   280   # netPid.w1.par.T_r
+ -1 2.1000000000000001E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w1.par.M_G_r_t
+ -1 2.0000000000000000E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w1.par.M_G_r
+  0 2.4700000000000001E-006       0                       0                
+  6   256   # netPid.w1.par.PI_nom
+ -1 1.2400000000000000E-001       0                       0                
+  1   280   # netPid.w1.par.D_w
+ -1    2048                       0                       0                
+  1   280   # netPid.w1.par.L_r
+ -1      25                       0                       0                
+  1   280   # netPid.w1.par.L_h
+ -1 4.5000000000000003E-005       0                       0                
+  1   280   # netPid.w1.par.ew
+ -1 3.0000000000000001E-005       0                       0                
+  1   280   # netPid.w1.par.ep
+ -1     100                       0                       0                
+  1   280   # netPid.w1.par.L_bh
+ -1 3.1415926535897934E-002       0                       0                
+  1   280   # netPid.w1.par.S_bh
+ -1 2.0000000000000001E-001       0                       0                
+  1   280   # netPid.w1.par.D_b
+  0 1.6000000000000000E+007       0                       0                
+  6   256   # netPid.w1.par.P_r
+ -1       0                       0                     100                
+  1   280   # netPid.w1.par.GOR_nom
+ -1      17                       0                       0                
+  1   280   # netPid.w1.par.w_res_in
+ -1 6.9999999999999996E-001       0                       0                
+  1   280   # netPid.w1.par.z1
+ -1 8.7283100000000000E+006       0                       0                
+  1   280   # netPid.w1.par.Pbh
+ -1 1.8509000000000000E+006       0                       0                
+  1   280   # netPid.w1.par.Ptt
+ -1 8.1619750000000000E+006       0                       0                
+  1   280   # netPid.w1.par.Ptb
+ -1 8.3999999999999997E-001       0                       0                
+  1   280   # netPid.w1.par.CD
+ -1 7.0000000000000007E-002       0                       0                
+  1   280   # netPid.w1.par.D_c
+ -1 3.8484510006474969E-003       0                       0                
+  1   280   # netPid.w1.par.A_c
+ -1 1.0000000000000000E-003       0                       0                
+  1   280   # netPid.w1.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.w1.softPApprox
+ -1 1.0000000000000000E-002       0                       0                
+  1   280   # netPid.w1.softDivision
+  0 4.6688999999999998E+000 5.0000000000000000E-001     150                
+  6   256   # netPid.w1.ORF
+  0 2.4700000000000001E-006 1.2350000000000000E-006 4.9400000000000001E-006
+  6   256   # netPid.w1.PI
+  0 2.5000000000000000E+006       0                 1.0000000000000000E+100
+  6   260   # netPid.w1.fout.p
+  0 -1.0000000000000001E-005       0                       0                
+  6   388   # netPid.w1.fout.w[1]
+  0 -9.9999999999999995E-007       0                       0                
+  6   388   # netPid.w1.fout.w[2]
+  0 7.5000000000000000E+006       0                       0                
+  6   256   # netPid.w1.P_a_b
+  0      56                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.rho_G_a_b
+  0       0                       0                       0                
+  6   256   # netPid.w1.r_r
+  0       0                       0                       0                
+  6   256   # netPid.w1.V_r
+  0       0                       0                       0                
+  6   256   # netPid.w1.V_bh
+  0       0                       0                       1                
+  6   256   # netPid.w1.alpha_G_m_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.Usl_av
+  0      10                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.Usg_av
+  0      11                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.U_M_av
+  0      11                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.rho_G_r
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.rho_mix
+  0       0                       0                       1                
+  6   256   # netPid.w1.alpha_L_av
+  0 2.6000000000000000E+006 1.0000000000000000E+006 1.0000000000000000E+100
+  6   256   # netPid.w1.P_r_t
+  0 1.0000000000000000E-004       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.my_mix
+  0 2.0000000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.Re
+  0 1.4999999999999999E-001       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.lambda
+  0 1.0000000000000000E-004 1.0000000000000000E-004       1                
+  6   256   # netPid.w1.u
+  0 6.6000000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.F_riser
+  0 1.5000000000000000E+005       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.deltaP_valve
+  0 2.0699999999999998E+000       0                       0                
+  6   256   # netPid.w1.Ul_b
+  0 5.1000000000000000E+005       0                       0                
+  6   256   # netPid.w1.Re_b
+  0 1.4999999999999999E-002       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.lambda_b
+  0 1.4000000000000000E+006       0                       0                
+  6   256   # netPid.w1.F_b
+  0 6.1300000000000000E+006       0                 1.6000000000000000E+007
+  6   256   # netPid.w1.P_bh
+ -1 1.0001700000000000E+007 8.0000000000000000E+006 1.6000000000000000E+007
+  2   272   # netPid.w1.P_bh_f
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(P_bh_f)
+  0 6.1300000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.P_r_b
+ -1     160                     150                     200                
+  2   272   # netPid.w1.P_res
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(P_res)
+  0      17                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.w_r_in
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.w_L_r_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.w_G_r_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.w_G_iph
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.w_G_inj
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # netPid.w1.w_G_f
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(w_G_f)
+  0      30                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.rho_G_r_b
+  0 3.3000000000000002E-001       0                       1                
+  6   256   # netPid.w1.alpha_L_in
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w1.alpha_L_t_max
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w1.alpha_L_t_min
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w1.alpha_L_t
+  0 8.0000000000000004E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w1.alpha_G_t
+  0     300                       0                 1.0000000000000000E+100
+  6   256   # netPid.w1.rho_M_t
+  0      15                       5                      40                
+  6   256   # netPid.w1.w_mix_out
+  0 8.0000000000000004E-001 5.0000000000000003E-002       1                
+  6   256   # netPid.w1.alpha_L_m_t
+  0 2.0000000000000001E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w1.GOR_m_t
+  0  100000                   10000                 1.0000000000000000E+100
+  6   256   # netPid.w1.delta_p_inj
+ -1 4.7464099999999999E+003    4000                    5000                
+  2   272   # netPid.w1.m_Ga
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(m_Ga)
+ -1 3.3248000000000002E+002       0                       0                
+  2   272   # netPid.w1.m_Gw
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(m_Gw)
+ -1 8.0623999999999996E+003    8000                   11000                
+  2   272   # netPid.w1.m_Lw
+  0       0                       0                       0                
+  3   256   # netPid.w1.der(m_Lw)
+ -1     323                     315                     350                
+  1   280   # netPid.w2.par.T_a
+ -1 2.1000000000000001E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w2.par.M_G_a
+ -1    2048                       0                       0                
+  1   280   # netPid.w2.par.L_a
+ -1 2.0000000000000001E-001       0                       0                
+  1   280   # netPid.w2.par.D_a
+ -1 6.5989153688653616E+001       0                       0                
+  1   280   # netPid.w2.par.V_a
+ -1 1.4000000000000000E+007       0                       0                
+  1   280   # netPid.w2.par.P_gs
+ -1 1.5558999999999999E-004       0                       0                
+  1   280   # netPid.w2.par.K_a
+ -1 8.7000000000000000E-001       0                       0                
+  1   280   # netPid.w2.par.K_f
+ -1 6.7000000000000002E-004       0                       0                
+  1   280   # netPid.w2.par.K_i
+ -1 1.7000000000000000E+000       0                       0                
+  1   280   # netPid.w2.par.Gamma
+ -1 1.1000000000000001E+000 6.9999999999999996E-001 1.5000000000000000E+000
+  1   280   # netPid.w2.par.k1
+ -1 9.0000000000000002E-001       0                       0                
+  1   280   # netPid.w2.par.k2
+ -1 9.5250000000000001E-001 5.0000000000000000E-001 1.5000000000000000E+000
+  1   280   # netPid.w2.par.K_alpha
+ -1     600                       0                       0                
+  1   280   # netPid.w2.par.Tp1
+ -1     900                       0                       0                
+  1   280   # netPid.w2.par.Tp2
+ -1 1.4000000000000000E-008       0                       0                
+  1   280   # netPid.w2.par.Slope_z
+ -1 1.0439100000000000E+007 8.0000000000000000E+006 1.5500000000000000E+007
+  1   280   # netPid.w2.par.P_z
+ -1 9.3300000000000005E-001       0                       0                
+  1   280   # netPid.w2.par.Z_ca
+ -1 9.8999999999999999E-001       0                       0                
+  1   280   # netPid.w2.par.Z_ct
+ -1 1.0120000000000000E+000       0                       0                
+  1   280   # netPid.w2.par.w_g_a_in
+ -1 8.6300000000000000E+006       0                       0                
+  1   280   # netPid.w2.par.Pat
+ -1 3.6400000000000001E-004       0                 1.0000000000000000E+100
+  1   280   # netPid.w2.par.my_L
+ -1 1.5000000000000000E-005       0                 1.0000000000000000E+100
+  1   280   # netPid.w2.par.my_G
+ -1     770                     740                     800                
+  1   280   # netPid.w2.par.rho_L
+ -1     369                     340                     380                
+  1   280   # netPid.w2.par.T_r
+ -1 2.1000000000000001E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w2.par.M_G_r_t
+ -1 2.0000000000000000E-002 1.6000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.w2.par.M_G_r
+  0 2.4700000000000001E-006       0                       0                
+  6   256   # netPid.w2.par.PI_nom
+ -1 1.2400000000000000E-001       0                       0                
+  1   280   # netPid.w2.par.D_w
+ -1    2048                       0                       0                
+  1   280   # netPid.w2.par.L_r
+ -1      25                       0                       0                
+  1   280   # netPid.w2.par.L_h
+ -1 4.5000000000000003E-005       0                       0                
+  1   280   # netPid.w2.par.ew
+ -1 3.0000000000000001E-005       0                       0                
+  1   280   # netPid.w2.par.ep
+ -1     100                       0                       0                
+  1   280   # netPid.w2.par.L_bh
+ -1 3.1415926535897934E-002       0                       0                
+  1   280   # netPid.w2.par.S_bh
+ -1 2.0000000000000001E-001       0                       0                
+  1   280   # netPid.w2.par.D_b
+  0 1.7000000000000000E+007       0                       0                
+  6   256   # netPid.w2.par.P_r
+ -1       0                       0                     100                
+  1   280   # netPid.w2.par.GOR_nom
+ -1      17                       0                       0                
+  1   280   # netPid.w2.par.w_res_in
+ -1 6.9999999999999996E-001       0                       0                
+  1   280   # netPid.w2.par.z1
+ -1 8.7283100000000000E+006       0                       0                
+  1   280   # netPid.w2.par.Pbh
+ -1 1.8509000000000000E+006       0                       0                
+  1   280   # netPid.w2.par.Ptt
+ -1 8.1619750000000000E+006       0                       0                
+  1   280   # netPid.w2.par.Ptb
+ -1 8.3999999999999997E-001       0                       0                
+  1   280   # netPid.w2.par.CD
+ -1 7.0000000000000007E-002       0                       0                
+  1   280   # netPid.w2.par.D_c
+ -1 3.8484510006474969E-003       0                       0                
+  1   280   # netPid.w2.par.A_c
+ -1 1.0000000000000000E-003       0                       0                
+  1   280   # netPid.w2.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.w2.softPApprox
+ -1 1.0000000000000000E-002       0                       0                
+  1   280   # netPid.w2.softDivision
+  0 4.6688999999999998E+000 5.0000000000000000E-001     150                
+  6   256   # netPid.w2.ORF
+  0 2.4700000000000001E-006 1.2350000000000000E-006 4.9400000000000001E-006
+  6   256   # netPid.w2.PI
+  0 -1.0000000000000001E-005       0                       0                
+  6   388   # netPid.w2.fout.w[1]
+  0 -9.9999999999999995E-007       0                       0                
+  6   388   # netPid.w2.fout.w[2]
+  0 7.5000000000000000E+006       0                       0                
+  6   256   # netPid.w2.P_a_b
+  0      56                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.rho_G_a_b
+  0       0                       0                       0                
+  6   256   # netPid.w2.r_r
+  0       0                       0                       0                
+  6   256   # netPid.w2.V_r
+  0       0                       0                       0                
+  6   256   # netPid.w2.V_bh
+  0       0                       0                       1                
+  6   256   # netPid.w2.alpha_G_m_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.Usl_av
+  0      10                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.Usg_av
+  0      11                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.U_M_av
+  0      11                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.rho_G_r
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.rho_mix
+  0       0                       0                       1                
+  6   256   # netPid.w2.alpha_L_av
+  0 2.6000000000000000E+006 1.0000000000000000E+006 1.0000000000000000E+100
+  6   256   # netPid.w2.P_r_t
+  0 1.0000000000000000E-004       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.my_mix
+  0 2.0000000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.Re
+  0 1.4999999999999999E-001       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.lambda
+  0 1.0000000000000000E-004 1.0000000000000000E-004       1                
+  6   256   # netPid.w2.u
+  0 6.6000000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.F_riser
+  0 1.5000000000000000E+005       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.deltaP_valve
+  0 2.0699999999999998E+000       0                       0                
+  6   256   # netPid.w2.Ul_b
+  0 5.1000000000000000E+005       0                       0                
+  6   256   # netPid.w2.Re_b
+  0 1.4999999999999999E-002       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.lambda_b
+  0 1.4000000000000000E+006       0                       0                
+  6   256   # netPid.w2.F_b
+  0 6.1300000000000000E+006       0                 1.7000000000000000E+007
+  6   256   # netPid.w2.P_bh
+ -1 1.0439100000000000E+007 8.0000000000000000E+006 1.7000000000000000E+007
+  2   272   # netPid.w2.P_bh_f
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(P_bh_f)
+  0 6.1300000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.P_r_b
+ -1     170                     150                     200                
+  2   272   # netPid.w2.P_res
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(P_res)
+  0      17                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.w_r_in
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.w_L_r_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.w_G_r_in
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.w_G_iph
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.w_G_inj
+ -1       0                       0                 1.0000000000000000E+100
+  2   272   # netPid.w2.w_G_f
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(w_G_f)
+  0      30                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.rho_G_r_b
+  0 3.3000000000000002E-001       0                       1                
+  6   256   # netPid.w2.alpha_L_in
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w2.alpha_L_t_max
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w2.alpha_L_t_min
+  0 1.6000000000000000E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w2.alpha_L_t
+  0 8.0000000000000004E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w2.alpha_G_t
+  0     300                       0                 1.0000000000000000E+100
+  6   256   # netPid.w2.rho_M_t
+  0      15                       5                      40                
+  6   256   # netPid.w2.w_mix_out
+  0 8.0000000000000004E-001 5.0000000000000003E-002       1                
+  6   256   # netPid.w2.alpha_L_m_t
+  0 2.0000000000000001E-001 1.0000000000000000E-002       1                
+  6   256   # netPid.w2.GOR_m_t
+  0  100000                   10000                 1.0000000000000000E+100
+  6   256   # netPid.w2.delta_p_inj
+ -1 4.9195500000000002E+003    4000                    5000                
+  2   272   # netPid.w2.m_Ga
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(m_Ga)
+ -1 3.2329300000000001E+002       0                       0                
+  2   272   # netPid.w2.m_Gw
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(m_Gw)
+ -1 8.5422600000000002E+003    8000                   11000                
+  2   272   # netPid.w2.m_Lw
+  0       0                       0                       0                
+  3   256   # netPid.w2.der(m_Lw)
+ -1     735                     700                     830                
+  1   280   # netPid.m.par.rho_L
+ -1 1.0160000000000000E-001 5.0000000000000003E-002 2.0000000000000001E-001
+  1   280   # netPid.m.par.r
+ -1     800                       0                       0                
+  1   280   # netPid.m.par.L
+ -1     368                     320                     370                
+  1   280   # netPid.m.par.T
+ -1 1.9000000000000000E-002       0                       0                
+  1   280   # netPid.m.par.M_G
+ -1 1.4260000000000000E-004 1.2260000000000000E-004 1.6259999999999999E-004
+  1   280   # netPid.m.par.visl
+ -1 1.3900000000000001E-005       0                 1.0000000000000000E+100
+  1   280   # netPid.m.par.visg
+ -1 2.8000000000000000E-005 2.5999999999999998E-005 3.0000000000000001E-005
+  1   280   # netPid.m.par.eps
+ -1 2.5760000000000000E-001 2.0000000000000001E-001 4.0000000000000002E-001
+  1   280   # netPid.m.par.Alpha_L_av
+  0       0                       0                       0                
+  6   256   # netPid.m.A
+ -1       1                       0                       0                
+  1   280   # netPid.m.softPApprox
+ -1 1.0000000000000000E-003       0                       0                
+  1   280   # netPid.m.softApprox
+  0       2                       0                 1.0000000000000000E+100
+  6   388   # netPid.m.fin.w[1]
+  0      29                       0                 1.0000000000000000E+100
+  6   388   # netPid.m.fin.w[2]
+ -1   18105                       0                       0                
+  1   280   # netPid.m.Fric
+ -1 7.3999999999999999E-001 5.0000000000000000E-001 1.2000000000000000E+000
+  1   280   # netPid.p.par.k_h
+ -1 8.2999999999999996E-001 5.0000000000000000E-001       2                
+  1   280   # netPid.p.par.K_gT
+ -1       2                 5.0000000000000000E-001       4                
+  1   280   # netPid.p.par.K_oT
+ -1 7.1999999999999997E-001 5.0000000000000000E-001 1.5000000000000000E+000
+  1   280   # netPid.p.par.K_alpha
+ -1 1.4000000000000000E-002       0                       0                
+  1   280   # netPid.p.par.K_i
+ -1 1.7576000000000001E+000       0                       0                
+  1   280   # netPid.p.par.Gamma
+ -1 6.9999999999999996E-001       0                       0                
+  1   280   # netPid.p.par.K_f
+ -1 -1.4300000000000001E-003       0                       0                
+  1   280   # netPid.p.par.Slope_z
+ -1 2.1013400000000000E+006       0                       0                
+  1   280   # netPid.p.par.P_z
+ -1 9.4999999999999996E-001 5.0000000000000000E-001 1.5000000000000000E+000
+  1   280   # netPid.p.par.Z_c0
+ -1     750                     700                     830                
+  1   280   # netPid.p.par.rho_L
+ -1    1000                     900                    1100                
+  1   280   # netPid.p.par.rho_w
+ -1 1.7453292519943295E-002 8.7266462599716477E-003 3.4906585039886591E-002
+  1   280   # netPid.p.par.theta
+  0 1.0160000000000000E-001 5.0000000000000003E-002 2.0000000000000001E-001
+  6   256   # netPid.p.par.r1
+ -1 1.0160000000000000E-001 4.0000000000000001E-002 2.0000000000000001E-001
+  1   280   # netPid.p.par.r2
+ -1     700                       0                       0                
+  1   280   # netPid.p.par.Lm
+ -1    4300                    4100                    4400                
+  1   280   # netPid.p.par.L1
+ -1     300                     280                     320                
+  1   280   # netPid.p.par.L2
+ -1     100                      90                     110                
+  1   280   # netPid.p.par.L3
+ -1     368                     320                     370                
+  1   280   # netPid.p.par.T1
+ -1 3.4450000000000000E+002     320                     370                
+  1   280   # netPid.p.par.T2
+ -1 2.0000000000000000E-002 2.0000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.p.par.M_Gp
+ -1 2.0000000000000000E-002 2.0000000000000000E-002 2.5000000000000001E-002
+  1   280   # netPid.p.par.M_Gr
+ -1     400                       0                       0                
+  1   280   # netPid.p.par.Tf
+ -1 1.4260000000000000E-004 1.2260000000000000E-004 1.6259999999999999E-004
+  1   280   # netPid.p.par.visl
+ -1 1.3900000000000001E-005       0                 1.0000000000000000E+100
+  1   280   # netPid.p.par.visg
+ -1 2.8000000000000000E-005 2.5999999999999998E-005 3.0000000000000001E-005
+  1   280   # netPid.p.par.eps
+ -1 8.2999999999999996E-001       0                       0                
+  1   280   # netPid.p.par.Cd
+ -1 1.7779999999999999E-001       0                       0                
+  1   280   # netPid.p.par.D_c
+ -1 2.4828666475777385E-002       0                       0                
+  1   280   # netPid.p.par.A_c
+ -1 2.5760000000000000E-001       0                       0                
+  1   280   # netPid.p.par.Alpha_L1_ss
+ -1 5.0000000000000000E-001 2.9999999999999999E-002       1                
+  1   280   # netPid.p.par.z0
+ -1 5.1560000000000000E+005 2.0000000000000000E+005 7.0200000000000000E+006
+  1   280   # netPid.p.par.P0
+ -1 2.2790500000000000E+006 1.0000000000000000E+006 4.0000000000000000E+006
+  1   280   # netPid.p.par.P1
+ -1 5.9618400000000000E+005 5.0000000000000000E+005 7.0000000000000000E+005
+  1   280   # netPid.p.par.P2_t
+ -1 2.1040000000000001E+000       0                     100                
+  1   280   # netPid.p.par.wG_in
+ -1 2.9876100000000001E+001       0                     100                
+  1   280   # netPid.p.par.wL_in
+  0       0                       0                       0                
+  6   256   # netPid.p.par.K_g
+  0       0                       0                       0                
+  6   256   # netPid.p.par.K_o
+ -1 1.0000000000000000E-003       0                       0                
+  1  1304   # netPid.p.par.softApprox
+  0 3.2429278662239852E-002       0                       0                
+  6  1280   # netPid.p.par.A1
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.A2
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.hc
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.w_mix
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_G1
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.h1ss
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_mix1
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Uslin
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Usgin
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Umin
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.vism_p
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Re1
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Lambda1
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Fric_pipe
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.P2_av
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_G2_av
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Alpha_L2_av
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_mix_av
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Usl2
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Usg2
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Um
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.vism_r
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Re2
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Lambda2
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Fric_riser
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.P2_b
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_G2
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.Alpha_Lt
+  0       0                       0                 1.0000000000000000E+100
+  6  1280   # netPid.p.par.rho_t
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.A_g
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.A_l
+  0       0                       0                       0                
+  6  1280   # netPid.p.par.v_G1
+  0 3.2429278662239852E-002       0                       0                
+  6   256   # netPid.p.A1
+  0       0                       0                       0                
+  6   256   # netPid.p.A2
+  0       0                       0                       0                
+  6   256   # netPid.p.V2
+  0       0                       0                       0                
+  6   256   # netPid.p.V1
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.hc
+ -1 1.0000000000000000E-003       0                       0                
+  1   280   # netPid.p.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.p.softPApprox
+  0 4.0000000000000000E+005 4.0000000000000000E+005 6.0000000000000000E+005
+  6   260   # netPid.p.fout.p
+  0 -2.7000000000000002E+000       0                       0                
+  6   388   # netPid.p.fout.w[1]
+  0 -3.6299999999999997E+001       0                       0                
+  6   388   # netPid.p.fout.w[2]
+  0 4.6688999999999998E+000 5.0000000000000000E-001     150                
+  6   256   # netPid.p.ORF
+  0 2.0000000000000000E-002       0                 1.0000000000000000E+100
+  6   256   # netPid.p.h1
+  0 1.6750000000000000E+001       0                 1.0000000000000000E+100
+  6   256   # netPid.p.rho_G1
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Uslin
+  0    1000                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Re1
+  0 1.0000000000000000E-002       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Lambda1
+  0  100000                       0                       0                
+  6   256   # netPid.p.Fric_pipe
+  0      11                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.V_G2
+  0 5.8000000000000000E+005       0                       0                
+  6   256   # netPid.p.P2_t
+  0 2.0000000000000000E+006 2.0000000000000000E+006 3.0000000000000000E+006
+  6   256   # netPid.p.P1
+ -1 2.5192900000000000E+006 2.0000000000000000E+006 3.0000000000000000E+006
+  2   272   # netPid.p.P1_f
+  0       0                       0                       0                
+  3   256   # netPid.p.der(P1_f)
+  0       5                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.rho_G2
+  0 1.2000000000000000E-001       0                       1                
+  6   256   # netPid.p.Alpha_L2_av
+  0      70                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.rho_mix_av
+  0       1                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Usl2
+  0      14                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Usg2
+  0      15                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Um
+  0 1.0000000000000000E+006       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Re2
+  0 1.0000000000000000E-004 1.0000000000000000E-004       1                
+  6   256   # netPid.p.u
+  0 1.0000000000000000E-002       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Lambda2
+  0   30000                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Fric_riser
+  0 2.9999999999999999E-002 2.0000000000000000E-003 3.2429278662239852E-002
+  6   256   # netPid.p.A_g
+  0 6.0000000000000001E-003 2.0000000000000000E-003 3.2429278662239852E-002
+  6   256   # netPid.p.A_l
+  0 1.0000000000000000E+006       0                       0                
+  6   256   # netPid.p.P2_b
+  0       2                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.w_G1
+  0      30                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.w_L1
+  0 2.0000000000000000E-002       0                       1                
+  6   256   # netPid.p.w_G_iph
+  0 2.0000000000000001E-001 5.0000000000000003E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_Lb
+  0       0                       0                       0                
+  6   256   # netPid.p.Alpha_LbMax
+  0 2.5760000000000000E-001 1.0000000000000000E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_L1_av
+  0 5.0000000000000003E-002 1.0000000000000000E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_Lt_max
+  0 5.0000000000000003E-002 1.0000000000000000E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_Lt_min
+  0 5.0000000000000003E-002 1.0000000000000000E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_Lt
+  0 5.0000000000000003E-002 1.0000000000000000E-002 8.0000000000000004E-001
+  6   256   # netPid.p.Alpha_Gt
+  0 8.9000000000000001E-001 1.0000000000000001E-001       1                
+  6   256   # netPid.p.Alpha_Lmt
+  0      65                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.rho_t
+  0      29                       3                      40                
+  6   256   # netPid.p.w_mix_out
+  0     200                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.rho_mix1
+  0 1.0000000000000001E-005       0                 1.0000000000000000E+100
+  6   256   # netPid.p.vism_p
+  0 1.0000000000000001E-005       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Usgin
+  0 1.0000000000000001E-005       0                 1.0000000000000000E+100
+  6   256   # netPid.p.Umin
+  0 1.0000000000000001E-005 9.9999999999999995E-008 1.0000000000000000E+100
+  6   256   # netPid.p.vism_r
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.m_lp0t
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.h1ss
+  0  100000                   10000                 1.0000000000000000E+100
+  6   256   # netPid.p.deltaP_G
+  0  100000                   10000                 1.0000000000000000E+100
+  6   256   # netPid.p.deltaP_L
+  0   50000                       0                 1.0000000000000000E+100
+  6   256   # netPid.p.deltaP_valve
+ -1 1.7952400000000000E+003       0                       0                
+  2   272   # netPid.p.m_gp
+  0       0                       0                       0                
+  3   256   # netPid.p.der(m_gp)
+ -1 2.6909200000000001E+004       0                       0                
+  2   272   # netPid.p.m_lp
+  0       0                       0                       0                
+  3   256   # netPid.p.der(m_lp)
+ -1 4.6339799999999997E+001      35                      50                
+  2   272   # netPid.p.m_gr
+  0       0                       0                       0                
+  3   256   # netPid.p.der(m_gr)
+ -1    1700                    1700                    3500                
+  2   272   # netPid.p.m_lr
+  0       0                       0                       0                
+  3   256   # netPid.p.der(m_lr)
+ -1 5.1000000000000000E+005       0                       0                
+  1   280   # netPid.sep.Psep_nom
+ -1 5.7357199999999997E-001       0                       1                
+  1   280   # netPid.u0PCINL
+  0       0                       0                       0                
+  6   256   # netPid.ZcINL
+  0 2.0000000000000000E+006 2.0000000000000000E+006 4.0000000000000000E+006
+  6   256   # netPid.y0PCINL
+ -1 1.9999999999999999E-006       0                       0                
+  1   280   # netPid.KcPCINL
+ -1     300                       0                       0                
+  1   280   # netPid.TiPCINL
+  0       0                       0                       0                
+  6   256   # netPid.x0PCINL
+  0       0                       0                       0                
+  6   256   # netPid.PCINL.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCINL.Ti
+ -1 4.0000000000000000E+006       0                       0                
+  1   280   # netPid.PCINL.maxSetPoint
+ -1 2.0000000000000000E+006       0                       0                
+  1   280   # netPid.PCINL.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCINL.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCINL.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCINL.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCINL.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCINL.der(intError)
+  0       0                       0                       0                
+  6   256   # netPid.PCINL.setPoint
+  0       0                       0                       1                
+  6   256   # netPid.PCINL.u
+  0       0                       0                       0                
+  6   288   # netPid.PCINL.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCINL.uSatMax
+  0       0                       0                       1                
+  6   256   # netPid.u0PCTOP
+  0       0                       0                       0                
+  6   256   # netPid.ZcTOP
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.y0PCTOP
+  0       0                       0                       0                
+  6   320   # netPid.valveDP_top_SetPoint
+ -1 -1.9999999999999999E-007       0                       0                
+  1   280   # netPid.KcPCTOP
+ -1     300                       0                       0                
+  1   280   # netPid.TiPCTOP
+  0       0                       0                       0                
+  6   256   # netPid.x0PCTOP
+  0       0                       0                       0                
+  6   256   # netPid.PCTOP.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCTOP.Ti
+ -1       1                       0                       0                
+  1   280   # netPid.PCTOP.maxSetPoint
+ -1       0                       0                       0                
+  1   280   # netPid.PCTOP.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCTOP.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCTOP.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCTOP.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCTOP.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCTOP.der(intError)
+  0       0                       0                       0                
+  6   320   # netPid.PCTOP.setPoint
+  0       0                       0                       0                
+  6   256   # netPid.PCTOP.u
+  0       0                       0                       0                
+  6   288   # netPid.PCTOP.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCTOP.uSatMax
+ -1 5.8003400000000005E-001       0                       1                
+  1   280   # netPid.u0PCA1
+  0       0                       0                       0                
+  6   256   # netPid.ZcA1
+  0 6.0000000000000000E+006 6.0000000000000000E+006 1.0000000000000000E+007
+  6   256   # netPid.y0PCA1
+ -1 2.0000000000000002E-005       0                       0                
+  1   280   # netPid.KcPCA1
+ -1     600                       0                       0                
+  1   280   # netPid.TiPCA1
+  0       0                       0                       0                
+  6   256   # netPid.x0PCA1
+  0       0                       0                       0                
+  6   256   # netPid.PCA1.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCA1.Ti
+ -1 1.1000000000000000E+007       0                       0                
+  1   280   # netPid.PCA1.maxSetPoint
+ -1 7.0000000000000000E+006       0                       0                
+  1   280   # netPid.PCA1.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCA1.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCA1.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCA1.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCA1.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCA1.der(intError)
+  0       0                       0                       0                
+  6   256   # netPid.PCA1.setPoint
+  0       0                       0                       1                
+  6   256   # netPid.PCA1.u
+  0       0                       0                       0                
+  6   288   # netPid.PCA1.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCA1.uSatMax
+  0       0                       0                       1                
+  6   256   # netPid.u0PCT1
+  0       0                       0                       0                
+  6   256   # netPid.ZcT1
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.y0PCT1
+  0       0                       0                       0                
+  6   320   # netPid.valveDP_whd1_SetPoint
+ -1 -4.0000000000000002E-009       0                       0                
+  1   280   # netPid.KcPCT1
+ -1      60                       0                       0                
+  1   280   # netPid.TiPCT1
+  0       0                       0                       0                
+  6   256   # netPid.x0PCT1
+  0       0                       0                       0                
+  6   256   # netPid.PCT1.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCT1.Ti
+ -1       1                       0                       0                
+  1   280   # netPid.PCT1.maxSetPoint
+ -1       0                       0                       0                
+  1   280   # netPid.PCT1.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCT1.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCT1.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCT1.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCT1.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCT1.der(intError)
+  0       0                       0                       0                
+  6   320   # netPid.PCT1.setPoint
+  0       0                       0                       0                
+  6   256   # netPid.PCT1.u
+  0       0                       0                       0                
+  6   288   # netPid.PCT1.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCT1.uSatMax
+ -1 6.0718499999999997E-001       0                       1                
+  1   280   # netPid.u0PCA2
+  0       0                       0                       0                
+  6   256   # netPid.ZcA2
+  0 6.0000000000000000E+006 6.0000000000000000E+006 1.0000000000000000E+007
+  6   256   # netPid.y0PCA2
+ -1 2.0000000000000002E-005       0                       0                
+  1   280   # netPid.KcPCA2
+ -1     600                       0                       0                
+  1   280   # netPid.TiPCA2
+  0       0                       0                       0                
+  6   256   # netPid.x0PCA2
+  0       0                       0                       0                
+  6   256   # netPid.PCA2.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCA2.Ti
+ -1 1.1500000000000000E+007       0                       0                
+  1   280   # netPid.PCA2.maxSetPoint
+ -1 7.5000000000000000E+006       0                       0                
+  1   280   # netPid.PCA2.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCA2.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCA2.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCA2.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCA2.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCA2.der(intError)
+  0       0                       0                       0                
+  6   256   # netPid.PCA2.setPoint
+  0       0                       0                       1                
+  6   256   # netPid.PCA2.u
+  0       0                       0                       0                
+  6   288   # netPid.PCA2.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCA2.uSatMax
+  0       0                       0                       1                
+  6   256   # netPid.u0PCT2
+  0       0                       0                       0                
+  6   256   # netPid.ZcT2
+  0       0                       0                 1.0000000000000000E+100
+  6   256   # netPid.y0PCT2
+  0       0                       0                       0                
+  6   320   # netPid.valveDP_whd2_SetPoint
+ -1 -4.0000000000000002E-009       0                       0                
+  1   280   # netPid.KcPCT2
+ -1      60                       0                       0                
+  1   280   # netPid.TiPCT2
+  0       0                       0                       0                
+  6   256   # netPid.x0PCT2
+  0       0                       0                       0                
+  6   256   # netPid.PCT2.Kc
+  0       0                       0                       0                
+  6   256   # netPid.PCT2.Ti
+ -1       1                       0                       0                
+  1   280   # netPid.PCT2.maxSetPoint
+ -1       0                       0                       0                
+  1   280   # netPid.PCT2.minSetPoint
+ -1 1.0000000000000001E-005       0                       0                
+  1   280   # netPid.PCT2.softApprox
+ -1       1                       0                       0                
+  1   280   # netPid.PCT2.satMax
+ -1       0                       0                       0                
+  1   280   # netPid.PCT2.satMin
+ -1       0                       0                       0                
+  2   272   # netPid.PCT2.intError
+  0       0                       0                       0                
+  3   256   # netPid.PCT2.der(intError)
+  0       0                       0                       0                
+  6   320   # netPid.PCT2.setPoint
+  0       0                       0                       0                
+  6   256   # netPid.PCT2.u
+  0       0                       0                       0                
+  6   288   # netPid.PCT2.u0
+  0       0                       0                       0                
+  6   288   # netPid.PCT2.uSatMax
+ -1       1                       0                       0                
+  1   280   # netPid.PCT1Filter.k
+ -1     150                       0                       0                
+  1   280   # netPid.PCT1Filter.T
+ -1       0                       0                       0                
+  2   272   # netPid.PCT1Filter.y
+  0       0                       0                       0                
+  3   256   # netPid.PCT1Filter.der(y)
+ -1       1                       0                       0                
+  1   280   # netPid.PCT2Filter.k
+ -1     150                       0                       0                
+  1   280   # netPid.PCT2Filter.T
+ -1       0                       0                       0                
+  2   272   # netPid.PCT2Filter.y
+  0       0                       0                       0                
+  3   256   # netPid.PCT2Filter.der(y)
+ -1       1                       0                       0                
+  1   280   # netPid.PCTOPFilter.k
+ -1     150                       0                       0                
+  1   280   # netPid.PCTOPFilter.T
+ -1       0                       0                       0                
+  2   272   # netPid.PCTOPFilter.y
+  0       0                       0                       0                
+  3   256   # netPid.PCTOPFilter.der(y)
+  0       0                       0                       0                
+  6   256   # PCT1SetPoint
+  0       0                       0                       0                
+  6   256   # PCT2SetPoint
+  0       0                       0                       0                
+  6   256   # PCTOPSetPoint
+  0 8.6500000000000000E+006       0                 1.0000000000000000E+100
+  6   260   # gm1.fout.p
+  0      -1                      -3                 -5.0000000000000000E-001
+  6   452   # gm1.fout.w
+ -1 1.2802300000000000E+000       0                       0                
+  1   280   # gm1.offset
+ -1 7.0000000000000007E-002       0                       0                
+  1   280   # gm1.height
+ -1    7200                       0                       0                
+  1   280   # gm1.startTime
+  0 9.1600000000000000E+006       0                 1.0000000000000000E+100
+  6   260   # gm2.fout.p
+  0      -1                      -3                 -5.0000000000000000E-001
+  6   452   # gm2.fout.w
+ -1 1.3008200000000001E+000       0                       0                
+  1   280   # gm2.offset
+ -1 7.0000000000000007E-002       0                       0                
+  1   280   # gm2.height
+ -1   14400                       0                       0                
+  1   280   # gm2.startTime
+ -1   -5000                       0                       0                
+  1   280   # step1.height
+  0       0                       0                       0                
+  6   320   # step1.y
+  0       0                       0                       0                
+  6   256   # step1.offset
+ -1   21600                       0                       0                
+  1   280   # step1.startTime
+ -1   -5000                       0                       0                
+  1   280   # step2.height
+  0       0                       0                       0                
+  6   320   # step2.y
+ -1       0                       0                       0                
+  1   280   # step2.offset
+ -1   32400                       0                       0                
+  1   280   # step2.startTime
+ -1       1                       0                       0                
+  1   280   # u3.k1
+ -1       1                       0                       0                
+  1   280   # u3.k2
+ -1  -10000                       0                       0                
+  1   280   # u4.height
+  0       0                       0                       0                
+  6   256   # u4.offset
+ -1   25200                       0                       0                
+  1   280   # u4.startTime
+ -1  -10000                       0                       0                
+  1   280   # u5.height
+  0       0                       0                       0                
+  6   256   # u5.offset
+ -1   28800                       0                       0                
+  1   280   # u5.startTime
+ -1       0                    -100                     100                
+  1   280   # GOR1.k
+ -1       0                    -100                     100                
+  1   280   # GOR2.k
+ -1       0                     -10                      10                
+  1   280   # d_PI1.k
+ -1       0                     -10                      10                
+  1   280   # d_PI2.k
+ -1       0                 -2.0000000000000000E+005 2.0000000000000000E+005
+  1   280   # d_Psep.k
+
+
+# Matrix with 6 columns defining the initial value calculation
+# (columns 5 and 6 are not utilized for the calculation but are
+#  reported by dymosim via dymosim -i for user convenience):
+#
+# column 1: Type of initial value
+#           = -2: special case: for continuing simulation (column 2 = value)
+#           = -1: fixed value (column 2 = fixed value)
+#           =  0: free value, i.e., no restriction (column 2 = initial value)
+#           >  0: desired value (column 1 = weight for optimization
+#                                column 2 = desired value)
+#                 use weight=1, since automatic scaling usually
+#                 leads to equally weighted terms
+# column 2: fixed, free or desired value according to column 1.
+# column 3: Minimum value (ignored, if Minimum >= Maximum).
+# column 4: Maximum value (ignored, if Minimum >= Maximum).
+#           Minimum and maximum restrict the search range in initial
+#           value calculation. They might also be used for scaling.
+# column 5: Category of variable.
+#           = 1: parameter.
+#           = 2: state.
+#           = 3: state derivative.
+#           = 4: output.
+#           = 5: input.
+#           = 6: auxiliary variable.
+# column 6: Data type of variable.
+#           = 0: real.
+#           = 1: boolean.
+#           = 2: integer.
+#
+# Initial values are calculated according to the following procedure:
+#
+# - If parameters, states and inputs are FIXED, and other variables
+#   are FREE, no special action takes place (default setting).
+#
+# - If there are only FIXED and FREE variables and the number of
+#   FREE parameters, states and inputs is IDENTICAL to the number of
+#   FIXED state derivatives, outputs and auxiliary variables, a non-linear
+#   equation is solved to determine a consistent set of initial conditions.
+#
+# - In all other cases the following optimization problem is solved:
+#      min( sum( weight(i)*( (value(i) - DESIRED(i))/scale(i) )^2 ) )
+#   under the constraint that the differential equation is fulfilled
+#   at the initial time. In most cases weight(i)=1 is sufficient, due
+#   to the automatic scaling (if DESIRED(i) is not close to zero,
+#   scale(i) = DESIRED(i). Otherwise, the scaling is based on the
+#   nominal value (and maybe minimum and maximum values given in 
+#   column 3 and 4). If these values are zero, scale(i)=1 is used).
+#
+char initialDescription(549,42)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Pa|bar]
+[Pa|bar]
+[K|degC]
+[kg/mol]
+[m]
+[m]
+[m3]
+[Pa|bar]
+
+
+
+
+
+
+
+[s]
+[s]
+
+[Pa|bar]
+
+
+[kg/s]
+[Pa|bar]
+[Pa.s]
+[Pa.s]
+[kg/m3|g/cm3]
+[K|degC]
+[kg/mol]
+[kg/mol]
+
+[m]
+[m]
+[m]
+[m]
+[m]
+[m]
+[m2]
+[m]
+[Pa|bar]
+
+[kg/s]
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+
+[m]
+[m2]
+
+
+
+
+
+[Pa|bar]
+[kg/s]
+[kg/s]
+[Pa|bar]
+[kg/m3|g/cm3]
+[m]
+[m3]
+[m3]
+
+[m/s]
+[m/s]
+[m/s]
+[kg/m3|g/cm3]
+[kg/m3|g/cm3]
+
+[Pa|bar]
+[Pa.s]
+[1]
+
+
+[Pa|bar]
+[Pa|bar]
+[m/s]
+[1]
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[Pa/s]
+[Pa|bar]
+[Pa|bar]
+[Pa/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s2]
+[kg/m3|g/cm3]
+
+[1]
+[1]
+[1]
+[1]
+[kg/m3|g/cm3]
+[kg/s]
+
+
+[Pa|bar]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[K|degC]
+[kg/mol]
+[m]
+[m]
+[m3]
+[Pa|bar]
+
+
+
+
+
+
+
+[s]
+[s]
+
+[Pa|bar]
+
+
+[kg/s]
+[Pa|bar]
+[Pa.s]
+[Pa.s]
+[kg/m3|g/cm3]
+[K|degC]
+[kg/mol]
+[kg/mol]
+
+[m]
+[m]
+[m]
+[m]
+[m]
+[m]
+[m2]
+[m]
+[Pa|bar]
+
+[kg/s]
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+
+[m]
+[m2]
+
+
+
+
+
+[kg/s]
+[kg/s]
+[Pa|bar]
+[kg/m3|g/cm3]
+[m]
+[m3]
+[m3]
+
+[m/s]
+[m/s]
+[m/s]
+[kg/m3|g/cm3]
+[kg/m3|g/cm3]
+
+[Pa|bar]
+[Pa.s]
+[1]
+
+
+[Pa|bar]
+[Pa|bar]
+[m/s]
+[1]
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[Pa/s]
+[Pa|bar]
+[Pa|bar]
+[Pa/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s]
+[kg/s2]
+[kg/m3|g/cm3]
+
+[1]
+[1]
+[1]
+[1]
+[kg/m3|g/cm3]
+[kg/s]
+
+
+[Pa|bar]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[kg/m3|g/cm3]
+[m]
+[m]
+[K|degC]
+[kg/mol]
+[Pa.s]
+[Pa.s]
+[m]
+
+[m2]
+
+
+[kg/s]
+[kg/s]
+[Pa|bar]
+
+
+
+
+
+
+
+
+[Pa|bar]
+
+[kg/m3|g/cm3]
+[kg/m3|g/cm3]
+[rad|deg]
+[m]
+[m]
+[m]
+[m]
+[m]
+[m]
+[K|degC]
+[K|degC]
+[kg/mol]
+[kg/mol]
+[s]
+[Pa.s]
+[Pa.s]
+[m]
+
+[m]
+[m2]
+[1]
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[kg/s]
+[kg/s]
+
+
+
+[m2]
+[m2]
+[m]
+[kg/s]
+[kg/m3|g/cm3]
+[m]
+[kg/m3|g/cm3]
+[m/s]
+[m/s]
+[m/s]
+[Pa.s]
+[1]
+
+[Pa|bar]
+[Pa|bar]
+[kg/m3|g/cm3]
+[1]
+[kg/m3|g/cm3]
+[m/s]
+[m/s]
+[m/s]
+[Pa.s]
+[1]
+
+[Pa|bar]
+[Pa|bar]
+[kg/m3|g/cm3]
+[1]
+[kg/m3|g/cm3]
+[m2]
+[m2]
+[m/s]
+[m2]
+[m2]
+[m3]
+[m3]
+[m]
+
+
+[Pa|bar]
+[kg/s]
+[kg/s]
+
+[m]
+[kg/m3|g/cm3]
+[m/s]
+[1]
+
+[Pa|bar]
+[m3]
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[Pa/s]
+[kg/m3|g/cm3]
+
+[kg/m3|g/cm3]
+[m/s]
+[m/s]
+[m/s]
+[1]
+
+
+[Pa|bar]
+[m2]
+[m2]
+[Pa|bar]
+[kg/s]
+[kg/s]
+[kg/s]
+[1]
+[1]
+[1]
+[1]
+[1]
+[1]
+[1]
+[1]
+[kg/m3|g/cm3]
+[kg/s]
+[kg/m3|g/cm3]
+[Pa.s]
+[m/s]
+[m/s]
+[Pa.s]
+[kg]
+[m]
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[kg]
+[kg/s]
+[Pa|bar]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Gain [1]
+Time Constant [s]
+
+
+Gain [1]
+Time Constant [s]
+
+
+Gain [1]
+Time Constant [s]
+
+
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[Pa|bar]
+[kg/s]
+[kg/s]
+[kg/s]
+[s]
+[Pa|bar]
+[kg/s]
+[kg/s]
+[kg/s]
+[s]
+Height of step
+Connector of Real output signal
+Offset of output signal y
+Output y = offset for time < startTime [s]
+Height of step
+Connector of Real output signal
+Offset of output signal y
+Output y = offset for time < startTime [s]
+Gain of upper input
+Gain of lower input
+Height of step
+Offset of output signal y
+Output y = offset for time < startTime [s]
+Height of step
+Offset of output signal y
+Output y = offset for time < startTime [s]
+Constant output value
+Constant output value
+Constant output value
+Constant output value
+Constant output value
+

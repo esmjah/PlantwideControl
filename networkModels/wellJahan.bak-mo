@@ -1,0 +1,15 @@
+within networkModels;
+model wellJahan
+  replaceable package components = networkModels.networkComponents;
+  Modelica.Blocks.Sources.Constant u(k = 1);
+  components.separatorTwoPhase sep(constantPressure = 84e5);
+  components.wellJahanshahi w;
+  components.annulusJahanshahi a;
+  components.gasManifold gm(constantOutput = 0.1);
+equation
+  connect(gm.fout, a.fin);
+  connect(a.fout, w.inj);
+  connect(u.y, w.z1);
+  connect(w.fout, sep.fin);
+  annotation(experiment(StopTime = 36000, Interval = 1), __Dymola_experimentSetupOutput);
+end wellJahan;

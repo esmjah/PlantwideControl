@@ -1,0 +1,69 @@
+within networkModels.networkComponents;
+model wellJahanshahi
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  // Simplified model for riser slugging
+  // Oil well added as inlet boundary condition
+  // By: Esmaeil Jahanshahi
+  // August 2011, NTNU, Norway
+  // x1: Mass of gas in the well (m_Gw)
+  // x2: Mass of liquid in the well (m_Lw)
+  parameter wellJahanshahiParameters par;
+  parameter wellJahanshahiTuner tun;
+  parameter Real softApprox(fixed = true) = 0.01;
+  parameter SI.Area Aw = pi * par.r_w ^ 2;
+  // Cross section area of well tubing (m2)
+  parameter SI.Volume Vw = Aw * par.Lw;
+  // Total volume in well (m3)
+  SI.Mass m_Gw(start = 300, fixed = true);
+  SI.Mass m_Lw(start = 24000, fixed = true);
+  Modelica.Blocks.Interfaces.RealInput z1(min = 0, max = 1);
+  Interfaces.GasFluidPortIn inj;
+  Interfaces.TwoPhaseFluidPortOut fout;
+  SI.Volume V_Gw;
+  SI.Pressure P_wh;
+  SI.Density rho_Gw;
+  SI.Density rho_mix_w;
+  Real Alpha_Lw_av(min = 0, max = 1);
+  SI.DynamicViscosity vism_w;
+  SI.Velocity Umw;
+  SI.ReynoldsNumber Re_w;
+  Real Lambda_w(min = 0);
+  SI.Pressure Fric_w(min = 0);
+  SI.Pressure P_bh;
+  Real Alpha_Lwt(min = 0, max = 1);
+  SI.Density rho_mixwt;
+  Real Alpha_Gwmt(min = 0, max = 1);
+  SI.MassFlowRate w_r(min = 0);
+  SI.MassFlowRate w_mix_wh(min = 0);
+equation
+  V_Gw = Vw - m_Lw / par.rho_L;
+  P_wh = m_Gw * R * par.Tp / (par.M_G * V_Gw);
+  // Pressure at well-head
+  rho_Gw = m_Gw / V_Gw;
+  // Density of gas at well-head
+  rho_mix_w = (m_Gw + m_Lw) / Vw;
+  Alpha_Lw_av = m_Lw / (par.rho_L * Vw);
+  vism_w = Alpha_Lw_av * par.visl + (1 - Alpha_Lw_av) * par.visg;
+  Umw = par.w_nom / (Aw * rho_mix_w);
+  Re_w = rho_mix_w * Umw * (2 * par.r_w) / vism_w;
+  Lambda_w = (1 / (-1.8 * log10((par.eps / (2 * par.r_w) / 3.7) ^ 1.11 + 6.9 / Re_w))) ^ 2;
+  Fric_w = 0.5 * Lambda_w * rho_mix_w * Umw ^ 2 * par.Lw / (2 * par.r_w);
+  P_bh = P_wh + rho_mix_w * g * par.Lw + Fric_w;
+  inj.p = P_bh;
+  Alpha_Lwt = par.k_a * Alpha_Lw_av - 1;
+  rho_mixwt = (1 - Alpha_Lwt) * rho_Gw + Alpha_Lwt * par.rho_L;
+  Alpha_Gwmt = (1 - Alpha_Lwt) * rho_Gw / (Alpha_Lwt * par.rho_L + (1 - Alpha_Lwt) * rho_Gw);
+  //w_r = par.PI*max(par.Pr - P_bh,0);
+  w_r = par.PI * (((par.Pr - P_bh - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (par.Pr - P_bh + 0) / 2);
+  // w_mix_wh = par.K1*z1*sqrt(rho_mixwt*max(0,P_wh-P_p)); // Flow rate form well to pipeline
+  w_mix_wh = tun.K1 * z1 * sqrt(rho_mixwt * (((P_wh - fout.p - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (P_wh - fout.p + 0) / 2));
+  // Flow rate form well to pipeline
+  fout.w[1] = -w_mix_wh * Alpha_Gwmt;
+  fout.w[2] = -w_mix_wh * (1 - Alpha_Gwmt);
+  der(m_Gw) = par.GOR / (1 + par.GOR) * w_r + fout.w[1] + inj.w;
+  der(m_Lw) = 1 / (1 + par.GOR) * w_r + fout.w[2];
+end wellJahanshahi;
+

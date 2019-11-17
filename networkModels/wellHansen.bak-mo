@@ -1,0 +1,18 @@
+within networkModels;
+model wellHansen
+  replaceable package components = networkModels.networkComponents;
+  Modelica.Blocks.Sources.Constant u(k = 0.7);
+  components.separatorTwoPhase sep(constantPressure = 15e5);
+  components.wellHansen w(par=networkModels.wellInstances.well1(),m_Gw(start=238.374136366613),m_Lw(start=5105.33857991669));
+  components.annulusJahanshahi a(par=networkModels.annulusInstances.annulus1(),m_Ga(start=2454.26100004619));
+  components.gasManifold gm(constantOutput = 1.4);
+equation
+  connect(gm.fout, a.fin);
+  connect(a.fout, w.inj);
+  connect(u.y, w.z1);
+  connect(w.fout, sep.fin);
+  annotation(experiment(
+      StopTime=36000,
+      Interval=1,
+      Tolerance=1e-006),                                 __Dymola_experimentSetupOutput);
+end wellHansen;

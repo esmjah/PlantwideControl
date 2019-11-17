@@ -1,0 +1,59 @@
+within networkModels.networkComponents;
+model GasliftedWellTuner
+
+import SI = Modelica.SIunits;
+import Modelica.Constants.pi;
+import Modelica.Constants.R;
+import g = Modelica.Constants.g_n;
+
+parameter networkModels.networkComponents.gasliftWellParameters   par;
+parameter Real K_a =  par.K_a;
+
+//  parameter Real K_a = par.k1 * par.w_g_a_in / sqrt(rho_G_ab * (Pab - par.Ptb));
+  //Out of annulus into tubing, Increasing gives: unstable,lower annnulus pressure ,higher BH but no big change
+
+//protected
+
+//  parameter SI.Mass m_ga_av = par.M_G_a*par.V_a*par.Pat/(R*par.T_a);
+//  parameter SI.Pressure Pab= par.Pat + (m_ga_av*g*par.L_a/par.V_a);
+
+//  parameter SI.Density rho_G_ab = Pab * par.M_G_a / (R * par.T_a);
+
+parameter Real K_r(min= 0)= par.k2*w_mix_out/(par.z1*sqrt(rho_top*(par.Ptt-15e5)));   //Prod Choke, Increasing gives: Unstable, lower BH
+
+protected
+parameter SI.Length r_r=par.D_w/2;
+
+parameter SI.Pressure Ptb= par.Pbh - par.L_bh*par.rho_L*g;
+
+parameter SI.MassFlowRate w_mix_out=par.w_res_in+par.w_g_a_in;
+
+parameter SI.Pressure P_t_avg=(par.Ptt+Ptb)/2;
+
+parameter SI.Density rho_G_t_avg=P_t_avg*par.M_G_r/(R*par.T_r);
+
+parameter Real alpha_L_avg(min=0,max=1)=rho_G_t_avg*par.w_res_in/(rho_G_t_avg*par.w_res_in + par.rho_L*par.w_g_a_in);
+
+parameter SI.Density rho_mix_avg=par.rho_L*alpha_L_avg + rho_G_t_avg*(1-alpha_L_avg);
+
+// ************  Calculating Friction of Riser **********
+parameter SI.Velocity Usl_av=par.w_res_in/(par.rho_L*pi*(r_r^2));
+parameter SI.Velocity Usg_av= par.w_g_a_in/(rho_G_t_avg*pi*(r_r^2));
+parameter SI.DynamicViscosity my_mix = alpha_L_avg*par.my_L+(1-alpha_L_avg)*par.my_G;
+parameter SI.Velocity U_M_av=Usl_av+Usg_av;
+parameter SI.ReynoldsNumber Re=(2*rho_mix_avg*U_M_av*r_r)/my_mix;
+
+// Darcy Friction Factor
+parameter Real lambda=(1/(1.8*log((par.ew/par.D_w/3.7)^1.11+6.9/Re)/log(10))^2);
+
+parameter SI.Pressure F_riser=alpha_L_avg*(lambda*rho_mix_avg*(U_M_av^2)*(par.L_r+par.L_h))/(4*r_r);
+//
+parameter SI.Pressure PtbCalc=par.Ptt+F_riser+rho_mix_avg*g*par.L_r;
+
+parameter SI.Density rho_G_tb=PtbCalc*par.M_G_r/(R*par.T_r);
+parameter Real alpha_L_b(min=0,max=1)=rho_G_tb*par.w_res_in/(rho_G_tb*par.w_res_in + par.rho_L*par.w_g_a_in);
+parameter Real alpha_L_t(min=0,max=1)=2*alpha_L_avg -alpha_L_b;
+parameter SI.Density rho_G_tt=par.Ptt*par.M_G_r/(R*par.T_r);
+parameter SI.Density rho_top=par.rho_L*alpha_L_t + rho_G_tt*(1-alpha_L_t);
+
+end GasliftedWellTuner;

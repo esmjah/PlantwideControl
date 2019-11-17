@@ -1,0 +1,69 @@
+within networkModels.networkComponents;
+record wellHansenParameters
+
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import g = Modelica.Constants.g_n;
+
+//% Viscosity (Liquid)
+parameter SI.DynamicViscosity my_L = 0.36e-3; //Read from olga values at 100 C
+parameter SI.DynamicViscosity my_G = 1.5e-5;
+
+//% Density Liquid [kg/m^3]
+parameter SI.Density rho_L=730; //Read from Olga at values at 100 C
+
+//% Temperature riser
+//par.T_r=373; //[K] avg temperature in the middle of the tubing olga
+parameter SI.Temperature T_r(min = 275, max = 450,nominal = 100)=375; //[K]temperature at top of the tubing olga
+
+//% Gas molar weight in top of riser        [kg/mol]
+parameter SI.MolarMass M_G_r_t=0.0167;
+//% Gas molar weight in top of riser        [kg/mol]
+parameter SI.MolarMass M_G_r=0.0167;
+
+parameter Real PI = 2.47e-6*18/25;//4e-6;  //Productivity Index
+
+//% OLGA TUBING VOLUMES CALCULATION
+parameter SI.Length D_w = 0.124;
+
+parameter SI.Length L_r=2048;//vertical
+parameter SI.Length L_h = 25; //Horizontal
+
+//% Roughness of well
+parameter SI.Length ew = 4.5e-5;
+parameter SI.Length ep = 3e-5;
+
+//% OLGA BOTTOM HOLE VOLUMES CALCULATION
+parameter SI.Length L_bh=75;
+parameter SI.Area S_bh=pi*((0.2/2)^2);
+
+parameter SI.Length D_b = 0.2;
+
+//% Reservoir properties
+parameter SI.Pressure P_r = 160e5;
+parameter Real GOR(min=0) = 0;
+
+//% Steady State Values From OLGA
+parameter SI.MassFlowRate w_res_in = 14;
+
+parameter Real z1=0.7;
+parameter SI.MassFlowRate w_g_a_in=1.5;
+parameter SI.Pressure Pbh=8728310;
+//parameter SI.Pressure Pab=103.165e5;
+parameter SI.Pressure Ptt=1850900;
+//parameter SI.Pressure Pat=92.2582e5;
+
+//parameter Real CD=0.84;
+//parameter SI.Length D_v=0.025;
+//parameter SI.Area A_v=pi*(D_v/2)^2;
+
+//parameter SI.Length D_c=0.07;
+//parameter SI.Area A_c=pi*(D_c/2)^2;
+
+//parameter Real k1=0.68;   // Annulus
+parameter Real k2=1;  // Tubing
+//parameter Real k3=0.96897;//0.88578;  // Injection to annulus
+//parameter Real K_s = k3*w_g_a_in/(z2*sqrt(rho_G_in*(140*1e5-Pat)));     //Into annulus,
+
+end wellHansenParameters;
+

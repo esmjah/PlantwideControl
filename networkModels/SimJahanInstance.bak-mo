@@ -1,0 +1,9 @@
+within networkModels;
+model SimJahanInstance
+  extends networkModels.JahanInstance;
+  Modelica.Blocks.Sources.Constant u(k = 0.04);
+  Real wMix;
+equation
+  connect(u.y, p.z);
+  annotation(experiment(StopTime = 15000, Interval = 1), __Dymola_experimentSetupOutput(textual = true, doublePrecision = true));
+end SimJahanInstance;

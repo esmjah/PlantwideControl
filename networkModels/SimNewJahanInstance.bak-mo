@@ -1,0 +1,13 @@
+within networkModels;
+model SimNewJahanInstance
+
+  extends networkModels.newJahanInstance;
+  Modelica.Blocks.Sources.Constant u(k = 0.7);
+equation
+  connect(u.y, p.z);
+  annotation(experiment(
+      StopTime=15000,
+      Interval=1,
+      Tolerance=1e-006),                                 __Dymola_experimentSetupOutput(textual=
+          true, doublePrecision=true));
+end SimNewJahanInstance;

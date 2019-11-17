@@ -1,0 +1,150 @@
+within networkModels.networkComponents;
+model pipelineJahanshahi
+  // Simplified model for riser slugging
+  // By: Esmaeil Jahanshahi
+  // August 2009, NTNU, Norway
+  parameter pipelineJahanshahiParameters par;
+  parameter pipelineJahanshahiTuner tun(par = par);
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  //  parameters derivated from constants and dimensions
+  //
+  //  input: flow & pressure
+  //  calcualate -> densities alphas velocities reynolds lambdas
+  /// output -> DP
+  // geometry
+  parameter SI.Area A1(fixed = true) = pi * par.r1 ^ 2;
+  // Cross section area of pipeline (m2)
+  parameter SI.Area A2(fixed = true) = pi * par.r2 ^ 2;
+  // Cross section area of riser (m2)
+  parameter SI.Volume V2(fixed = true) = A2 * (par.L2 + par.L3);
+  // Total volume in riser (m3)
+  parameter SI.Volume V1(fixed = true) = A1 * par.L1;
+  // Total volume in pipeline (m3)
+  parameter SI.Height hc(fixed = true) = 2 * par.r1 / cos(par.theta);
+  // Critical liquid level (m)
+  parameter Real softApprox(fixed = true) = 0.01;
+  Interfaces.TwoPhaseFluidPortIn fin;
+  Interfaces.TwoPhaseFluidPortOut fout;
+  Modelica.Blocks.Interfaces.RealInput z(min = 0, max = 1);
+  SI.Height h1(fixed = false, min = 0, start = 0.0595424846526959);
+  SI.Density rho_G1(fixed = false, min = 0, start = 63.7072564632236);
+  SI.Velocity Uslin(fixed = false, min = 0, start = 0.917980926269043);
+  SI.ReynoldsNumber Re1(fixed = false, min = 0, start = 642869.89635997);
+  Real Lambda1(fixed = false, min = 0, start = 0.01252421613562927);
+  SI.Pressure Fric_pipe(fixed = false, start = 98098.1200631926);
+  SI.Volume V_G2(fixed = false, min = 0, start = 1.014736873198665);
+  SI.Pressure P2_t(fixed = false, start = 5781914.0084067117);
+  SI.Density rho_G2(fixed = false, min = 0, start = 53.618114263058622);
+  Real Alpha_L2_av(fixed = false, min = 0, max = 1, start = 0.676999221385637);
+  SI.Density rho_mix_av(fixed = false, min = 0, start = 580.717444691929240);
+  SI.Velocity Usl2(fixed = false, min = 0, start = 1.321892533827422);
+  SI.Velocity Usg2(fixed = false, min = 0, start = 0.854871981986991);
+  SI.Velocity Um(fixed = false, min = 0, start = 2.176764515814412);
+  SI.ReynoldsNumber Re2(fixed = false, min = 0, start = 886455.208499165720000);
+  Real Lambda2(fixed = false, min = 0, start = 0.011847695137823);
+  SI.Pressure Fric_riser(fixed = false, min = 0, start = 44140.759982047406000);
+  SI.Area A_g(fixed = false, min = 0, start = 0.002872144330581);
+  SI.Area A_l(fixed = false, min = 0, start = 0.008437589222342);
+  SI.Pressure DP_r(fixed = false, start = 1752608.5786784797);
+  SI.Pressure P2_b(fixed = false, start = 7534522.5870851912);
+  SI.MassFlowRate w_G1(fixed = false, min = 0, start = 0.359999561328710);
+  SI.MassFlowRate w_L1(fixed = false, min = 0, start = 8.640000025461129);
+  SI.MassFraction Alpha_Lb(fixed = false, min = 0, max = 1, start = 0.746406875552270);
+  SI.MassFraction Alpha_Lt(fixed = false, min = 0, max = 1, start = 0.607274394005612);
+  SI.MassFraction Alpha_Lmt(fixed = false, min = 0, max = 1, start = 0.960000060536091);
+  SI.Density rho_t(fixed = false, min = 0, start = 526.43095710770626);
+  SI.MassFlowRate w_mix_out(fixed = false, min = 0, start = 9.000000393571289);
+  // Iniital Conditions
+  //******************//***********************//
+  //               States & Variables                         //
+  //******************//***********************//
+  //States
+  //  parameter Real Alpha_L1_av(fixed=false,start=0.623387214041142);
+  parameter Real Alpha_L1_av(min = 0.1, max = 0.9) = 0.623387214041142;
+  //  parameter SI.Mass m_lp0t(fixed=false,start=25229.3714534857);
+  parameter SI.Mass m_lp0t = V1 * par.rho_L * Alpha_L1_av;
+  //// some tunning here
+  //  parameter SI.Height h1ss(fixed=false,min=0,start=0.0553652169975689);     /// liquid level in steady-state
+  parameter SI.Height h1ss = par.k_h * Alpha_L1_av * hc;
+  /// liquid level in steady-state
+  SI.Mass m_gp(start = par.m_gp0, fixed = true, min = 0);
+  // mass of gas in the horizontal pipeline
+  SI.Mass m_lp(start = par.m_lp0, fixed = true, min = 0);
+  // mass of oil in the horizontal pipeline
+  SI.Mass m_gr(start = par.m_gr0, fixed = true, min = 0);
+  // mass of gas in the riser
+  SI.Mass m_lr(start = par.m_lr0, fixed = true, min = 0);
+  // mass of oil in the riser
+  // WARNING: PAY ATTENTION TO THE CALCULATION OF Alpha_L1_av.  IT MUST FOLLOW THE 'INITIAL EQUATION' SECTION, BUT THIS IS NOT SUPPORTED BY CASADI!
+  //initial equation
+  //  Alpha_L1_av*(par.wL_in*rho_G1 + par.wG_in*par.rho_L) = par.wL_in*rho_G1;
+  //  h1ss = par.k_h*Alpha_L1_av*hc;
+  //  m_lp0t = V1*par.rho_L*Alpha_L1_av;
+  //  der(m_gp) = 0;
+  //  der(m_lp) = 0;
+  //  der(m_gr) = 0;
+  //  der(m_lr) = 0;
+equation
+  // avoid negative heights !
+  //h1 = maxFunc((h1ss + (sin(par.theta)/(A1*(1-Alpha_L1_av)*par.rho_L))*(m_lp - m_lp0t)),0);   // 2.12 Level of liquid in the pipeline
+  h1 = ((h1ss + sin(par.theta) / (A1 * (1 - Alpha_L1_av) * par.rho_L) * (m_lp - m_lp0t) - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (h1ss + sin(par.theta) / (A1 * (1 - Alpha_L1_av) * par.rho_L) * (m_lp - m_lp0t) + 0) / 2;
+  // 2.12 Level of liquid in the pipeline
+  fin.p = m_gp * R * par.T1 / (par.M_G * (V1 - m_lp / par.rho_L));
+  // presure in the pipeline
+  rho_G1 = m_gp / (V1 - m_lp / par.rho_L);
+  // gas density pipeline
+  Uslin = fin.w[2] / (A1 * par.rho_L);
+  // liquid velocity in pipeline
+  Re1 = par.rho_L * Uslin * (2 * par.r1) / par.visl;
+  Lambda1 = 0.0056 + 0.5 * Re1 ^ (-0.32);
+  // friction factor pipeline
+  //Lambda1=(1/(-1.8*log10((par.eps/(2*par.r1)/3.7)^1.11+6.9/Re1)))^2;
+  //Lambda1=(1/(-1.8*(log((par.eps/(2*par.r1)/3.7)^1.11+6.9/Re1)/log(10))))^2;
+  Fric_pipe = 0.5 * Alpha_L1_av * Lambda1 * par.rho_L * Uslin ^ 2 * par.L1 / (2 * par.r1);
+  // friction coeff pipelien
+  V_G2 = V2 - m_lr / par.rho_L;
+  // Volume gas riser
+  //P2_t = maxFunc((m_gr*R*par.T2/(par.M_G*V_G2)),(fout.p));             // pressure in the riser
+  P2_t = ((m_gr * R * par.T2 / (par.M_G * V_G2) - fout.p) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (m_gr * R * par.T2 / (par.M_G * V_G2) + fout.p) / 2;
+  // pressure in the riser
+  rho_G2 = m_gr / V_G2;
+  Alpha_L2_av = m_lr / (par.rho_L * V2);
+  rho_mix_av = (m_gr + m_lr) / V2;
+  Usl2 = fin.w[2] / (par.rho_L * A2);
+  Usg2 = fin.w[1] / (rho_G2 * A2);
+  Um = Usl2 + Usg2;
+  Re2 = rho_mix_av * Um * (2 * par.r2) / par.visl;
+  Lambda2 = 0.0056 + 0.5 * Re2 ^ (-0.32);
+  //Lambda2=(1/(-1.8*log10((par.eps/(2*par.r2)/3.7)^1.11+6.9/Re2)))^2;
+  //Lambda2=(1/(-1.8*(log((par.eps/(2*par.r2)/3.7)^1.11+6.9/Re2)/log(10))))^2;
+  Fric_riser = Alpha_L2_av * Lambda2 * rho_mix_av * Um ^ 2 * (par.L2 + par.L3) / (4 * par.r2);
+  //A_g = A1 * (maxFunc(((hc - h1)/hc),0))^2;
+  A_g = A1 * ((((hc - h1) / hc - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + ((hc - h1) / hc + 0) / 2) ^ 2;
+  A_l = A1 - A_g;
+  DP_r = rho_mix_av * g * par.L2 + Fric_riser;
+  P2_b = P2_t + DP_r;
+  // correct rho_G1 according to P2_b?
+  // why not equal dp?
+  //w_G1 = tun.K_g*A_g*sqrt(rho_G1   *maxFunc(fin.p-Fric_pipe               -P2_b,0));
+  w_G1 = tun.K_g * A_g * sqrt(rho_G1 * (((fin.p - Fric_pipe - P2_b - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (fin.p - Fric_pipe - P2_b + 0) / 2));
+  //w_L1 = tun.K_o*A_l*sqrt(par.rho_L*maxFunc(fin.p-Fric_pipe+par.rho_L*g*h1-P2_b,0));
+  w_L1 = tun.K_o * A_l * sqrt(par.rho_L * (((fin.p - Fric_pipe + par.rho_L * g * h1 - P2_b - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (fin.p - Fric_pipe + par.rho_L * g * h1 - P2_b + 0) / 2));
+  //Alpha_Lb = maxFunc(1 -  A_g/A1,Alpha_L2_av);
+  Alpha_Lb = ((1 - A_g / A1 - Alpha_L2_av) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (1 - A_g / A1 + Alpha_L2_av) / 2;
+  //Alpha_Lt =  maxFunc(minFunc(2*Alpha_L2_av - Alpha_Lb,Alpha_L2_av),0);
+  Alpha_Lt = (((-((2 * Alpha_L2_av - Alpha_Lb - Alpha_L2_av) ^ 2 + softApprox ^ 2) ^ 0.5 / 2) + (2 * Alpha_L2_av - Alpha_Lb + Alpha_L2_av) / 2 - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + ((-((2 * Alpha_L2_av - Alpha_Lb - Alpha_L2_av) ^ 2 + softApprox ^ 2) ^ 0.5 / 2) + (2 * Alpha_L2_av - Alpha_Lb + Alpha_L2_av) / 2 + 0) / 2;
+  Alpha_Lmt = Alpha_Lt * par.rho_L / (Alpha_Lt * par.rho_L + (1 - Alpha_Lt) * rho_G2);
+  rho_t = Alpha_Lt * par.rho_L + (1 - Alpha_Lt) * rho_G2;
+  //w_mix_out = tun.K_pc*z*sqrt(rho_t*maxFunc(0,(P2_t-fout.p)));
+  w_mix_out = tun.K_pc * z * sqrt(rho_t * (((0 - (P2_t - fout.p)) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + (0 + P2_t - fout.p) / 2));
+  fout.w[1] = -(1 - Alpha_Lmt) * w_mix_out;
+  fout.w[2] = -Alpha_Lmt * w_mix_out;
+  der(m_gp) = fin.w[1] - w_G1;
+  der(m_lp) = fin.w[2] - w_L1;
+  der(m_gr) = w_G1 + fout.w[1];
+  der(m_lr) = w_L1 + fout.w[2];
+end pipelineJahanshahi;
+

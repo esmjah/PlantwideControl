@@ -1,0 +1,952 @@
+model networkModels.ifacNetwork.netSim
+parameter Modelica.SIunits.DynamicViscosity w1.par.my_L;
+parameter Modelica.SIunits.DynamicViscosity w1.par.my_G;
+parameter Modelica.SIunits.Density w1.par.rho_L;
+parameter Modelica.SIunits.Temperature w1.par.T_r = 288.15;
+parameter Modelica.SIunits.MolarMass w1.par.M_G_r_t;
+parameter Modelica.SIunits.MolarMass w1.par.M_G_r;
+parameter Real w1.par.PI;
+parameter Modelica.SIunits.Length w1.par.D_w;
+parameter Modelica.SIunits.Length w1.par.L_r;
+parameter Modelica.SIunits.Length w1.par.L_h;
+parameter Modelica.SIunits.Volume w1.par.V_r;
+parameter Modelica.SIunits.Length w1.par.r_r;
+parameter Modelica.SIunits.Length w1.par.ew;
+parameter Modelica.SIunits.Length w1.par.ep;
+parameter Modelica.SIunits.Length w1.par.L_bh;
+parameter Modelica.SIunits.Area w1.par.S_bh;
+parameter Modelica.SIunits.Volume w1.par.V_bh;
+parameter Modelica.SIunits.Length w1.par.D_b;
+parameter Modelica.SIunits.Pressure w1.par.P_r;
+parameter Real w1.par.GOR(min = 0.0);
+parameter Modelica.SIunits.MassFlowRate w1.par.w_res_in;
+parameter Real w1.par.z1;
+parameter Modelica.SIunits.MassFlowRate w1.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w1.par.Pbh;
+parameter Modelica.SIunits.Pressure w1.par.Ptb;
+parameter Modelica.SIunits.Pressure w1.par.Ptt;
+parameter Real w1.par.k2;
+parameter Modelica.SIunits.DynamicViscosity w1.tun.par.my_L;
+parameter Modelica.SIunits.DynamicViscosity w1.tun.par.my_G;
+parameter Modelica.SIunits.Density w1.tun.par.rho_L;
+parameter Modelica.SIunits.Temperature w1.tun.par.T_r = 288.15;
+parameter Modelica.SIunits.MolarMass w1.tun.par.M_G_r_t;
+parameter Modelica.SIunits.MolarMass w1.tun.par.M_G_r;
+parameter Real w1.tun.par.PI;
+parameter Modelica.SIunits.Length w1.tun.par.D_w;
+parameter Modelica.SIunits.Length w1.tun.par.L_r;
+parameter Modelica.SIunits.Length w1.tun.par.L_h;
+parameter Modelica.SIunits.Volume w1.tun.par.V_r;
+parameter Modelica.SIunits.Length w1.tun.par.r_r;
+parameter Modelica.SIunits.Length w1.tun.par.ew;
+parameter Modelica.SIunits.Length w1.tun.par.ep;
+parameter Modelica.SIunits.Length w1.tun.par.L_bh;
+parameter Modelica.SIunits.Area w1.tun.par.S_bh;
+parameter Modelica.SIunits.Volume w1.tun.par.V_bh;
+parameter Modelica.SIunits.Length w1.tun.par.D_b;
+parameter Modelica.SIunits.Pressure w1.tun.par.P_r;
+parameter Real w1.tun.par.GOR(min = 0.0);
+parameter Modelica.SIunits.MassFlowRate w1.tun.par.w_res_in;
+parameter Real w1.tun.par.z1;
+parameter Modelica.SIunits.MassFlowRate w1.tun.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w1.tun.par.Pbh;
+parameter Modelica.SIunits.Pressure w1.tun.par.Ptb;
+parameter Modelica.SIunits.Pressure w1.tun.par.Ptt;
+parameter Real w1.tun.par.k2;
+parameter Real w1.tun.K_r(min = 0.0) = w1.tun.par.k2*w1.tun.w_mix_out/(
+  w1.tun.par.z1*sqrt((w1.tun.par.Ptt-1500000.0)*w1.tun.rho_top));
+protected 
+parameter Modelica.SIunits.MassFlowRate w1.tun.w_mix_out = w1.tun.par.w_res_in+
+  w1.tun.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w1.tun.P_t_avg = 0.5*(w1.tun.par.Ptt+
+  w1.tun.par.Ptb);
+parameter Modelica.SIunits.Density w1.tun.rho_G_t_avg = w1.tun.P_t_avg*
+  w1.tun.par.M_G_r/(8.314472*w1.tun.par.T_r);
+parameter Real w1.tun.alpha_L_avg(min = 0.0, max = 1.0) = w1.tun.rho_G_t_avg*
+  w1.tun.par.w_res_in/(w1.tun.rho_G_t_avg*w1.tun.par.w_res_in+w1.tun.par.rho_L*
+  w1.tun.par.w_g_a_in);
+parameter Modelica.SIunits.Density w1.tun.rho_mix_avg = w1.tun.par.rho_L*
+  w1.tun.alpha_L_avg+w1.tun.rho_G_t_avg*(1-w1.tun.alpha_L_avg);
+parameter Modelica.SIunits.Velocity w1.tun.Usl_av = w1.tun.par.w_res_in/(
+  3.141592653589793*(w1.tun.par.rho_L*w1.tun.par.r_r^2));
+parameter Modelica.SIunits.Velocity w1.tun.Usg_av = w1.tun.par.w_g_a_in/(
+  3.141592653589793*(w1.tun.rho_G_t_avg*w1.tun.par.r_r^2));
+parameter Modelica.SIunits.DynamicViscosity w1.tun.my_mix = w1.tun.alpha_L_avg*
+  w1.tun.par.my_L+(1-w1.tun.alpha_L_avg)*w1.tun.par.my_G;
+parameter Modelica.SIunits.Velocity w1.tun.U_M_av = w1.tun.Usl_av+w1.tun.Usg_av;
+parameter Modelica.SIunits.ReynoldsNumber w1.tun.Re = 2.0*(w1.tun.rho_mix_avg*
+  w1.tun.U_M_av*w1.tun.par.r_r)/w1.tun.my_mix;
+parameter Real w1.tun.lambda = 1/(0.7817300674258532*log((0.27027027027027023*
+  w1.tun.par.ew/w1.tun.par.D_w)^1.11+6.9/w1.tun.Re))^2;
+parameter Modelica.SIunits.Pressure w1.tun.F_riser = w1.tun.alpha_L_avg*(
+  w1.tun.lambda*w1.tun.rho_mix_avg*w1.tun.U_M_av^2*(w1.tun.par.L_r+
+  w1.tun.par.L_h))/(4*w1.tun.par.r_r);
+parameter Modelica.SIunits.Pressure w1.tun.PtbCalc = w1.tun.par.Ptt+
+  w1.tun.F_riser+9.80665*(w1.tun.rho_mix_avg*w1.tun.par.L_r);
+parameter Modelica.SIunits.Density w1.tun.rho_G_tb = w1.tun.PtbCalc*
+  w1.tun.par.M_G_r/(8.314472*w1.tun.par.T_r);
+parameter Real w1.tun.alpha_L_b(min = 0.0, max = 1.0) = w1.tun.rho_G_tb*
+  w1.tun.par.w_res_in/(w1.tun.rho_G_tb*w1.tun.par.w_res_in+w1.tun.par.rho_L*
+  w1.tun.par.w_g_a_in);
+parameter Real w1.tun.alpha_L_t(min = 0.0, max = 1.0) = 2*w1.tun.alpha_L_avg-
+  w1.tun.alpha_L_b;
+parameter Modelica.SIunits.Density w1.tun.rho_G_tt = w1.tun.par.Ptt*
+  w1.tun.par.M_G_r/(8.314472*w1.tun.par.T_r);
+parameter Modelica.SIunits.Density w1.tun.rho_top = w1.tun.par.rho_L*
+  w1.tun.alpha_L_t+w1.tun.rho_G_tt*(1-w1.tun.alpha_L_t);
+public 
+parameter Real w1.softApprox(fixed = true) = 1E-005;
+parameter Real w1.softDivision(fixed = true) = 1E-006;
+parameter Modelica.SIunits.Density w1.rho_G_r_in = (w1.par.P_r-9.80665*(
+  w1.par.rho_L*w1.par.L_bh))*w1.par.M_G_r/(8.314472*w1.par.T_r);
+parameter Real w1.alpha_G_m_in(min = 0.0, max = 1.0) = w1.par.GOR/(1+w1.par.GOR);
+parameter Modelica.SIunits.Velocity w1.Usl_av = (1-w1.alpha_G_m_in)*
+  w1.par.w_res_in/(3.141592653589793*(w1.par.rho_L*w1.par.r_r^2));
+parameter Modelica.SIunits.Temperature a1.par.T_a = 288.15;
+parameter Modelica.SIunits.MolarMass a1.par.M_G_a;
+parameter Modelica.SIunits.Volume a1.par.V_a;
+parameter Modelica.SIunits.Length a1.par.L_a;
+parameter Modelica.SIunits.Pressure a1.par.P_gs;
+parameter Real a1.par.K_a;
+parameter Modelica.SIunits.MassFlowRate a1.par.w_g_a_in;
+parameter Real a1.par.z2;
+parameter Modelica.SIunits.Pressure a1.par.Pat;
+parameter Modelica.SIunits.Temperature a1.tun.par.T_a = 288.15;
+parameter Modelica.SIunits.MolarMass a1.tun.par.M_G_a;
+parameter Modelica.SIunits.Volume a1.tun.par.V_a;
+parameter Modelica.SIunits.Length a1.tun.par.L_a;
+parameter Modelica.SIunits.Pressure a1.tun.par.P_gs;
+parameter Real a1.tun.par.K_a;
+parameter Modelica.SIunits.MassFlowRate a1.tun.par.w_g_a_in;
+parameter Real a1.tun.par.z2;
+parameter Modelica.SIunits.Pressure a1.tun.par.Pat;
+parameter Real a1.tun.K_a = a1.tun.par.K_a;
+parameter Real a1.softApprox(fixed = true) = 0.01;
+parameter Modelica.SIunits.DynamicViscosity w2.par.my_L;
+parameter Modelica.SIunits.DynamicViscosity w2.par.my_G;
+parameter Modelica.SIunits.Density w2.par.rho_L;
+parameter Modelica.SIunits.Temperature w2.par.T_r = 288.15;
+parameter Modelica.SIunits.MolarMass w2.par.M_G_r_t;
+parameter Modelica.SIunits.MolarMass w2.par.M_G_r;
+parameter Real w2.par.PI;
+parameter Modelica.SIunits.Length w2.par.D_w;
+parameter Modelica.SIunits.Length w2.par.L_r;
+parameter Modelica.SIunits.Length w2.par.L_h;
+parameter Modelica.SIunits.Volume w2.par.V_r;
+parameter Modelica.SIunits.Length w2.par.r_r;
+parameter Modelica.SIunits.Length w2.par.ew;
+parameter Modelica.SIunits.Length w2.par.ep;
+parameter Modelica.SIunits.Length w2.par.L_bh;
+parameter Modelica.SIunits.Area w2.par.S_bh;
+parameter Modelica.SIunits.Volume w2.par.V_bh;
+parameter Modelica.SIunits.Length w2.par.D_b;
+parameter Modelica.SIunits.Pressure w2.par.P_r;
+parameter Real w2.par.GOR(min = 0.0);
+parameter Modelica.SIunits.MassFlowRate w2.par.w_res_in;
+parameter Real w2.par.z1;
+parameter Modelica.SIunits.MassFlowRate w2.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w2.par.Pbh;
+parameter Modelica.SIunits.Pressure w2.par.Ptb;
+parameter Modelica.SIunits.Pressure w2.par.Ptt;
+parameter Real w2.par.k2;
+parameter Modelica.SIunits.DynamicViscosity w2.tun.par.my_L;
+parameter Modelica.SIunits.DynamicViscosity w2.tun.par.my_G;
+parameter Modelica.SIunits.Density w2.tun.par.rho_L;
+parameter Modelica.SIunits.Temperature w2.tun.par.T_r = 288.15;
+parameter Modelica.SIunits.MolarMass w2.tun.par.M_G_r_t;
+parameter Modelica.SIunits.MolarMass w2.tun.par.M_G_r;
+parameter Real w2.tun.par.PI;
+parameter Modelica.SIunits.Length w2.tun.par.D_w;
+parameter Modelica.SIunits.Length w2.tun.par.L_r;
+parameter Modelica.SIunits.Length w2.tun.par.L_h;
+parameter Modelica.SIunits.Volume w2.tun.par.V_r;
+parameter Modelica.SIunits.Length w2.tun.par.r_r;
+parameter Modelica.SIunits.Length w2.tun.par.ew;
+parameter Modelica.SIunits.Length w2.tun.par.ep;
+parameter Modelica.SIunits.Length w2.tun.par.L_bh;
+parameter Modelica.SIunits.Area w2.tun.par.S_bh;
+parameter Modelica.SIunits.Volume w2.tun.par.V_bh;
+parameter Modelica.SIunits.Length w2.tun.par.D_b;
+parameter Modelica.SIunits.Pressure w2.tun.par.P_r;
+parameter Real w2.tun.par.GOR(min = 0.0);
+parameter Modelica.SIunits.MassFlowRate w2.tun.par.w_res_in;
+parameter Real w2.tun.par.z1;
+parameter Modelica.SIunits.MassFlowRate w2.tun.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w2.tun.par.Pbh;
+parameter Modelica.SIunits.Pressure w2.tun.par.Ptb;
+parameter Modelica.SIunits.Pressure w2.tun.par.Ptt;
+parameter Real w2.tun.par.k2;
+parameter Real w2.tun.K_r(min = 0.0) = w2.tun.par.k2*w2.tun.w_mix_out/(
+  w2.tun.par.z1*sqrt((w2.tun.par.Ptt-1500000.0)*w2.tun.rho_top));
+protected 
+parameter Modelica.SIunits.MassFlowRate w2.tun.w_mix_out = w2.tun.par.w_res_in+
+  w2.tun.par.w_g_a_in;
+parameter Modelica.SIunits.Pressure w2.tun.P_t_avg = 0.5*(w2.tun.par.Ptt+
+  w2.tun.par.Ptb);
+parameter Modelica.SIunits.Density w2.tun.rho_G_t_avg = w2.tun.P_t_avg*
+  w2.tun.par.M_G_r/(8.314472*w2.tun.par.T_r);
+parameter Real w2.tun.alpha_L_avg(min = 0.0, max = 1.0) = w2.tun.rho_G_t_avg*
+  w2.tun.par.w_res_in/(w2.tun.rho_G_t_avg*w2.tun.par.w_res_in+w2.tun.par.rho_L*
+  w2.tun.par.w_g_a_in);
+parameter Modelica.SIunits.Density w2.tun.rho_mix_avg = w2.tun.par.rho_L*
+  w2.tun.alpha_L_avg+w2.tun.rho_G_t_avg*(1-w2.tun.alpha_L_avg);
+parameter Modelica.SIunits.Velocity w2.tun.Usl_av = w2.tun.par.w_res_in/(
+  3.141592653589793*(w2.tun.par.rho_L*w2.tun.par.r_r^2));
+parameter Modelica.SIunits.Velocity w2.tun.Usg_av = w2.tun.par.w_g_a_in/(
+  3.141592653589793*(w2.tun.rho_G_t_avg*w2.tun.par.r_r^2));
+parameter Modelica.SIunits.DynamicViscosity w2.tun.my_mix = w2.tun.alpha_L_avg*
+  w2.tun.par.my_L+(1-w2.tun.alpha_L_avg)*w2.tun.par.my_G;
+parameter Modelica.SIunits.Velocity w2.tun.U_M_av = w2.tun.Usl_av+w2.tun.Usg_av;
+parameter Modelica.SIunits.ReynoldsNumber w2.tun.Re = 2.0*(w2.tun.rho_mix_avg*
+  w2.tun.U_M_av*w2.tun.par.r_r)/w2.tun.my_mix;
+parameter Real w2.tun.lambda = 1/(0.7817300674258532*log((0.27027027027027023*
+  w2.tun.par.ew/w2.tun.par.D_w)^1.11+6.9/w2.tun.Re))^2;
+parameter Modelica.SIunits.Pressure w2.tun.F_riser = w2.tun.alpha_L_avg*(
+  w2.tun.lambda*w2.tun.rho_mix_avg*w2.tun.U_M_av^2*(w2.tun.par.L_r+
+  w2.tun.par.L_h))/(4*w2.tun.par.r_r);
+parameter Modelica.SIunits.Pressure w2.tun.PtbCalc = w2.tun.par.Ptt+
+  w2.tun.F_riser+9.80665*(w2.tun.rho_mix_avg*w2.tun.par.L_r);
+parameter Modelica.SIunits.Density w2.tun.rho_G_tb = w2.tun.PtbCalc*
+  w2.tun.par.M_G_r/(8.314472*w2.tun.par.T_r);
+parameter Real w2.tun.alpha_L_b(min = 0.0, max = 1.0) = w2.tun.rho_G_tb*
+  w2.tun.par.w_res_in/(w2.tun.rho_G_tb*w2.tun.par.w_res_in+w2.tun.par.rho_L*
+  w2.tun.par.w_g_a_in);
+parameter Real w2.tun.alpha_L_t(min = 0.0, max = 1.0) = 2*w2.tun.alpha_L_avg-
+  w2.tun.alpha_L_b;
+parameter Modelica.SIunits.Density w2.tun.rho_G_tt = w2.tun.par.Ptt*
+  w2.tun.par.M_G_r/(8.314472*w2.tun.par.T_r);
+parameter Modelica.SIunits.Density w2.tun.rho_top = w2.tun.par.rho_L*
+  w2.tun.alpha_L_t+w2.tun.rho_G_tt*(1-w2.tun.alpha_L_t);
+public 
+parameter Real w2.softApprox(fixed = true) = 1E-005;
+parameter Real w2.softDivision(fixed = true) = 1E-006;
+parameter Modelica.SIunits.Density w2.rho_G_r_in = (w2.par.P_r-9.80665*(
+  w2.par.rho_L*w2.par.L_bh))*w2.par.M_G_r/(8.314472*w2.par.T_r);
+parameter Real w2.alpha_G_m_in(min = 0.0, max = 1.0) = w2.par.GOR/(1+w2.par.GOR);
+parameter Modelica.SIunits.Velocity w2.Usl_av = (1-w2.alpha_G_m_in)*
+  w2.par.w_res_in/(3.141592653589793*(w2.par.rho_L*w2.par.r_r^2));
+parameter Modelica.SIunits.Temperature a2.par.T_a = 288.15;
+parameter Modelica.SIunits.MolarMass a2.par.M_G_a;
+parameter Modelica.SIunits.Volume a2.par.V_a;
+parameter Modelica.SIunits.Length a2.par.L_a;
+parameter Modelica.SIunits.Pressure a2.par.P_gs;
+parameter Real a2.par.K_a;
+parameter Modelica.SIunits.MassFlowRate a2.par.w_g_a_in;
+parameter Real a2.par.z2;
+parameter Modelica.SIunits.Pressure a2.par.Pat;
+parameter Modelica.SIunits.Temperature a2.tun.par.T_a = 288.15;
+parameter Modelica.SIunits.MolarMass a2.tun.par.M_G_a;
+parameter Modelica.SIunits.Volume a2.tun.par.V_a;
+parameter Modelica.SIunits.Length a2.tun.par.L_a;
+parameter Modelica.SIunits.Pressure a2.tun.par.P_gs;
+parameter Real a2.tun.par.K_a;
+parameter Modelica.SIunits.MassFlowRate a2.tun.par.w_g_a_in;
+parameter Real a2.tun.par.z2;
+parameter Modelica.SIunits.Pressure a2.tun.par.Pat;
+parameter Real a2.tun.K_a = a2.tun.par.K_a;
+parameter Real a2.softApprox(fixed = true) = 0.01;
+constant Modelica.SIunits.Density p.par.rho_L(min = 700.0, max = 900.0) = 832.2;
+parameter Modelica.SIunits.Density p.par.rho_w(min = 900.0, max = 1100.0) = 1000;
+parameter Modelica.SIunits.Angle p.par.theta(min = 0.008726646259971648, max = 
+  0.03490658503988659) = 0.017453292519943295;
+constant Modelica.SIunits.Radius p.par.r1(min = 0.05, max = 0.07) = 0.1016;
+constant Modelica.SIunits.Radius p.par.r2(min = 0.04, max = 0.06) = 0.1016;
+constant Modelica.SIunits.Length p.par.L1(min = 4100.0, max = 4400.0) = 4300;
+constant Modelica.SIunits.Height p.par.L2(min = 280.0, max = 320.0) = 300;
+constant Modelica.SIunits.Length p.par.L3(min = 90.0, max = 110.0) = 100;
+constant Modelica.SIunits.Temperature p.par.T1(min = 320.0, max = 340.0) = 335;
+constant Modelica.SIunits.Temperature p.par.T2(min = 280.0, max = 310.0) = 298.3;
+constant Modelica.SIunits.MolarMass p.par.M_G(min = 0.02, max = 0.025) = 0.02143;
+parameter Modelica.SIunits.DynamicViscosity p.par.visl(min = 0.0001226, max = 
+  0.0001626) = 0.0001426;
+parameter Modelica.SIunits.DynamicViscosity p.par.visg = 1.39E-005;
+parameter Modelica.SIunits.Length p.par.eps(min = 2.6E-005, max = 3E-005) = 
+  2.8E-005;
+parameter Real p.par.k_h(min = 0.7, max = 0.8) = 0.65;
+parameter Real p.par.z0(min = 0.03, max = 1.0) = 0.1;
+parameter Modelica.SIunits.Pressure p.par.P0(min = 200000.0, max = 7020000.0) = 
+  500000.0;
+constant Modelica.SIunits.Pressure p.par.P1(min = 4000000.0, max = 8000000.0) = 
+  5337000.0;
+parameter Modelica.SIunits.Pressure p.par.P2_t(min = 1000000.0, max = 6500000.0)
+   = 3717000.0;
+parameter Modelica.SIunits.MassFlowRate p.par.wG_in(min = 0.0, max = 100.0) = 
+  3.3200000000000003;
+parameter Modelica.SIunits.MassFlowRate p.par.wL_in(min = 0.0, max = 100.0) = 
+  36.68;
+parameter Real p.par.K_gT = 0.8;
+parameter Real p.par.K_oT = 1.2;
+parameter Real p.par.K_pcT = 1;
+constant Modelica.SIunits.Mass p.par.m_gp0 = 1978.41417982459;
+constant Modelica.SIunits.Mass p.par.m_lp0 = 17806.1181803027;
+constant Modelica.SIunits.Mass p.par.m_gr0 = 57.4101042639871;
+constant Modelica.SIunits.Mass p.par.m_lr0 = 1313.95748319176;
+parameter Modelica.SIunits.Density p.tun.par.rho_L(min = 700.0, max = 900.0);
+parameter Modelica.SIunits.Density p.tun.par.rho_w(min = 900.0, max = 1100.0);
+parameter Modelica.SIunits.Angle p.tun.par.theta(min = 0.008726646259971648, 
+  max = 0.03490658503988659);
+parameter Modelica.SIunits.Radius p.tun.par.r1(min = 0.05, max = 0.07);
+parameter Modelica.SIunits.Radius p.tun.par.r2(min = 0.04, max = 0.06);
+parameter Modelica.SIunits.Length p.tun.par.L1(min = 4100.0, max = 4400.0);
+parameter Modelica.SIunits.Height p.tun.par.L2(min = 280.0, max = 320.0);
+parameter Modelica.SIunits.Length p.tun.par.L3(min = 90.0, max = 110.0);
+parameter Modelica.SIunits.Temperature p.tun.par.T1(min = 320.0, max = 340.0) = 
+  288.15;
+parameter Modelica.SIunits.Temperature p.tun.par.T2(min = 280.0, max = 310.0) = 
+  288.15;
+parameter Modelica.SIunits.MolarMass p.tun.par.M_G(min = 0.02, max = 0.025);
+parameter Modelica.SIunits.DynamicViscosity p.tun.par.visl(min = 0.0001226, 
+  max = 0.0001626);
+parameter Modelica.SIunits.DynamicViscosity p.tun.par.visg;
+parameter Modelica.SIunits.Length p.tun.par.eps(min = 2.6E-005, max = 3E-005);
+parameter Real p.tun.par.k_h(min = 0.7, max = 0.8);
+parameter Real p.tun.par.z0(min = 0.03, max = 1.0);
+parameter Modelica.SIunits.Pressure p.tun.par.P0(min = 200000.0, max = 7020000.0);
+parameter Modelica.SIunits.Pressure p.tun.par.P1(min = 4000000.0, max = 
+  8000000.0);
+parameter Modelica.SIunits.Pressure p.tun.par.P2_t(min = 1000000.0, max = 
+  6500000.0);
+parameter Modelica.SIunits.MassFlowRate p.tun.par.wG_in(min = 0.0, max = 100.0);
+parameter Modelica.SIunits.MassFlowRate p.tun.par.wL_in(min = 0.0, max = 100.0);
+parameter Real p.tun.par.K_gT;
+parameter Real p.tun.par.K_oT;
+parameter Real p.tun.par.K_pcT;
+parameter Modelica.SIunits.Mass p.tun.par.m_gp0;
+parameter Modelica.SIunits.Mass p.tun.par.m_lp0;
+parameter Modelica.SIunits.Mass p.tun.par.m_gr0;
+parameter Modelica.SIunits.Mass p.tun.par.m_lr0;
+parameter Real p.tun.K_g = p.tun.par.K_gT*p.tun.v_G1/sqrt((p.tun.par.P1-
+  p.tun.Fric_pipe-p.tun.P2_b)/p.tun.rho_G1);
+parameter Real p.tun.K_o = p.tun.par.K_oT*p.tun.par.wL_in/(p.tun.A_l*sqrt(
+  p.tun.par.rho_L*(p.tun.par.P1-p.tun.Fric_pipe+9.80665*p.tun.par.rho_L*
+  p.tun.h1ss-p.tun.P2_b)));
+parameter Real p.tun.K_pc = p.tun.par.K_pcT*p.tun.w_mix/(p.tun.par.z0*sqrt((
+  p.tun.par.P2_t-p.tun.par.P0)*p.tun.rho_t));
+protected 
+parameter Real p.tun.softApprox(fixed = true) = 0.001;
+parameter Modelica.SIunits.Area p.tun.A1 = 3.141592653589793*p.tun.par.r1^2;
+parameter Modelica.SIunits.Area p.tun.A2 = 3.141592653589793*p.tun.par.r2^2;
+parameter Modelica.SIunits.Height p.tun.hc = 2*p.tun.par.r1/cos(p.tun.par.theta);
+parameter Modelica.SIunits.MassFlowRate p.tun.w_mix = p.tun.par.wL_in+
+  p.tun.par.wG_in;
+parameter Modelica.SIunits.Density p.tun.rho_G1 = p.tun.par.P1*p.tun.par.M_G/(
+  8.314472*p.tun.par.T1);
+parameter Modelica.SIunits.MassFraction p.tun.Alpha_L1_av = p.tun.par.wL_in*
+  p.tun.rho_G1/(p.tun.par.wL_in*p.tun.rho_G1+p.tun.par.wG_in*p.tun.par.rho_L);
+parameter Modelica.SIunits.Height p.tun.h1ss = p.tun.par.k_h*p.tun.Alpha_L1_av*
+  p.tun.hc;
+parameter Modelica.SIunits.Density p.tun.rho_mix1 = p.tun.Alpha_L1_av*
+  p.tun.par.rho_L+(1-p.tun.Alpha_L1_av)*p.tun.rho_G1;
+parameter Modelica.SIunits.Velocity p.tun.Uslin = p.tun.par.wL_in/(p.tun.A1*
+  p.tun.par.rho_L);
+parameter Modelica.SIunits.Velocity p.tun.Usgin = p.tun.par.wG_in/(p.tun.A1*
+  p.tun.rho_G1);
+parameter Modelica.SIunits.Velocity p.tun.Umin = p.tun.Uslin+p.tun.Usgin;
+parameter Modelica.SIunits.DynamicViscosity p.tun.vism_p = p.tun.Alpha_L1_av*
+  p.tun.par.visl+(1-p.tun.Alpha_L1_av)*p.tun.par.visg;
+parameter Modelica.SIunits.ReynoldsNumber p.tun.Re1 = 2.0*(p.tun.rho_mix1*
+  p.tun.Umin*p.tun.par.r1)/p.tun.vism_p;
+parameter Real p.tun.Lambda1 = 0.0056+0.5*p.tun.Re1^(-0.32);
+parameter Modelica.SIunits.Pressure p.tun.Fric_pipe = 0.5*(p.tun.Alpha_L1_av*
+  p.tun.Lambda1*p.tun.par.rho_L*p.tun.Uslin^2*p.tun.par.L1)/(2*p.tun.par.r1);
+parameter Modelica.SIunits.Pressure p.tun.P2_av = 0.5*(p.tun.par.P1+9.80665*(
+  p.tun.par.rho_L*p.tun.h1ss)-p.tun.Fric_pipe+p.tun.par.P2_t);
+parameter Modelica.SIunits.Density p.tun.rho_G2_av = p.tun.P2_av*p.tun.par.M_G/(
+  8.314472*p.tun.par.T2);
+parameter Modelica.SIunits.MassFraction p.tun.Alpha_L2_av = p.tun.rho_G2_av*
+  p.tun.par.wL_in/(p.tun.rho_G2_av*p.tun.par.wL_in+p.tun.par.rho_L*
+  p.tun.par.wG_in);
+parameter Modelica.SIunits.Density p.tun.rho_mix_av = p.tun.rho_G2_av*(1-
+  p.tun.Alpha_L2_av)+p.tun.par.rho_L*p.tun.Alpha_L2_av;
+parameter Modelica.SIunits.Velocity p.tun.Usl2 = p.tun.par.wL_in/(
+  p.tun.par.rho_L*p.tun.A2);
+parameter Modelica.SIunits.Velocity p.tun.Usg2 = p.tun.par.wG_in/(
+  p.tun.rho_G2_av*p.tun.A2);
+parameter Modelica.SIunits.Velocity p.tun.Um = p.tun.Usl2+p.tun.Usg2;
+parameter Modelica.SIunits.DynamicViscosity p.tun.vism_r = p.tun.Alpha_L2_av*
+  p.tun.par.visl+(1-p.tun.Alpha_L2_av)*p.tun.par.visg;
+parameter Modelica.SIunits.ReynoldsNumber p.tun.Re2 = 2.0*(p.tun.rho_mix_av*
+  p.tun.Um*p.tun.par.r2)/p.tun.vism_r;
+parameter Real p.tun.Lambda2 = (1/((-0.7817300674258532)*log((0.27027027027027023
+  *p.tun.par.eps/(2*p.tun.par.r2))^1.11+6.9/p.tun.Re2)))^2;
+parameter Modelica.SIunits.Pressure p.tun.Fric_riser = 0.5*(p.tun.Lambda2*
+  p.tun.rho_mix_av*p.tun.Um^2*(p.tun.par.L2+p.tun.par.L3))/(2*p.tun.par.r2);
+parameter Modelica.SIunits.Pressure p.tun.P2_b = p.tun.par.P2_t+9.80665*(
+  p.tun.rho_mix_av*p.tun.par.L2)+p.tun.Fric_riser;
+parameter Modelica.SIunits.Density p.tun.rho_G2 = p.tun.par.P2_t*p.tun.par.M_G/(
+  8.314472*p.tun.par.T2);
+parameter Modelica.SIunits.MassFraction p.tun.Alpha_Lt = p.tun.rho_G2*
+  p.tun.par.wL_in/(p.tun.rho_G2*p.tun.par.wL_in+p.tun.par.rho_L*p.tun.par.wG_in);
+parameter Modelica.SIunits.Density p.tun.rho_t = p.tun.Alpha_Lt*p.tun.par.rho_L+
+  (1-p.tun.Alpha_Lt)*p.tun.rho_G2;
+parameter Modelica.SIunits.Area p.tun.A_g = p.tun.A1*(0.5*(((p.tun.hc-p.tun.h1ss)
+  /p.tun.hc)^2+p.tun.softApprox^2)^0.5+0.5*(p.tun.hc-p.tun.h1ss)/p.tun.hc)^2;
+parameter Modelica.SIunits.Area p.tun.A_l = p.tun.A1-p.tun.A_g;
+parameter Modelica.SIunits.Velocity p.tun.v_G1 = p.tun.par.wG_in/(p.tun.rho_G1*
+  p.tun.A_g);
+public 
+constant Modelica.SIunits.Area p.A1(fixed = true) = 0.03242927866223985;
+constant Modelica.SIunits.Area p.A2(fixed = true) = 0.03242927866223985;
+constant Modelica.SIunits.Volume p.V2(fixed = true) = 12.971711464895941;
+constant Modelica.SIunits.Volume p.V1(fixed = true) = 139.44589824763136;
+parameter Modelica.SIunits.Height p.hc(fixed = true) = 2*p.par.r1/cos(
+  p.par.theta);
+parameter Real p.softApprox(fixed = true) = 0.0001;
+parameter Real p.Alpha_L1_av(min = 0.1, max = 0.9) = 0.153436163716235;
+parameter Modelica.SIunits.Mass p.m_lp0t = p.V1*p.par.rho_L*p.Alpha_L1_av;
+parameter Modelica.SIunits.Height p.h1ss = p.par.k_h*p.Alpha_L1_av*p.hc;
+parameter Modelica.SIunits.Pressure sep.constantPressure = 500000;
+parameter Real u1.k(start = 1) = 0.7 "Constant output value";
+parameter Modelica.SIunits.MassFlowRate gm1.constantOutput = 1.4;
+parameter Real u2.k(start = 1) = 0.7 "Constant output value";
+parameter Modelica.SIunits.MassFlowRate gm2.constantOutput = 1.4;
+parameter Real up.k(start = 1) = 1 "Constant output value";
+
+Modelica.Blocks.Interfaces.RealInput w1.z1(min = 0.0, max = 1.0);
+Modelica.SIunits.Pressure w1.inj.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate w1.inj.w(nominal = 1.0, min = 0.0);
+Modelica.SIunits.Pressure w1.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate w1.fout.w[2](nominal = 10.0, max = 0.0);
+Modelica.SIunits.Velocity w1.Usg_av;
+Modelica.SIunits.Velocity w1.U_M_av;
+Modelica.SIunits.Density w1.rho_G_r;
+Modelica.SIunits.Density w1.rho_mix;
+Real w1.alpha_L_av(min = 0.0, max = 1.0);
+Modelica.SIunits.Pressure w1.P_r_t;
+Modelica.SIunits.DynamicViscosity w1.my_mix;
+Modelica.SIunits.ReynoldsNumber w1.Re;
+Real w1.lambda(min = 0.0);
+Modelica.SIunits.Pressure w1.F_riser;
+Modelica.SIunits.Velocity w1.Ul_b;
+Modelica.SIunits.ReynoldsNumber w1.Re_b;
+Real w1.lambda_b(min = 0.0);
+Modelica.SIunits.Pressure w1.F_b;
+Modelica.SIunits.Pressure w1.P_bh;
+Modelica.SIunits.MassFlowRate w1.w_r_in;
+Modelica.SIunits.MassFlowRate w1.w_L_r_in;
+Modelica.SIunits.MassFlowRate w1.w_G_r_in;
+Modelica.SIunits.Density w1.rho_G_r_b;
+Real w1.alpha_L_in(min = 0.0, max = 1.0);
+Real w1.alpha_L_t(min = 0.0, max = 1.0);
+Modelica.SIunits.Density w1.rho_M_t;
+Modelica.SIunits.MassFlowRate w1.w_mix_r_out;
+Real w1.alpha_L_m_t(min = 0.0, max = 1.0);
+Modelica.SIunits.Mass w1.m_Gw(start = 238.374136366613, fixed = true);
+Modelica.SIunits.Mass w1.m_Lw(start = 5105.33857991669, fixed = true);
+Modelica.SIunits.Pressure a1.fin.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate a1.fin.w(nominal = 1.0, min = 0.0);
+Modelica.SIunits.Pressure a1.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate a1.fout.w(nominal = 1.0, max = 0.0);
+Modelica.SIunits.Pressure a1.P_a_b;
+Modelica.SIunits.Density a1.rho_G_a_b;
+Modelica.SIunits.Mass a1.m_Ga(start = 2454.26100004619, fixed = true);
+Modelica.Blocks.Interfaces.RealInput w2.z1(min = 0.0, max = 1.0);
+Modelica.SIunits.Pressure w2.inj.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate w2.inj.w(nominal = 1.0, min = 0.0);
+Modelica.SIunits.Pressure w2.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate w2.fout.w[2](nominal = 10.0, max = 0.0);
+Modelica.SIunits.Velocity w2.Usg_av;
+Modelica.SIunits.Velocity w2.U_M_av;
+Modelica.SIunits.Density w2.rho_G_r;
+Modelica.SIunits.Density w2.rho_mix;
+Real w2.alpha_L_av(min = 0.0, max = 1.0);
+Modelica.SIunits.Pressure w2.P_r_t;
+Modelica.SIunits.DynamicViscosity w2.my_mix;
+Modelica.SIunits.ReynoldsNumber w2.Re;
+Real w2.lambda(min = 0.0);
+Modelica.SIunits.Pressure w2.F_riser;
+Modelica.SIunits.Velocity w2.Ul_b;
+Modelica.SIunits.ReynoldsNumber w2.Re_b;
+Real w2.lambda_b(min = 0.0);
+Modelica.SIunits.Pressure w2.F_b;
+Modelica.SIunits.Pressure w2.P_bh;
+Modelica.SIunits.MassFlowRate w2.w_r_in;
+Modelica.SIunits.MassFlowRate w2.w_L_r_in;
+Modelica.SIunits.MassFlowRate w2.w_G_r_in;
+Modelica.SIunits.Density w2.rho_G_r_b;
+Real w2.alpha_L_in(min = 0.0, max = 1.0);
+Real w2.alpha_L_t(min = 0.0, max = 1.0);
+Modelica.SIunits.Density w2.rho_M_t;
+Modelica.SIunits.MassFlowRate w2.w_mix_r_out;
+Real w2.alpha_L_m_t(min = 0.0, max = 1.0);
+Modelica.SIunits.Mass w2.m_Gw(start = 236.843564546526, fixed = true);
+Modelica.SIunits.Mass w2.m_Lw(start = 4861.73037796629, fixed = true);
+Modelica.SIunits.Pressure a2.fin.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate a2.fin.w(nominal = 1.0, min = 0.0);
+Modelica.SIunits.Pressure a2.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate a2.fout.w(nominal = 1.0, max = 0.0);
+Modelica.SIunits.Pressure a2.P_a_b;
+Modelica.SIunits.Density a2.rho_G_a_b;
+Modelica.SIunits.Mass a2.m_Ga(start = 3134.75975746876, fixed = true);
+Modelica.SIunits.Pressure p.fin.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate p.fin.w[2](nominal = 1.0, min = 0.0);
+Modelica.SIunits.Pressure p.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate p.fout.w[2](nominal = 10.0, max = 0.0);
+Modelica.Blocks.Interfaces.RealInput p.z(min = 0.0, max = 1.0);
+Modelica.SIunits.Height p.h1(start = 0.0595424846526959, fixed = false);
+Modelica.SIunits.Density p.rho_G1(start = 63.7072564632236, fixed = false);
+Modelica.SIunits.Velocity p.Uslin(start = 0.917980926269043, fixed = false, 
+  min = 0.0);
+Modelica.SIunits.ReynoldsNumber p.Re1(start = 642869.89635997, fixed = false, 
+  min = 0.0);
+Real p.Lambda1(start = 0.01252421613562927, fixed = false, min = 0.0);
+Modelica.SIunits.Pressure p.Fric_pipe(start = 98098.1200631926, fixed = false);
+Modelica.SIunits.Volume p.V_G2(start = 1.014736873198665, fixed = false, min = 
+  0.0);
+Modelica.SIunits.Pressure p.P2_t(start = 5781914.008406712, fixed = false);
+Modelica.SIunits.Density p.rho_G2(start = 53.61811426305862, fixed = false);
+Real p.Alpha_L2_av(start = 0.676999221385637, fixed = false, min = 0.0, max = 
+  1.0);
+Modelica.SIunits.Density p.rho_mix_av(start = 580.7174446919292, fixed = false);
+Modelica.SIunits.Velocity p.Usl2(start = 1.321892533827422, fixed = false, 
+  min = 0.0);
+Modelica.SIunits.Velocity p.Usg2(start = 0.854871981986991, fixed = false, 
+  min = 0.0);
+Modelica.SIunits.Velocity p.Um(start = 2.176764515814412, fixed = false, min = 
+  0.0);
+Modelica.SIunits.ReynoldsNumber p.Re2(start = 886455.2084991657, fixed = false, 
+  min = 0.0);
+Real p.Lambda2(start = 0.011847695137823, fixed = false, min = 0.0);
+Modelica.SIunits.Pressure p.Fric_riser(start = 44140.759982047406, fixed = false,
+   min = 0.0);
+Modelica.SIunits.Area p.A_g(start = 0.002872144330581, fixed = false, min = 0.0);
+Modelica.SIunits.Area p.A_l(start = 0.008437589222342, fixed = false, min = 0.0);
+Modelica.SIunits.Pressure p.P2_b(start = 7534522.587085191, fixed = false);
+Modelica.SIunits.MassFlowRate p.w_G1(start = 0.35999956132871, fixed = false, 
+  min = 0.0);
+Modelica.SIunits.MassFlowRate p.w_L1(start = 8.640000025461129, fixed = false, 
+  min = 0.0);
+Modelica.SIunits.MassFraction p.Alpha_Lb(start = 0.74640687555227, fixed = false,
+   min = 0.0, max = 1.0);
+Modelica.SIunits.MassFraction p.Alpha_Lt(start = 0.607274394005612, fixed = 
+  false, min = 0.0, max = 1.0);
+Modelica.SIunits.MassFraction p.Alpha_Lmt(start = 0.960000060536091, fixed = 
+  false, min = 0.0, max = 1.0);
+Modelica.SIunits.Density p.rho_t(start = 526.4309571077063, fixed = false);
+Modelica.SIunits.MassFlowRate p.w_mix_out(start = 9.00000039357129, fixed = 
+  false, min = 0.0);
+Modelica.SIunits.Density p.rho_mix1(fixed = false);
+Modelica.SIunits.DynamicViscosity p.vism_p(fixed = false);
+Modelica.SIunits.Velocity p.Usgin(fixed = false, min = 0.0);
+Modelica.SIunits.Velocity p.Umin(fixed = false, min = 0.0);
+Modelica.SIunits.DynamicViscosity p.vism_r(fixed = false);
+Modelica.SIunits.Mass p.m_gp(start = p.par.m_gp0, fixed = true, nominal = 
+  1978.41417982459, max = 17177.774235538556);
+Modelica.SIunits.Mass p.m_lp(start = p.par.m_lp0, fixed = true, nominal = 
+  17806.1181803027, min = 29011.719130419708, max = 116046.87652167883);
+Modelica.SIunits.Mass p.m_gr(start = p.par.m_gr0, fixed = true, nominal = 
+  57.4101042639871, max = 1794.5269297820723);
+Modelica.SIunits.Mass p.m_lr(start = p.par.m_lr0, fixed = true, nominal = 
+  1313.95748319176, max = 10795.058281086403);
+Modelica.SIunits.Pressure sep.fin.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate sep.fin.w[2](nominal = 1.0, min = 0.0);
+Modelica.Blocks.Interfaces.RealOutput u1.y "Connector of Real output signal";
+Modelica.SIunits.Pressure gm1.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate gm1.fout.w(nominal = 1.0, max = 0.0);
+Modelica.Blocks.Interfaces.RealOutput u2.y "Connector of Real output signal";
+Modelica.SIunits.Pressure gm2.fout.p(nominal = 100000.0, min = 0.0);
+Modelica.SIunits.MassFlowRate gm2.fout.w(nominal = 1.0, max = 0.0);
+Modelica.Blocks.Interfaces.RealOutput up.y "Connector of Real output signal";
+
+function Modelica.Math.asin
+  input Real u;
+  output Real y;
+
+external "C" y = asin(u);
+annotation(Library={"ModelicaExternalC"});
+end Modelica.Math.asin;
+function networkModels.annulusInstances.annulus1
+  input Real T_a := 348;
+  input Real M_G_a := 0.01631;
+  input Real V_a := 64.33981754551897;
+  input Real L_a := 2048;
+  input Real P_gs := 14000000.0;
+  input Real K_a := 0.000155590989907951;
+  input Real w_g_a_in := 1.5;
+  input Real z2 := 1.5;
+  input Real Pat := 7745410;
+  output networkModels.annulusInstances.annulus1 _out := networkModels.annulusInstances.annulus1
+    (
+    T_a = T_a, 
+    M_G_a = M_G_a, 
+    V_a = V_a, 
+    L_a = L_a, 
+    P_gs = P_gs, 
+    K_a = K_a, 
+    w_g_a_in = w_g_a_in, 
+    z2 = z2, 
+    Pat = Pat
+  );
+
+algorithm 
+end networkModels.annulusInstances.annulus1;
+function networkModels.annulusInstances.annulus2
+  input Real T_a := 320;
+  input Real M_G_a := 0.02;
+  input Real V_a := 64.339817545519;
+  input Real L_a := 2048;
+  input Real P_gs := 14000000.0;
+  input Real K_a := 0.000136716332363472;
+  input Real w_g_a_in := 1.5;
+  input Real z2 := 1.5;
+  input Real Pat := 7745410;
+  output networkModels.annulusInstances.annulus2 _out := networkModels.annulusInstances.annulus2
+    (
+    T_a = T_a, 
+    M_G_a = M_G_a, 
+    V_a = V_a, 
+    L_a = L_a, 
+    P_gs = P_gs, 
+    K_a = K_a, 
+    w_g_a_in = w_g_a_in, 
+    z2 = z2, 
+    Pat = Pat
+  );
+
+algorithm 
+end networkModels.annulusInstances.annulus2;
+function networkModels.wellInstances.well1
+  input Real my_L := 0.00036;
+  input Real my_G := 1.5E-005;
+  input Real rho_L := 770;
+  input Real T_r := 375;
+  input Real M_G_r_t := 0.0167;
+  input Real M_G_r := 0.0167;
+  input Real PI := 1.7784000000000002E-006;
+  input Real D_w := 0.124;
+  input Real L_r := 2048;
+  input Real L_h := 25;
+  input Real V_r;
+  input Real r_r;
+  input Real ew := 4.5E-005;
+  input Real ep := 3E-005;
+  input Real L_bh := 75;
+  input Real S_bh := 0.031415926535897934;
+  input Real V_bh;
+  input Real D_b := 0.2;
+  input Real P_r := 16000000.0;
+  input Real GOR := 0;
+  input Real w_res_in := 14;
+  input Real z1 := 0.7;
+  input Real w_g_a_in := 1.5;
+  input Real Pbh := 8728310;
+  input Real Ptb;
+  input Real Ptt := 1850900;
+  input Real k2 := 1;
+  output networkModels.wellInstances.well1 _out := networkModels.wellInstances.well1
+    (
+    my_L = my_L, 
+    my_G = my_G, 
+    rho_L = rho_L, 
+    T_r = T_r, 
+    M_G_r_t = M_G_r_t, 
+    M_G_r = M_G_r, 
+    PI = PI, 
+    D_w = D_w, 
+    L_r = L_r, 
+    L_h = L_h, 
+    V_r = V_r, 
+    r_r = r_r, 
+    ew = ew, 
+    ep = ep, 
+    L_bh = L_bh, 
+    S_bh = S_bh, 
+    V_bh = V_bh, 
+    D_b = D_b, 
+    P_r = P_r, 
+    GOR = GOR, 
+    w_res_in = w_res_in, 
+    z1 = z1, 
+    w_g_a_in = w_g_a_in, 
+    Pbh = Pbh, 
+    Ptb = Ptb, 
+    Ptt = Ptt, 
+    k2 = k2
+  );
+
+algorithm 
+end networkModels.wellInstances.well1;
+function networkModels.wellInstances.well2
+  input Real my_L := 0.00036;
+  input Real my_G := 1.5E-005;
+  input Real rho_L := 720;
+  input Real T_r := 369.4;
+  input Real M_G_r_t := 0.01631;
+  input Real M_G_r := 0.01631;
+  input Real PI := 1.71E-006;
+  input Real D_w := 0.124;
+  input Real L_r := 2048;
+  input Real L_h := 25;
+  input Real V_r;
+  input Real r_r;
+  input Real ew := 4.5E-005;
+  input Real ep := 3E-005;
+  input Real L_bh := 75;
+  input Real S_bh := 0.031415926535897934;
+  input Real V_bh;
+  input Real D_b := 0.2;
+  input Real P_r := 16000000.0;
+  input Real GOR := 0;
+  input Real w_res_in := 18;
+  input Real z1 := 0.7;
+  input Real w_g_a_in := 1.5;
+  input Real Pbh := 8728310;
+  input Real Ptb;
+  input Real Ptt := 1850900;
+  input Real k2 := 0.8;
+  output networkModels.wellInstances.well2 _out := networkModels.wellInstances.well2
+    (
+    my_L = my_L, 
+    my_G = my_G, 
+    rho_L = rho_L, 
+    T_r = T_r, 
+    M_G_r_t = M_G_r_t, 
+    M_G_r = M_G_r, 
+    PI = PI, 
+    D_w = D_w, 
+    L_r = L_r, 
+    L_h = L_h, 
+    V_r = V_r, 
+    r_r = r_r, 
+    ew = ew, 
+    ep = ep, 
+    L_bh = L_bh, 
+    S_bh = S_bh, 
+    V_bh = V_bh, 
+    D_b = D_b, 
+    P_r = P_r, 
+    GOR = GOR, 
+    w_res_in = w_res_in, 
+    z1 = z1, 
+    w_g_a_in = w_g_a_in, 
+    Pbh = Pbh, 
+    Ptb = Ptb, 
+    Ptt = Ptt, 
+    k2 = k2
+  );
+
+algorithm 
+end networkModels.wellInstances.well2;
+// Equations and algorithms
+
+  // Component w1
+  // class networkModels.networkComponents.wellHansen
+  equation
+    w1.rho_G_r = w1.m_Gw/(w1.par.V_r-(w1.m_Lw-w1.par.rho_L*w1.par.L_bh*
+      w1.par.S_bh)/w1.par.rho_L);
+    w1.rho_mix = (w1.m_Gw+w1.m_Lw-w1.par.rho_L*w1.par.L_bh*w1.par.S_bh)/(
+      3.141592653589793*(w1.par.L_r*w1.par.r_r^2));
+    w1.alpha_L_av = w1.m_Lw/(w1.par.rho_L*(w1.par.V_bh+w1.par.V_r));
+    w1.P_r_t = 8.314472*(w1.rho_G_r*w1.par.T_r)/w1.par.M_G_r_t;
+    w1.Usg_av = (w1.alpha_G_m_in*w1.par.w_res_in+w1.inj.w)/(3.141592653589793*(
+      w1.rho_G_r*w1.par.r_r^2));
+    w1.U_M_av = w1.Usl_av+w1.Usg_av;
+    w1.my_mix = w1.alpha_L_av*w1.par.my_L+(1-w1.alpha_L_av)*w1.par.my_G;
+    w1.Re = 2.0*(w1.rho_mix*w1.U_M_av*w1.par.r_r)/w1.my_mix;
+    w1.lambda = (1/(0.7817300674258532*log((0.27027027027027023*w1.par.ew/
+      w1.par.D_w)^1.11+6.9/w1.Re)))^2;
+    w1.F_riser = w1.alpha_L_av*(w1.lambda*w1.rho_mix*w1.U_M_av^2*(w1.par.L_r+
+      w1.par.L_h))/(4*w1.par.r_r);
+    w1.inj.p = w1.P_r_t+9.80665*(w1.rho_mix*w1.par.L_r)+w1.F_riser;
+    w1.Ul_b = w1.par.w_res_in/(3.141592653589793*(w1.par.rho_L*w1.par.r_r^2));
+    w1.Re_b = 2.0*(w1.par.rho_L*w1.Ul_b*w1.par.r_r)/w1.par.my_L;
+    w1.lambda_b = (1/(0.7817300674258532*log((0.27027027027027023*w1.par.ew/
+      w1.par.D_b)^1.11+6.9/w1.Re_b)))^2;
+    w1.F_b = w1.lambda_b*w1.par.rho_L*w1.Ul_b^2*w1.par.L_bh/(4*w1.par.r_r);
+    w1.P_bh = w1.inj.p+9.80665*(w1.par.rho_L*w1.par.L_bh)+w1.F_b;
+    w1.w_r_in = 0.5*(w1.par.PI*(((w1.par.P_r-w1.P_bh)^2+w1.softApprox)^0.5+
+      w1.par.P_r-w1.P_bh));
+    w1.w_L_r_in = (1-w1.alpha_G_m_in)*w1.w_r_in;
+    w1.w_G_r_in = w1.alpha_G_m_in*w1.w_r_in;
+    w1.rho_G_r_b = w1.inj.p*w1.par.M_G_r/(8.314472*w1.par.T_r);
+    w1.alpha_L_in = w1.w_L_r_in*w1.rho_G_r_b/(w1.w_L_r_in*w1.rho_G_r_b+(w1.inj.w
+      +w1.w_G_r_in)*w1.par.rho_L);
+    w1.alpha_L_t = (-0.5)*(((0.5*(((2*w1.alpha_L_av-w1.alpha_L_in)^2+
+      w1.softApprox)^0.5+2*w1.alpha_L_av-w1.alpha_L_in)-w1.alpha_L_av)^2+
+      w1.softApprox)^0.5-(0.5*(((2*w1.alpha_L_av-w1.alpha_L_in)^2+w1.softApprox)
+      ^0.5+2*w1.alpha_L_av-w1.alpha_L_in)+w1.alpha_L_av));
+    w1.rho_M_t = w1.alpha_L_t*w1.par.rho_L+(1-w1.alpha_L_t)*w1.rho_G_r;
+    w1.w_mix_r_out = w1.tun.K_r*w1.z1*sqrt(0.5*(w1.rho_M_t*(((w1.P_r_t-w1.fout.p)
+      ^2+w1.softApprox)^0.5+w1.P_r_t-w1.fout.p)));
+    w1.alpha_L_m_t = w1.alpha_L_t*w1.par.rho_L/(w1.alpha_L_t*w1.par.rho_L+(1-
+      w1.alpha_L_t)*w1.rho_G_r);
+    w1.fout.w[2] =  -w1.alpha_L_m_t*w1.w_mix_r_out;
+    w1.fout.w[1] =  -(1-w1.alpha_L_m_t)*w1.w_mix_r_out;
+    der(w1.m_Gw) = w1.inj.w+w1.w_G_r_in+w1.fout.w[1];
+    der(w1.m_Lw) = w1.w_L_r_in+w1.fout.w[2];
+
+  // Component a1
+  // class networkModels.networkComponents.annulusJahanshahi
+  equation
+    a1.fin.p = 8.314472*(a1.par.T_a*a1.m_Ga)/(a1.par.M_G_a*a1.par.V_a);
+    a1.P_a_b = a1.fin.p+9.80665*(a1.m_Ga*a1.par.L_a)/a1.par.V_a;
+    a1.rho_G_a_b = a1.P_a_b*a1.par.M_G_a/(8.314472*a1.par.T_a);
+    a1.fout.w =  -a1.tun.K_a*sqrt(0.5*(a1.rho_G_a_b*(((a1.P_a_b-a1.fout.p)^2+
+      a1.softApprox^2)^0.5+a1.P_a_b-a1.fout.p)));
+    der(a1.m_Ga) = a1.fin.w+a1.fout.w;
+
+  // Component w2
+  // class networkModels.networkComponents.wellHansen
+  equation
+    w2.rho_G_r = w2.m_Gw/(w2.par.V_r-(w2.m_Lw-w2.par.rho_L*w2.par.L_bh*
+      w2.par.S_bh)/w2.par.rho_L);
+    w2.rho_mix = (w2.m_Gw+w2.m_Lw-w2.par.rho_L*w2.par.L_bh*w2.par.S_bh)/(
+      3.141592653589793*(w2.par.L_r*w2.par.r_r^2));
+    w2.alpha_L_av = w2.m_Lw/(w2.par.rho_L*(w2.par.V_bh+w2.par.V_r));
+    w2.P_r_t = 8.314472*(w2.rho_G_r*w2.par.T_r)/w2.par.M_G_r_t;
+    w2.Usg_av = (w2.alpha_G_m_in*w2.par.w_res_in+w2.inj.w)/(3.141592653589793*(
+      w2.rho_G_r*w2.par.r_r^2));
+    w2.U_M_av = w2.Usl_av+w2.Usg_av;
+    w2.my_mix = w2.alpha_L_av*w2.par.my_L+(1-w2.alpha_L_av)*w2.par.my_G;
+    w2.Re = 2.0*(w2.rho_mix*w2.U_M_av*w2.par.r_r)/w2.my_mix;
+    w2.lambda = (1/(0.7817300674258532*log((0.27027027027027023*w2.par.ew/
+      w2.par.D_w)^1.11+6.9/w2.Re)))^2;
+    w2.F_riser = w2.alpha_L_av*(w2.lambda*w2.rho_mix*w2.U_M_av^2*(w2.par.L_r+
+      w2.par.L_h))/(4*w2.par.r_r);
+    w2.inj.p = w2.P_r_t+9.80665*(w2.rho_mix*w2.par.L_r)+w2.F_riser;
+    w2.Ul_b = w2.par.w_res_in/(3.141592653589793*(w2.par.rho_L*w2.par.r_r^2));
+    w2.Re_b = 2.0*(w2.par.rho_L*w2.Ul_b*w2.par.r_r)/w2.par.my_L;
+    w2.lambda_b = (1/(0.7817300674258532*log((0.27027027027027023*w2.par.ew/
+      w2.par.D_b)^1.11+6.9/w2.Re_b)))^2;
+    w2.F_b = w2.lambda_b*w2.par.rho_L*w2.Ul_b^2*w2.par.L_bh/(4*w2.par.r_r);
+    w2.P_bh = w2.inj.p+9.80665*(w2.par.rho_L*w2.par.L_bh)+w2.F_b;
+    w2.w_r_in = 0.5*(w2.par.PI*(((w2.par.P_r-w2.P_bh)^2+w2.softApprox)^0.5+
+      w2.par.P_r-w2.P_bh));
+    w2.w_L_r_in = (1-w2.alpha_G_m_in)*w2.w_r_in;
+    w2.w_G_r_in = w2.alpha_G_m_in*w2.w_r_in;
+    w2.rho_G_r_b = w2.inj.p*w2.par.M_G_r/(8.314472*w2.par.T_r);
+    w2.alpha_L_in = w2.w_L_r_in*w2.rho_G_r_b/(w2.w_L_r_in*w2.rho_G_r_b+(w2.inj.w
+      +w2.w_G_r_in)*w2.par.rho_L);
+    w2.alpha_L_t = (-0.5)*(((0.5*(((2*w2.alpha_L_av-w2.alpha_L_in)^2+
+      w2.softApprox)^0.5+2*w2.alpha_L_av-w2.alpha_L_in)-w2.alpha_L_av)^2+
+      w2.softApprox)^0.5-(0.5*(((2*w2.alpha_L_av-w2.alpha_L_in)^2+w2.softApprox)
+      ^0.5+2*w2.alpha_L_av-w2.alpha_L_in)+w2.alpha_L_av));
+    w2.rho_M_t = w2.alpha_L_t*w2.par.rho_L+(1-w2.alpha_L_t)*w2.rho_G_r;
+    w2.w_mix_r_out = w2.tun.K_r*w2.z1*sqrt(0.5*(w2.rho_M_t*(((w2.P_r_t-w2.fout.p)
+      ^2+w2.softApprox)^0.5+w2.P_r_t-w2.fout.p)));
+    w2.alpha_L_m_t = w2.alpha_L_t*w2.par.rho_L/(w2.alpha_L_t*w2.par.rho_L+(1-
+      w2.alpha_L_t)*w2.rho_G_r);
+    w2.fout.w[2] =  -w2.alpha_L_m_t*w2.w_mix_r_out;
+    w2.fout.w[1] =  -(1-w2.alpha_L_m_t)*w2.w_mix_r_out;
+    der(w2.m_Gw) = w2.inj.w+w2.w_G_r_in+w2.fout.w[1];
+    der(w2.m_Lw) = w2.w_L_r_in+w2.fout.w[2];
+
+  // Component a2
+  // class networkModels.networkComponents.annulusJahanshahi
+  equation
+    a2.fin.p = 8.314472*(a2.par.T_a*a2.m_Ga)/(a2.par.M_G_a*a2.par.V_a);
+    a2.P_a_b = a2.fin.p+9.80665*(a2.m_Ga*a2.par.L_a)/a2.par.V_a;
+    a2.rho_G_a_b = a2.P_a_b*a2.par.M_G_a/(8.314472*a2.par.T_a);
+    a2.fout.w =  -a2.tun.K_a*sqrt(0.5*(a2.rho_G_a_b*(((a2.P_a_b-a2.fout.p)^2+
+      a2.softApprox^2)^0.5+a2.P_a_b-a2.fout.p)));
+    der(a2.m_Ga) = a2.fin.w+a2.fout.w;
+
+  // Component p
+  // class networkModels.networkComponents.newPipelineJahanshahi
+  equation
+    p.h1 = 0.5*(((p.h1ss+sin(p.par.theta)*(p.m_lp-p.m_lp0t)/(p.A1*(1-
+      p.Alpha_L1_av)*p.par.rho_L))^2+p.softApprox^2)^0.5+p.h1ss+sin(p.par.theta)
+      *(p.m_lp-p.m_lp0t)/(p.A1*(1-p.Alpha_L1_av)*p.par.rho_L));
+    p.V_G2 = p.V2-p.m_lr/p.par.rho_L;
+    p.fin.p = 8.314472*(p.m_gp*p.par.T1)/(p.par.M_G*(p.V1-p.m_lp/p.par.rho_L));
+    p.rho_G1 = p.m_gp/(p.V1-p.m_lp/p.par.rho_L);
+    p.rho_mix1 = p.Alpha_L1_av*p.par.rho_L+(1-p.Alpha_L1_av)*p.rho_G1;
+    p.Uslin = p.fin.w[2]/(p.A1*p.par.rho_L);
+    p.Usgin = p.fin.w[1]/(p.A1*p.rho_G1);
+    p.Umin = p.Uslin+p.Usgin;
+    p.vism_p = p.Alpha_L1_av*p.par.visl+(1-p.Alpha_L1_av)*p.par.visg;
+    p.Re1 = 2.0*(p.rho_mix1*p.Umin*p.par.r1)/p.vism_p;
+    p.Lambda1 = 0.0056+0.5*p.Re1^(-0.32);
+    p.Fric_pipe = 0.5*(p.Lambda1*p.par.rho_L*p.Uslin^2*p.par.L1)/(2*p.par.r1);
+    p.P2_t = 0.5*(((8.314472*(p.m_gr*p.par.T2)/(p.par.M_G*p.V_G2)-p.fout.p)^2+
+      p.softApprox^2)^0.5+8.314472*(p.m_gr*p.par.T2)/(p.par.M_G*p.V_G2)+p.fout.p);
+    p.rho_G2 = p.m_gr/p.V_G2;
+    p.Alpha_L2_av = p.m_lr/(p.par.rho_L*p.V2);
+    p.rho_mix_av = (p.m_gr+p.m_lr)/p.V2;
+    p.Usl2 = p.fin.w[2]/(p.par.rho_L*p.A2);
+    p.Usg2 = p.fin.w[1]/(p.rho_G2*p.A2);
+    p.Um = p.Usl2+p.Usg2;
+    p.vism_r = p.Alpha_L2_av*p.par.visl+(1-p.Alpha_L2_av)*p.par.visg;
+    p.Re2 = 2.0*(p.rho_mix_av*p.Um*p.par.r2)/p.vism_r;
+    p.Lambda2 = (1/((-0.7817300674258532)*log((0.27027027027027023*p.par.eps/(2*
+      p.par.r2))^1.11+6.9/p.Re2)))^2;
+    p.Fric_riser = 0.5*(p.Lambda2*p.rho_mix_av*p.Um^2*(p.par.L2+p.par.L3))/(2*
+      p.par.r2);
+    p.A_g = p.A1*(0.5*(((p.hc-p.h1)/p.hc)^2+p.softApprox^2)^0.5+0.5*(p.hc-p.h1)/
+      p.hc)^2;
+    p.A_l = p.A1-p.A_g;
+    p.P2_b = p.P2_t+9.80665*(p.rho_mix_av*p.par.L2)+p.Fric_riser;
+    p.w_G1 = p.tun.K_g*p.A_g*sqrt(0.5*(p.rho_G1*(((p.fin.p-p.Fric_pipe-p.P2_b)^2
+      +p.softApprox^2)^0.5+p.fin.p-p.Fric_pipe-p.P2_b)));
+    p.w_L1 = p.tun.K_o*p.A_l*sqrt(0.5*(p.par.rho_L*(((p.fin.p-p.Fric_pipe+
+      9.80665*(p.par.rho_L*p.h1)-p.P2_b)^2+p.softApprox^2)^0.5+p.fin.p-
+      p.Fric_pipe+9.80665*(p.par.rho_L*p.h1)-p.P2_b)));
+    p.Alpha_Lb = 0.5+0.5*(((1-(p.A_g/p.A1+p.Alpha_L2_av))^2+p.softApprox^2)^0.5+
+      p.Alpha_L2_av-p.A_g/p.A1);
+    p.Alpha_Lt = 0.5*(((-0.5)*(((2*p.Alpha_L2_av-p.Alpha_Lb-p.Alpha_L2_av)^2+
+      p.softApprox^2)^0.5-(2*p.Alpha_L2_av-p.Alpha_Lb+p.Alpha_L2_av)))^2+
+      p.softApprox^2)^0.5-0.25*(((2*p.Alpha_L2_av-p.Alpha_Lb-p.Alpha_L2_av)^2+
+      p.softApprox^2)^0.5-(2*p.Alpha_L2_av-p.Alpha_Lb+p.Alpha_L2_av));
+    p.Alpha_Lmt = p.Alpha_Lt*p.par.rho_L/(p.Alpha_Lt*p.par.rho_L+(1-p.Alpha_Lt)*
+      p.rho_G2);
+    p.rho_t = p.Alpha_Lt*p.par.rho_L+(1-p.Alpha_Lt)*p.rho_G2;
+    p.w_mix_out = p.tun.K_pc*p.z*sqrt(0.5*(p.rho_t*(((p.fout.p-p.P2_t)^2+
+      p.softApprox^2)^0.5+p.P2_t-p.fout.p)));
+    p.fout.w[2] =  -p.Alpha_Lmt*p.w_mix_out;
+    p.fout.w[1] =  -(1-p.Alpha_Lmt)*p.w_mix_out;
+    der(p.m_gp) = p.fin.w[1]-p.w_G1;
+    der(p.m_lp) = p.fin.w[2]-p.w_L1;
+    der(p.m_gr) = p.w_G1+p.fout.w[1];
+    der(p.m_lr) = p.w_L1+p.fout.w[2];
+
+  // Component sep
+  // class networkModels.networkComponents.separatorTwoPhase
+  equation
+    sep.fin.p = sep.constantPressure;
+
+  // Component u1
+  // class Modelica.Blocks.Sources.Constant
+  equation
+    u1.y = u1.k;
+
+  // Component gm1
+  // class networkModels.networkComponents.gasManifold
+  equation
+    gm1.fout.w =  -gm1.constantOutput;
+
+  // Component u2
+  // class Modelica.Blocks.Sources.Constant
+  equation
+    u2.y = u2.k;
+
+  // Component gm2
+  // class networkModels.networkComponents.gasManifold
+  equation
+    gm2.fout.w =  -gm2.constantOutput;
+
+  // Component up
+  // class Modelica.Blocks.Sources.Constant
+  equation
+    up.y = up.k;
+
+  // Component 
+  // class networkModels.ifacNetwork.netSim
+  equation
+    gm1.fout.p = a1.fin.p;
+    a1.fin.w+gm1.fout.w = 0.0;
+    w1.inj.p = a1.fout.p;
+    a1.fout.w+w1.inj.w = 0.0;
+    gm2.fout.p = a2.fin.p;
+    a2.fin.w+gm2.fout.w = 0.0;
+    w2.inj.p = a2.fout.p;
+    a2.fout.w+w2.inj.w = 0.0;
+    w1.fout.p = p.fin.p;
+    w2.fout.p = p.fin.p;
+     -(p.fin.w+w1.fout.w+w2.fout.w) = 0.0*p.fin.w;
+    sep.fin.p = p.fout.p;
+     -(p.fout.w+sep.fin.w) = 0.0*p.fout.w;
+    up.y = p.z;
+    w1.z1 = u1.y;
+    w2.z1 = u2.y;
+
+end networkModels.ifacNetwork.netSim;

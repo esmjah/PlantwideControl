@@ -1,0 +1,41 @@
+within networkModels.networkComponents;
+record wellJahanshahiParameters
+  import SI = Modelica.SIunits;
+  parameter SI.Density rho_L = 832.2;
+  // Liquid density (Kg/m3)
+  parameter SI.Length r_w = 0.06;
+  // Raduis of well tubing (m)
+  parameter SI.Height Lw = 3000;
+  // Height of oil well (m)
+  parameter SI.Temperature Tw = 369;
+  // Well temprature (K)
+  parameter SI.Temperature Tp = 337;
+  // Pipeline temprature (K)
+  parameter SI.MolarMass M_G = 0.023;
+  // Molecular weight of Gas (kg/kmol)
+  parameter SI.Pressure Pr = 320e5;
+  // Reservior Pressure
+  parameter Real PI(min = 0) = 2.75e-6;
+  // Productivity Index of the well
+  // *************************************************************************
+  parameter SI.DynamicViscosity visl = 1.4260e-4;
+  parameter SI.DynamicViscosity visg = 1.39e-5;
+  parameter SI.Length eps = 2.8e-5;
+  // Roughness of pipe
+  parameter Real GOR = 0.04;
+  // *************** Finding Orifice Coefficients ****************************
+  // ******** Steady State Values Baesd on OLGA *************
+  parameter Real z1(min = 0, max = 1) = 1;
+  parameter SI.Pressure P_bh = 288.552e5;
+  parameter SI.Pressure P_wh(max = Pr) = 77.3583e5;
+  parameter Real Alpha_Gwhm(min = 0, max = 1) = 0.0395062;
+  // -------------------------
+  parameter SI.MassFlowRate w_in = 8.64813;
+  parameter Real Alpha_Ginm(min = 0, max = 1) = 0.0395225;
+  parameter SI.Pressure P_p(max = P_wh) = 77.2701e5;
+  parameter SI.MassFlowRate w_nom = 12;
+  //w_in;
+  parameter Real k_a = 1.94;
+  // ********************************************************
+end wellJahanshahiParameters;
+

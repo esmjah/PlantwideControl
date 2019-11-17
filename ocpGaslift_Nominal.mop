@@ -1,0 +1,157 @@
+within ;
+
+
+optimization ocpGaslift_Nominal(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*16)
+
+networkModels.gasliftNetworks.net_PIDstruc2 net(
+
+//p.z(min = 0.1, max = 0.9, nominal = 0.5),
+//w1.z1(min = 0.1, max = 0.9, nominal = 0.5),
+//w2.z1(min = 0.1, max = 0.9, nominal = 0.5),
+//p.P2_t(min = 5.5e5),
+
+//w1.deltaP_valve(min = 1e5),
+//w2.deltaP_valve(min = 1e5),
+p.deltaP_valve(min = 0.5e5),
+
+//Dp_w1(min=1.8e5),
+//Dp_w2(min=1.9e5),
+
+
+//w1.w_L_out(min = 10, max = 20, nominal = 10),
+//w2.w_L_out(min = 10, max = 20, nominal = 10),
+
+//p.w_L_out(min = 20, max = 40, nominal = 30),
+
+
+//w1.fin.p(min = 80e5, max = 100e5, nominal = 90e5),
+//w2.fin.p(min = 80e5, max = 100e5, nominal = 90e5),
+
+//w1.P_bh(min = 90e5, max = 110e5, nominal = 100e5),
+//w2.P_bh(min = 90e5, max = 110e5, nominal = 100e5),
+
+w1.w_G_f(min = 0.5, max = 2, nominal = 1),
+w2.w_G_f(min = 0.5, max = 2, nominal = 1),
+
+w1.P_bh_f(min = 80e5, max = 160e5, nominal = 100e5),
+w2.P_bh_f(min = 80e5, max = 170e5, nominal = 100e5),
+
+p.P1_f(min = 20e5, max = 30e5, nominal = 25e5),
+
+p.fin.p(min = 20e5, max = 40e5),
+
+
+PCINL.intError(nominal = 3e7),
+PCTOP.intError(nominal = 7e7),
+
+PCA1.intError(nominal = 3e7),
+PCT1.intError(nominal = 9e9),
+
+PCA2.intError(nominal = 3e7),
+PCT2.intError(nominal = 9e9),
+
+//PCT1Filter.y(min = 0, max = 1, nominal = 0.5),
+//PCT2Filter.y(min = 0, max = 1, nominal = 0.5),
+//PCTOPFilter.y(min = 0, max = 1, nominal = 0.5),
+
+//PCA1Filter.y(min = 0.01, max = 1, nominal = 0.5),
+//PCA2Filter.y(min = 0.01, max = 1, nominal = 0.5),
+//PCINLFilter.y(min = 0.01, max = 1, nominal = 0.5),
+
+w1.m_Ga(min = 3500, max = 6000, nominal = 4700),
+w1.m_Gw(min = 150,  max = 600, nominal = 400),
+w1.m_Lw(min = 5000, max = 12000, nominal = 7000),
+
+w2.m_Ga(min = 3500, max = 6000, nominal = 4700),
+w2.m_Gw(min = 150, max = 600, nominal = 400),
+w2.m_Lw(min = 5000, max = 12000, nominal = 7500),
+
+p.m_gp(min = 1000, max = 2500, nominal = 2000),
+p.m_lp(min = 26300, max = 27800, nominal = 26350),
+p.m_gr(min = 20, max = 65, nominal = 45),
+p.m_lr(min = 500, max = 4000,nominal = 2000)
+);
+
+
+parameter Real[5] initialU = {1, 1, 75693.6, 251444, 275895};
+
+
+parameter Real gasPrice(min =0, start =1) = 1;
+
+
+input Real inputGas1(min= 0.5,max=2,start=initialU[1],nominal=1);
+input Real inputGas2(min= 0.5,max=2,start=initialU[2],nominal=1);
+
+input Real uTOP(min=0.7e5, max=2e5, start=initialU[3], nominal =1e5 );
+input Real uWHD1(min=2.0e5, max=5e5, start=initialU[4],   nominal =1e5 );
+input Real uWHD2(min=2.0e5, max=5e5, start=initialU[5], nominal =1e5 );
+
+networkModels.networkComponents.gasManifold gm1(u = inputGas1);
+networkModels.networkComponents.gasManifold gm2(u = inputGas2);
+
+Modelica.Blocks.Sources.Constant u1(k = uWHD1);
+Modelica.Blocks.Sources.Constant u2(k = uWHD2);
+Modelica.Blocks.Sources.Constant up(k = uTOP);
+//Modelica.Blocks.Sources.Constant Pr1(k = 160);
+//Modelica.Blocks.Sources.Constant Pr2(k = 170);
+Modelica.Blocks.Sources.Constant dPI1(k = 0);
+Modelica.Blocks.Sources.Constant dPI2(k = 0);
+Modelica.Blocks.Sources.Constant GOR_1(k = 0);
+Modelica.Blocks.Sources.Constant GOR_2(k = 0);
+Modelica.Blocks.Sources.Constant dPsep(k = 0);
+
+Real Obj(min=0,max=100);
+Real GOR_hw1(min=0,max=1);
+Real GOR_hw2(min=0,max=1);
+
+initial equation
+
+
+
+
+equation
+
+Obj = (net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2));
+
+GOR_hw1 = 100*net.w1.w_G_out/net.w1.w_L_out;
+GOR_hw2 = 100*net.w2.w_G_out/net.w2.w_L_out;
+
+connect(gm1.fout, net.w1.fin);
+connect(gm2.fout, net.w2.fin);
+connect(u1.y, net.valveDP_whd1_SetPoint);
+connect(u2.y, net.valveDP_whd2_SetPoint);
+connect(up.y, net.valveDP_top_SetPoint);
+//connect(Pr1.y, net.w1.P_res);
+//connect(Pr2.y, net.w2.P_res);
+connect(dPI1.y, net.w1.d_PI);
+connect(dPI2.y, net.w2.d_PI);
+connect(GOR_1.y, net.w1.GOR);
+connect(GOR_2.y, net.w2.GOR);
+connect(dPsep.y, net.sep.d_Psep);
+
+constraint
+
+//net.w1.w_L_out <= 20;
+
+//net.w2.w_L_out <= 20;
+
+//net.p.w_L_out <= 40;
+	
+//net.p.z <= 0.99;
+//net.w1.z1 <= 0.99;
+//net.w2.z1 <= 0.99;
+//net.p.P2_t <= 1e10;
+//net.p.fin.p <= 40e5;
+
+//net.p.deltaP_valve <= 2e5;
+//net.w1.deltaP_valve <= 3e5;
+//net.w2.deltaP_valve <= 3.5e5;
+
+net.w1.P_bh_f <= 160e5;
+
+end ocpGaslift_Nominal;
+
+
+
+
+

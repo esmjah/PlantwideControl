@@ -1,0 +1,54 @@
+within networkModels.networkComponents;
+model newPipelineJahanshahiTuner
+
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  parameter newPipelineJahanshahiParameters par;
+  parameter Real K_g = par.K_gT * v_G1 / sqrt((par.P1 - Fric_pipe - P2_b) / rho_G1);
+  parameter Real K_o = par.K_oT * par.wL_in / (A_l * sqrt(par.rho_L * (par.P1 - Fric_pipe + par.rho_L * g * h1ss - P2_b)));
+  parameter Real K_pc = par.K_pcT * w_mix / (par.z0 * sqrt(rho_t * (par.P2_t - par.P0)));
+protected
+  parameter Real softApprox(fixed = true) = 0.001;
+  parameter SI.Area A1 = pi * par.r1 ^ 2;
+  // Cross section area of pipeline (m2)
+  parameter SI.Area A2 = pi * par.r2 ^ 2;
+  // Cross section area of riser (m2)
+  parameter SI.Height hc = 2 * par.r1 / cos(par.theta);
+  // Critical liquid level (m)
+  parameter SI.MassFlowRate w_mix = par.wL_in + par.wG_in;
+  parameter SI.Density rho_G1 = par.P1 * par.M_G / (R * par.T1);
+  parameter SI.MassFraction Alpha_L1_av = par.wL_in * rho_G1 / (par.wL_in * rho_G1 + par.wG_in * par.rho_L);
+  parameter SI.Height h1ss = par.k_h * Alpha_L1_av * hc;
+  parameter SI.Density rho_mix1 = Alpha_L1_av*par.rho_L + (1-Alpha_L1_av)*rho_G1;
+  parameter SI.Velocity Uslin = par.wL_in /(A1 * par.rho_L);
+  parameter SI.Velocity Usgin = par.wG_in/(A1*rho_G1);
+  parameter SI.Velocity Umin = Uslin + Usgin;
+  parameter SI.DynamicViscosity vism_p = Alpha_L1_av*par.visl + (1-Alpha_L1_av)*par.visg;
+  parameter SI.ReynoldsNumber Re1 = rho_mix1*Umin*(2*par.r1)/vism_p;
+  parameter Real Lambda1 = 0.0056 + 0.5 * Re1 ^ (-0.32);
+
+  parameter SI.Pressure Fric_pipe = 0.5 * Alpha_L1_av * Lambda1 * par.rho_L * Uslin ^ 2 * par.L1 / (2 * par.r1);
+  parameter SI.Pressure P2_av = (par.P1 + par.rho_L * g * h1ss - Fric_pipe + par.P2_t) / 2;
+  parameter SI.Density rho_G2_av = P2_av * par.M_G / (R * par.T2);
+  parameter SI.MassFraction Alpha_L2_av = rho_G2_av * par.wL_in / (rho_G2_av * par.wL_in + par.rho_L * par.wG_in);
+  parameter SI.Density rho_mix_av = rho_G2_av * (1 - Alpha_L2_av) + par.rho_L * Alpha_L2_av;
+  parameter SI.Velocity Usl2 = par.wL_in / (par.rho_L * A2);
+  parameter SI.Velocity Usg2 = par.wG_in / (rho_G2_av * A2);
+  parameter SI.Velocity Um = Usl2 + Usg2;
+  parameter SI.DynamicViscosity vism_r = Alpha_L2_av*par.visl + (1-Alpha_L2_av)*par.visg;
+  parameter SI.ReynoldsNumber Re2 = rho_mix_av * Um * 2 * par.r2 / vism_r;
+
+  parameter Real Lambda2 = (1/(-1.8*log((par.eps/(2*par.r2)/3.7)^1.11+6.9/Re2)/log(10)))^2;
+  parameter SI.Pressure Fric_riser = 0.5*Lambda2*rho_mix_av*Um^2*(par.L2+par.L3)/(2*par.r2);
+  parameter SI.Pressure P2_b = par.P2_t + rho_mix_av * g * par.L2 + Fric_riser;
+  parameter SI.Density rho_G2 = par.P2_t * par.M_G / (R * par.T2);
+  parameter SI.MassFraction Alpha_Lt = rho_G2 * par.wL_in / (rho_G2 * par.wL_in + par.rho_L * par.wG_in);
+  parameter SI.Density rho_t = Alpha_Lt * par.rho_L + (1 - Alpha_Lt) * rho_G2;
+  //parameter SI.Area A_g = A1 * (maxFunc(((hc - h1ss)/hc),0))^2;
+  parameter SI.Area A_g = A1 * ((((hc - h1ss) / hc - 0) ^ 2 + softApprox ^ 2) ^ 0.5 / 2 + ((hc - h1ss) / hc + 0) / 2) ^ 2;
+  parameter SI.Area A_l = A1 - A_g;
+  parameter SI.Velocity v_G1 = par.wG_in / (rho_G1 * A_g);
+
+end newPipelineJahanshahiTuner;

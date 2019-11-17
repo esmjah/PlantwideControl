@@ -1,0 +1,16 @@
+within networkModels;
+model SimJahanInstance_input
+  import SI = Modelica.SIunits;
+  replaceable package components = networkModels.networkComponents;
+  components.wellheadTwoPhaseVarLiquid wellhead;
+  components.separatorTwoPhase sep(constantPressure = 5010000);
+  components.pipelineJahanshahi p;
+  Modelica.Blocks.Sources.Constant massFlowIn(k = 9);
+  Modelica.Blocks.Sources.Constant u(k = 0.04);
+equation
+  connect(u.y, p.z);
+  connect(massFlowIn.y, wellhead.massFlowIn);
+  connect(wellhead.fout, p.fin);
+  connect(p.fout, sep.fin);
+  annotation(experiment(StopTime = 7200, Interval = 0.1), __Dymola_experimentSetupOutput);
+end SimJahanInstance_input;

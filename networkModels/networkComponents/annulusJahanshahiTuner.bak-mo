@@ -1,0 +1,21 @@
+within networkModels.networkComponents;
+
+
+model annulusJahanshahiTuner
+//  import SI = Modelica.SIunits;
+//  import Modelica.Constants.R;
+//  import g = Modelica.Constants.g_n;
+
+    parameter networkModels.networkComponents.annulusJahanshahiParameters par;
+    parameter Real K_a =  par.K_a;
+
+//  parameter Real K_a = par.k1 * par.w_g_a_in / sqrt(rho_G_ab * (Pab - par.Ptb));
+  //Out of annulus into tubing, Increasing gives: unstable,lower annnulus pressure ,higher BH but no big change
+
+//protected
+
+//  parameter SI.Mass m_ga_av = par.M_G_a*par.V_a*par.Pat/(R*par.T_a);
+//  parameter SI.Pressure Pab= par.Pat + (m_ga_av*g*par.L_a/par.V_a);
+
+//  parameter SI.Density rho_G_ab = Pab * par.M_G_a / (R * par.T_a);
+end annulusJahanshahiTuner;

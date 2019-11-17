@@ -1,0 +1,12 @@
+within networkModels;
+partial model JahanInstance
+  import SI = Modelica.SIunits;
+  replaceable package components = networkModels.networkComponents;
+  components.wellheadTwoPhase wellhead(constantOutput = {0.36, 8.64});
+  components.separatorTwoPhase sep(constantPressure = 5010000);
+  components.pipelineJahanshahi p;
+equation
+  connect(wellhead.fout, p.fin);
+  connect(p.fout, sep.fin);
+  annotation(experiment(StopTime = 14000, Interval = 0.1), __Dymola_experimentSetupOutput);
+end JahanInstance;

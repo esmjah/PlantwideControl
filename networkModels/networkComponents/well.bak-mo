@@ -1,0 +1,81 @@
+within networkModels.networkComponents;
+model well "Well Model"
+  //******************//***********************//
+  //               Parameters                                         //
+  //******************//***********************//
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.R;
+  import g = Modelica.Constants.g_n;
+  parameter wellParameters p;
+  parameter Real r_glr = (1 - p.r_wc) * p.r_gor;
+  // Gas-to-liquid ratio in well
+  parameter SI.Density rho_Lw = p.rho_w * p.r_wc + p.rho_o * (1 - p.r_wc);
+  //A.4b - liquid density
+  //******************//***********************//
+  //               States & Variables                         //
+  //******************//***********************//
+  //States
+  SI.Mass m_ga(start = p.m_ga0, fixed = true, nominal = 1e3, min = 0);
+  // mass of gas in the well annular
+  SI.Mass m_gt(start = p.m_gt0, fixed = true, nominal = 1e3, min = 0);
+  // mass of gas in the well tubing
+  SI.Mass m_lt(start = p.m_lt0, fixed = true, nominal = 1e3, min = 0);
+  // mass of liquid in the well tubing
+  //Variables
+  SI.Pressure p_ai(nominal = 1e7, min = 0, start = 3.15275e+07);
+  SI.Pressure p_p(nominal = 1e7, min = 0, start = 1.08255e+07);
+  SI.Pressure p_ti(nominal = 1e7, min = 0, start = 1.30374e+07);
+  SI.Pressure p_bh(nominal = 1e7, min = 0, start = 1.66549e+07);
+  SI.Density rho_gi(nominal = 1e2, min = 0, start = 211.262);
+  SI.Density rho_p(nominal = 1e2, min = 0, start = 126.854);
+  SI.MassFlowRate w_gi(nominal = 10, min = 0, start = 10);
+  SI.MassFlowRate w_p(nominal = 10, min = 0, start = 22.9868);
+  SI.MassFlowRate w_lp(nominal = 10, min = 0, start = 12.3449);
+  SI.MassFlowRate w_lr(nominal = 10, min = 0, start = 12.3449);
+  SI.MassFlowRate w_gr(nominal = 0.1, min = 0, start = 0.641934);
+  Interfaces.GasFluidPortIn fin;
+  Interfaces.ThreePhaseFluidPortOut fout;
+  //******************//***********************//
+  //               Equations                                         //
+  //******************//***********************//
+equation
+  p_ai = (R * p.T_a / (p.V_a * p.M_g) + g / (2 * p.A_a)) * m_ga;
+  //A.3a
+  p_p = R * p.T_t * m_gt / (p.M_g * p.V_t - p.M_g * (1 / rho_Lw) * m_lt) - g * (m_gt + m_lt) / (2 * p.A_t);
+  //A.3b
+  p_ti = p_p + g * (m_lt + m_gt) / p.A_t;
+  //A.3c
+  p_bh = ((1 + r_glr + r_glr * p.M_g * g * p.L_w / (2 * R * p.T_t)) * p_ti + rho_Lw * g * p.L_w) / (1 + r_glr - r_glr * p.M_g * g * p.L_w / (2 * R * p.T_t));
+  //A.3d
+  fin.p = (R * p.T_a / (p.V_a * p.M_g) - g / (2 * p.A_a)) * m_ga;
+  //A.3e - Pressure in annulus at gas-lift choke valve
+  rho_gi = p.M_g / (R * p.T_a) * p_ai;
+  //A.4a
+  rho_p = rho_Lw * p.M_g * p_p * (m_lt + m_gt) / (rho_Lw * R * p.T_t * m_lt + p.M_g * p_p * m_gt);
+  //A.4b
+  //w_gi = p.C_iv*sqrt(rho_gi*maxFunc(0,(p_ai-p_ti))); //A.2a
+  w_gi = p.C_iv * sqrt(rho_gi * (((0 - (p_ai - p_ti)) ^ 2 + 0.01 ^ 2) ^ 0.5 / 2 + (0 + p_ai - p_ti) / 2));
+  //A.2a
+  //  w_p = p.C_pc*sqrt(rho_p*maxFunc(0, (p_p-fout.p))); //A.2b
+  w_p = p.C_pc * sqrt(rho_p * (((0 - (p_p - fout.p)) ^ 2 + 0.01 ^ 2) ^ 0.5 / 2 + (0 + p_p - fout.p) / 2));
+  //A.2b
+  fout.w[1] = -m_gt / (m_lt + m_gt) * w_p;
+  //A.2c
+  w_lp = m_lt / (m_lt + m_gt) * w_p;
+  //A.2d
+  fout.w[2] = -(1 - p.r_wc) * w_lp;
+  //A.2e
+  fout.w[3] = -p.r_wc * w_lp;
+  //A.2d
+  w_lr = rho_Lw * p.Q_max * (1 - (1 - p.C) * (p_bh / p.p_r) - p.C * (p_bh / p.p_r) ^ 2);
+  //A.2g
+  w_gr = r_glr * w_lr;
+  //A.2h
+  der(m_ga) = fin.w - w_gi;
+  //A.1a
+  der(m_gt) = w_gr + w_gi + fout.w[1];
+  //A.1b
+  der(m_lt) = w_lr - w_lp;
+  //A.1c
+end well;
+

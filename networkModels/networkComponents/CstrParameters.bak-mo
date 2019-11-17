@@ -1,0 +1,10 @@
+within networkModels.networkComponents;
+record CstrParameters
+
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+  import g = Modelica.Constants.g_n;
+
+parameter SI.Time Tau(min = 40, max = 80,nominal = 60) = 60;
+
+end CstrParameters;

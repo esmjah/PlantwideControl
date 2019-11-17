@@ -1,0 +1,11 @@
+within networkModels;
+model wellLund
+  import SI = Modelica.SIunits;
+  replaceable package components = networkModels.networkComponents;
+  components.gasManifold gM;
+  components.well w(p = wellData.MwellLund());
+  components.separatorC b(constantPressure = 1350000);
+equation
+  connect(gM.fout, w.fin);
+  connect(w.fout, b.fin);
+end wellLund;

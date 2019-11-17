@@ -1,0 +1,13 @@
+within networkModels;
+model singleWellPipeline
+  import SI = Modelica.SIunits;
+  replaceable package components = networkModels.networkComponents;
+  components.gasManifold gM;
+  components.well w(p = wellData.Mwell1());
+  components.pipeline p(p = pipelineData.MPipe1());
+  components.separatorC s;
+equation
+  connect(gM.fout, w.fin);
+  connect(w.fout, p.fin);
+  connect(p.fout, s.fin);
+end singleWellPipeline;

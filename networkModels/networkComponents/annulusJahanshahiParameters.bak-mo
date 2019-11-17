@@ -1,0 +1,23 @@
+within networkModels.networkComponents;
+
+
+record annulusJahanshahiParameters
+  import SI = Modelica.SIunits;
+  import Modelica.Constants.pi;
+
+  parameter SI.Temperature T_a = 348;
+  parameter SI.MolarMass M_G_a = 0.01631;
+  parameter SI.Length L_a = 2048;
+  parameter SI.Length D_a = 0.2;
+  parameter SI.Pressure P_gs = 140e5;
+  //parameter Real k1 = 1.1;
+  parameter Real K_a = 0.000155590989907951;
+  // Annulus
+  parameter SI.MassFlowRate w_g_a_in = 1.5;
+  parameter Real z2 = 1.5;
+  parameter SI.Pressure Pat = 7745410;
+
+  // infered value from the well
+  //parameter SI.Pressure Ptb = 10008132.151227;
+  //parameter SI.Pressure Pab = 103.165e5;
+end annulusJahanshahiParameters;

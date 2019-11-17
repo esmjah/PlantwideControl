@@ -1,0 +1,7 @@
+within networkModels;
+package pipelineInstances
+  record pipe1
+    extends networkModels.networkComponents.pipelineRiserParemeters;
+
+  end pipe1;
+end pipelineInstances;

@@ -121,4 +121,4 @@ simData['y2'] = y_2
 simData['r1'] = r_WG1
 simData['r2'] = r_WG2
 
-sio.savemat('SimData_SOC2_Nominal_2019.03.02.mat', simData)
+sio.savemat('SimData_SOC2_Nominal_2019.11.17.mat', simData)

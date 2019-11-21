@@ -6,6 +6,7 @@ import scipy.io as sio
 import control
 import numpy as np
 from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
 import ConfigParser
 
 _path = os.path.dirname(os.path.realpath(__file__))
@@ -199,7 +200,7 @@ sys.stdout.flush()
 # Start Simulator
 openLoop = False
 controlOlga = True
-NIT = int(np.ceil(3600 * 30 / DT))
+NIT = int(np.ceil(3600 * 36 / DT))
 xSh = []
 if not openLoop:
     if controlOlga:
@@ -363,7 +364,7 @@ gasPrice = ocp.variable('gasPrice').start
 uk = u
 k0 = int(0)
 k0MPC = 3600 / DT
-for k in range(k0, NIT+1):
+for k in range(k0, NIT):
     sys.stdout.flush()
 
     if (k > 3600 * 1 / DT) and (k <= 3600 * 11 / DT):
@@ -467,5 +468,5 @@ for k in range(k0, NIT+1):
         # if(k==359):
         #    thebug
 
-execfile('plotCurves_struc2.py')
-execfile('SaveSimData_NMPC_olga.py')
+execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\SaveSimData_NMPC_olga.py')

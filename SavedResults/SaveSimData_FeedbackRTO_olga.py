@@ -116,4 +116,4 @@ simData['simTime'] = sim_time
 simData['R0'] = R0
 simData['R'] = KF.R
 
-sio.savemat('SimData_OnSOC_Nominal_2019.11.17_Olga.mat', simData)
+sio.savemat('SavedResults\\Nominal_FeedbackRTO.mat', simData)

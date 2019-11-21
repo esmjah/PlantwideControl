@@ -117,4 +117,4 @@ simData['J_NMPC'] = J
 simData['Ju_NMPC'] = Ju_NMPC
 simData['simTime'] = sim_time
 
-sio.savemat('SimData_NMPC_GOR_2018.09.01_Olga_fine.mat', simData)
+sio.savemat('SavedResults\\Nominal_NMPC.mat', simData)

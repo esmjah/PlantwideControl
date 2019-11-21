@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 plt.close('all')
 
 setPointsModelicaTags = ['uTOP', 'uWHD1', 'uWHD2', 'net.PCA1.setPoint', 'net.PCA2.setPoint']

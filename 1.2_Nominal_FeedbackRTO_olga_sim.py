@@ -253,8 +253,6 @@ Ti = 14
 Td = 0
 du_max = np.array([3e-4,   3e-4,   1.0e2,   2.0e2,   2.0e2])
 
-
-
 for k in range(k0, NIT):
     sys.stdout.flush()
 
@@ -281,7 +279,7 @@ for k in range(k0, NIT):
     A_inv = np.linalg.inv(-A)
     Ju = np.array(C * (A_inv * B) + D)[0]
 
-    if (k >= k0Control):
+    if k >= k0Control:
         Error_k = -Ju*scale_U
         IntegralError += Error_k
         d_Error_dt = (Error_k - Error_k_1) / DT
@@ -363,5 +361,5 @@ for k in range(k0, NIT):
         # if(k==359):
         #    thebug
 
-execfile('plotCurves_struc2.py')
-execfile('SaveSimData_FeedbackRTO_olga.py')
+execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\SaveSimData_FeedbackRTO_olga.py')

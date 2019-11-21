@@ -111,7 +111,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_cost
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\nominal_cost
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_cost
 %%
 figure('Name','DOF')
 clf
@@ -148,7 +148,7 @@ ylabel('$w_{\textrm{inj,B}}$ [kg/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_injections
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\nominal_injections
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_injections
 %%
 figure('Name','NMPC Pressure Controls')
 clf
@@ -200,7 +200,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\constrained_inputs
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\MPC_pressure_controls
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls
 %%
 load SimData_OnSOC_Nominal_2018.06.25_Olga.mat
 figure('Name','Feedback RTO Pressure Controls')
@@ -253,7 +253,7 @@ axs.TickLabelInterpreter = 'latex';
 leg3 = legend('Optimal Setpoint','Olga Simulator','Dynamic Model','Active Constraint');
 set(leg3,'Location','NorthEast','Interpreter','latex','NumColumns',2)
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\constrained_inputs
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\FeedbackRTO_pressure_controls
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\FeedbackRTO_pressure_controls
 
 %%
 load SimData_SOC2_Nominal_2019.03.02.mat
@@ -304,7 +304,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 leg3 = legend('Optimal Setpoint','Olga Simulator','Active Constraint');
 set(leg3,'Location','NorthEast','Interpreter','latex')
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\SOC_pressure_controls
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\SOC_pressure_controls
 %%
 figure('Name','SOC_CVs')
 clf
@@ -337,7 +337,7 @@ ylabel('$w_{\textrm{Gwh,B}}$ [kg/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_injections
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\nominal_SOC_CVs
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_SOC_CVs
 %%
 plotInputs = 0;
 if(plotInputs)

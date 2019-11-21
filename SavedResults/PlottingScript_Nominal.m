@@ -2,11 +2,11 @@ clc
 clear all
 close all
 %load('SimData_NCO_d1_2017.05.18_testModel.mat')
-load SimData_SOC2_Nominal_2019.03.02.mat
+load Nominal_SelfOptimizing.mat
 simTime_SOC = simTime/3600;
 
-load SimData_OnSOC_Nominal_2018.06.25_Olga.mat
-load SimData_NMPC_Nominal_2018.06.24_Olga.mat
+load Nominal_FeedbackRTO.mat
+load Nominal_NMPC.mat
 
 
 plotStates = 0;
@@ -112,6 +112,7 @@ axs.TickLabelInterpreter = 'latex';
 
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_cost
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_cost
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\nominal_cost
 %%
 figure('Name','DOF')
 clf
@@ -149,6 +150,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_injections
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_injections
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\nominal_injections
 %%
 figure('Name','NMPC Pressure Controls')
 clf
@@ -201,6 +203,7 @@ axs.TickLabelInterpreter = 'latex';
 
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\constrained_inputs
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls
 %%
 load SimData_OnSOC_Nominal_2018.06.25_Olga.mat
 figure('Name','Feedback RTO Pressure Controls')
@@ -254,7 +257,7 @@ leg3 = legend('Optimal Setpoint','Olga Simulator','Dynamic Model','Active Constr
 set(leg3,'Location','NorthEast','Interpreter','latex','NumColumns',2)
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\constrained_inputs
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\FeedbackRTO_pressure_controls
-
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\FeedbackRTO_pressure_controls
 %%
 load SimData_SOC2_Nominal_2019.03.02.mat
 simTime_SOC = simTime/3600;
@@ -305,6 +308,7 @@ axs.TickLabelInterpreter = 'latex';
 leg3 = legend('Optimal Setpoint','Olga Simulator','Active Constraint');
 set(leg3,'Location','NorthEast','Interpreter','latex')
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\SOC_pressure_controls
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\SOC_pressure_controls
 %%
 figure('Name','SOC_CVs')
 clf
@@ -338,6 +342,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_injections
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_SOC_CVs
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\nominal_SOC_CVs
 %%
 plotInputs = 0;
 if(plotInputs)

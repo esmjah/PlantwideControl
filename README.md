@@ -1,5 +1,5 @@
 # Introduction 
-This repository contains the codes for simulation is article "Plantwide control of an oil production network"m submitten to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is under currently under review. A draft version of the article can be seen here.
+This repository contains the codes for simulation is article "Plantwide control of an oil production network"m submitten to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is under currently under review. A draft version of the article can be seen [here](Article/PlanWideOil_June2019.pdf).
 
 Before commiting, please make sure your code conforms to the agreed convetions found in:
 - [Python convetions](conventions.MD)

@@ -474,5 +474,5 @@ for k in range(0, NIT+1):
         Juh_NMPC.append(Ju)
         simTime.append(k*DT)
 
-execfile('plotCurves_struc2.py')
-execfile('SaveSimData_NMPC_olga.py')
+execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\SaveSimData_NMPC_olga.py')

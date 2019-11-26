@@ -143,9 +143,6 @@ for k in range(len(controlTagsModelica)):
 qPid = 1
 rPid = 1
 
-# ocp.x =  [net.PCINL.intError, net.PCTOP.intError, net.PCA1.intError, net.PCT1.intError, net.PCA2.intError, net.PCT2.intError, net.PCT1Filter.y, net.PCT2Filter.y
-# , net.PCTOPFilter.y, net.PCA1Filter.y, net.PCA2Filter.y, net.PCINLFilter.y, net.w1.m_Ga, net.w1.m_Gw, net.w1.m_Lw, net.w2.m_Ga, net.w2.m_Gw, net.w2.m_Lw, net.p.m_gp, net.p.m_lp, net.p.m_gr, net.p.m_lr]
-
 Q = np.diag([qPid, qPid, qPid, qPid, qPid, qPid,
              #             net.w1.m_Ga, net.w1.m_Gw, net.w1.m_Lw, net.w2.m_Ga, net.w2.m_Gw, net.w2.m_Lw, net.p.m_gp, net.p.m_lp, net.p.m_gr, net.p.m_lr]
              1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]) * 0.1
@@ -181,56 +178,6 @@ if not openLoop:
         zSim = np.copy(z0)
         xSh.append(xSim)
 
-else:
-    readPreviousSimulation = True
-    if readPreviousSimulation:
-        # dataFile ='Network-march16.mat'
-        dataFile = 'yerrSim.mat'
-        data = sio.loadmat(dataFile)
-
-        yh = data['yh']
-        olgaTags = data['olgaTags']
-
-        olgaTags = [str(ti).rstrip() for ti in olgaTags]
-        OlgaTagIndex = {}
-
-        for k in range(len(olgaTags)):
-            OlgaTagIndex[olgaTags[k]] = k
-
-        NIT = min(int(np.floor(yh[-1][OlgaTagIndex["TIME"]] / DT)), NIT)
-
-        OlgaF = {}
-        for k in olgaTags:
-            OlgaF[k] = interp1d([yi[OlgaTagIndex['TIME']] for yi in yh], [yi[OlgaTagIndex[k]] for yi in yh])
-
-    else:
-        mh = []
-        time = []
-        x0k = x0 + [np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())]
-        xSh.append(x0k)
-        zf = None
-        for k in range(NIT):
-            [x0k, zf, y] = daeModel.oneStep(x0k, u, zf)
-            mh.append(y);
-            time.append((k + 1) * DT)
-            xSh.append(x0k)
-
-        OlgaF = {}
-        for k in range(len(measurementTagsOlga)):
-            OlgaF[measurementTagsOlga[k]] = interp1d(time, [yi[k] for yi in mh])
-
-        for k in range(len(controlTagsOlga)):
-            OlgaF[controlTagsOlga[k]] = interp1d([0] + time, [u[k]] + [u[k] for j in range(NIT)])
-
-        plotSimulation = True
-        if plotSimulation:
-            for sit in range(len(measurementTagsOlga)):
-                plt.figure()
-                plt.plot([(ti + 1) * DT for ti in range(NIT)],
-                         [OlgaF[measurementTagsOlga[sit]](ti + 1) * DT for ti in range(NIT)],
-                         label=measurementTagsModelica[sit])
-                plt.legend()
-
 xh = []
 uh = []
 yh = []
@@ -258,12 +205,9 @@ if openLoop or controlOlga:  # testing state estimation on
 
 extendedKalman = True
 
-
 KF.setState(x0, z0)
 x_hat = KF.getState()
 z_hat = ca.vertcat([ocp.variable(ocp.z[k].getName()).start for k in range(ocp.z.size())])
-
-
 
 # MPC = False
 nX = ocp.x.size()

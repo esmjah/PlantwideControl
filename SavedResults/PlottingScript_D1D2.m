@@ -5,9 +5,9 @@ close all
 format shortG
 
 % Pres distirbance
-load SimData_SOC2_Pres_2018.06.10.mat
-load SimData_NMPC_Pres_2018.06.20_Olga.mat
-load SimData_OnSOC_Pres_2018.06.12_Olga.mat
+load D1D2_SelfOptimizing.mat
+load D1D2_NMPC.mat
+load D1D2_FeedbackRTO.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -132,7 +132,8 @@ ylabel('L [\$/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_Pres
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_Pres
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\cost_Loss_Pres
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\cost_Loss_Pres
 %%
 figure('Name','Distirbances-P_res')
 clf
@@ -165,7 +166,8 @@ ylabel('$P_{\textrm{res,B}}$ [bar]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_Pres
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_Pres
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\disturbances_Pres
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\disturbances_Pres
 %%
 figure('Name','Inpus--Pres')
 clf
@@ -202,7 +204,8 @@ ylabel('$w_{\textrm{inj,B}}$ [kg/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_Pres
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_Pres
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\injections_Pres
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\injections_Pres
 %%
 if(plotInputs)
     nu = length(u_NMPC(1,:));

@@ -461,7 +461,7 @@ for k in range(0, NIT+1):
             print 'MonitorModelica', HEst.getOutput()  # /monitorScale
             sys.stdout.flush()
 
-    if k % 10 == 0:
+    if k % 36 == 0:
         if monitor:
             monitoredOlgah.append(yMonitor)
             monitoredModelicah.append(HEst.getOutput())

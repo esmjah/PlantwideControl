@@ -69,7 +69,7 @@ ocp.eliminateDependentParameterInterdependencies()
 ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
-DTMPC = 3*3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
+DTMPC = 3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
 
 scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -202,66 +202,15 @@ sys.stdout.flush()
 ## Start Simulator
 openLoop = False
 controlOlga = True
-NIT = int(np.ceil((DTMPC * 43 + 100) / DT))
+NIT = int(np.ceil((DTMPC * 55 + 100) / DT))
 xSh = []
-if not openLoop:
-    if controlOlga:
-        da = Olga.OLGA_connect(serverIP=serverIP, modelPrefix=model)
-        # Olga.OLGA_restart_time(da,True)
-    else:
-        xSim = np.copy(x0) + ca.vertcat([np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())])
-        zSim = np.copy(z0)
-        xSh.append(xSim)
-
+if controlOlga:
+    da = Olga.OLGA_connect(serverIP=serverIP, modelPrefix=model)
+    # Olga.OLGA_restart_time(da,True)
 else:
-    readPreviousSimulation = True
-    if readPreviousSimulation:
-        # dataFile ='Network-march16.mat'
-        dataFile = 'yerrSim.mat'
-        data = sio.loadmat(dataFile)
-
-        yh = data['yh']
-        olgaTags = data['olgaTags']
-
-        olgaTags = [str(ti).rstrip() for ti in olgaTags]
-        OlgaTagIndex = {}
-
-        for k in range(len(olgaTags)):
-            OlgaTagIndex[olgaTags[k]] = k
-
-        NIT = min(int(np.floor(yh[-1][OlgaTagIndex["TIME"]] / DT)), NIT)
-
-        OlgaF = {}
-        for k in olgaTags:
-            OlgaF[k] = interp1d([yi[OlgaTagIndex['TIME']] for yi in yh], [yi[OlgaTagIndex[k]] for yi in yh])
-
-    else:
-        mh = []
-        time = []
-        x0k = x0 + [np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())]
-        xSh.append(x0k)
-        zf = None
-        for k in range(NIT):
-            [x0k, zf, y] = daeModel.oneStep(x0k, u, zf)
-            mh.append(y)
-            time.append((k + 1) * DT)
-            xSh.append(x0k)
-
-        OlgaF = {}
-        for k in range(len(measurementTagsOlga)):
-            OlgaF[measurementTagsOlga[k]] = interp1d(time, [yi[k] for yi in mh])
-
-        for k in range(len(controlTagsOlga)):
-            OlgaF[controlTagsOlga[k]] = interp1d([0] + time, [u[k]] + [u[k] for j in range(NIT)])
-
-        plotSimulation = True
-        if plotSimulation:
-            for sit in range(len(measurementTagsOlga)):
-                plt.figure()
-                plt.plot([(ti + 1) * DT for ti in range(NIT)],
-                         [OlgaF[measurementTagsOlga[sit]](ti + 1) * DT for ti in range(NIT)],
-                         label=measurementTagsModelica[sit])
-                plt.legend()
+    xSim = np.copy(x0) + ca.vertcat([np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())])
+    zSim = np.copy(z0)
+    xSh.append(xSim)
 
 xh = []
 uh = []
@@ -482,5 +431,5 @@ for k in range(k0, NIT+1):
     # if(k==359):
     #    thebug
 
-execfile('plotCurves_struc2.py')
-execfile('SaveSimData_NMPC_olga.py')
+execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\SaveSimData_NMPC_olga.py')

@@ -117,4 +117,4 @@ simData['J_NMPC'] = J
 simData['Ju_NMPC'] = Ju_NMPC
 simData['simTime'] = sim_time
 
-sio.savemat('SavedResults\\D1D2_NMPC.mat', simData)
+sio.savemat('SavedResults\\D3D4_NMPC.mat', simData)

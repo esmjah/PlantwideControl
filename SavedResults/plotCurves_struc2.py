@@ -6,7 +6,7 @@ controledVariableModelicaTags = ['net.p.deltaP_valve', 'net.w1.deltaP_valve', 'n
                                  'net.PCA1.measurement', 'net.PCA2.measurement']
 
 setPointIndexInControl = []
-
+openLoop = False
 nInputs = uh[0].size()
 for tag in setPointsModelicaTags:
     for si in range(nInputs):

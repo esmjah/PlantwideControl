@@ -1,5 +1,5 @@
 # Introduction 
-This repository contains the codes for simulation is article "Plantwide control of an oil production network"m submitten to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is under under review. A draft version of the article can be seen [here](Article/PlanWideOil_June2019.pdf).
+This repository contains the codes and models for simulations in the article "Plantwide control of an oil production network"m submitten to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is under under review. A draft version of the article can be seen [here](Article/PlanWideOil_June2019.pdf).
 
 The purpose of this repository is that our results can be re-produced by other researchers. Also, other students/researchers may be interested in direction of our research.
 

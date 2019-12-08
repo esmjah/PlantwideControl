@@ -230,7 +230,7 @@ np.copyto(u_k, np.reshape(np.array(uOpt), ocp.u.size()))
 np.copyto(u_k_1, np.reshape(np.array(uOpt), ocp.u.size()))
 np.copyto(u0, np.reshape(np.array(uOpt), ocp.u.size()))
 k0 = int(0)
-k0Control = 3600 / DT
+k0Control = 2*3600 / DT
 
 uk = ca.DMatrix(u_k)
 

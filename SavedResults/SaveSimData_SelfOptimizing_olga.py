@@ -121,4 +121,4 @@ simData['y2'] = y_2
 simData['r1'] = r_WG1
 simData['r2'] = r_WG2
 
-sio.savemat('SavedResults\\D1D2_SelfOptimizing.mat', simData)
+sio.savemat('SavedResults\\D3D4_SelfOptimizing.mat', simData)

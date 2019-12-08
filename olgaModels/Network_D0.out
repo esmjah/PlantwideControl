@@ -1,0 +1,407 @@
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Annulus_1'.
+Ratio 0.049 between PIPE=PIPE_3, SECTION=2 and PIPE=PIPE_2, SECTION=1.
+Ratio 25 between PIPE=PIPE_2, SECTION=20 and PIPE=PIPE_1B, SECTION=1.
+Ratio 0.2 between PIPE=PIPE_1B, SECTION=10 and PIPE=PIPE_1A, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Tubing_1'.
+Ratio 2.1 between PIPE=PIPE_3, SECTION=18 and PIPE=PIPE_2, SECTION=1.
+Ratio 4.9 between PIPE=PIPE_2, SECTION=3 and PIPE=PIPE_1, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Pipeline'.
+Ratio 3 between PIPE=PIPE-4, SECTION=10 and PIPE=PIPE-5, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Annulus_2'.
+Ratio 0.049 between PIPE=PIPE_3, SECTION=2 and PIPE=PIPE_2, SECTION=1.
+Ratio 25 between PIPE=PIPE_2, SECTION=20 and PIPE=PIPE_1B, SECTION=1.
+Ratio 0.2 between PIPE=PIPE_1B, SECTION=10 and PIPE=PIPE_1A, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Tubing_2'.
+Ratio 2.1 between PIPE=PIPE_3, SECTION=18 and PIPE=PIPE_2, SECTION=1.
+Ratio 4.9 between PIPE=PIPE_2, SECTION=3 and PIPE=PIPE_1, SECTION=1.
+
+
+
+     **************************************************************
+     *                                                            *
+     *                                                            *
+     *    XXXXXXX     XXX               XXXXXXX        XXXXXXX    *
+     *   XX     XX    XXX              XX     XX      XX     XX   *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     * XXX       XXX  XXX            XXX            XXX       XXX *
+     * XXX       XXX  XXX            XXX   XXXXXXX  XXXXXXXXXXXXX *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     *   XX     XX    XXX              XX     XX    XXX       XXX *
+     *    XXXXXXX     XXXXXXXXXXXXX     XXXXXXX     XXX       XXX *
+     *                                                            *
+     *                                                            *
+     **************************************************************
+
+
+
+     A  T R A N S I E N T,  O N E  D I M E N S I O N A L  M O D E L
+
+     F O R  T H R E E - P H A S E  F L O W  I N  P I P E L I N E S
+
+
+
+     DELIVERED BY    :   Schlumberger
+
+     VERSION         :   OLGA 2014.1.0.122363
+
+     SUPPORT         :   OlgaSupport@slb.com
+
+     DATE            :   19-02-27
+
+     PROJECT         :   Petronics
+     TITLE           :   Gas Lift Well
+     AUTHOR          :   Gisle Otto Eikrem
+     CASE NAME       :   C:\Net2014.1\Network_D0
+     INPUT FILE      :   Network_D0.genkey
+     PVT FILE        :   gisle.tab
+
+     FLOWMODEL       :   OLGA
+
+     CPU CORES USED  :   4
+     CORES AVAILABLE :   8
+     PHYSICAL CPUs   :   4
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Injection_2': 0.2 m3
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Injection_1': 0.2 m3
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Separator': 37.6991 m3
+
+
+Internal node with label 'Manifold' is assigned default volume (0.219656 m3)
+
+*****************************************************
+      Results at Simulation Time: 0s
+*****************************************************
+
+
+
+Time step information:
+
+--*++*-- Time: 0.000e+000s. Step no: 0/17280000. Current step-size: 1.000e-002s --*++*--
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: PIPELINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: OIL-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: GAS-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+     MASS SOURCE INFORMATION:
+     ************************
+     SOURCE    BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  TEMP
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    SOURCE
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     Gas_Source_1 Annulus_1 PIPE_3    1     1.30      0.00      0.00      2.321e+004 60.00     
+     Gas_Source_2 Annulus_2 PIPE_3    1     1.32      0.00      0.00      2.372e+004 60.00     
+
+
+     WELL PRODUCTION INFORMATION:
+     ****************************
+     WELL      BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  RESERVOIR
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    TEMP
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     IPR_1     WellFlow_1 PIPE_1    1     0.00      14.65     0.00      -2.372e+006 108.00    
+     IPR_2     WellFlow_2 PIPE_1    1     0.00      16.09     0.00      -2.601e+006 108.00    
+
+
+     CHOKE INFORMATION:
+     ******************
+
+
+     VALVE: Gaslift_Valve_1, BRANCH: Annulus_1, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 8.996e+004   (PA)
+     CHOKE MASS FLOW   = 1.30         (KG/S)
+     CHOKE PRESSURE    = 9.531e+006   (PA)
+     CHOKE TEMPERATURE = 102.30       (C)
+     CHOKE VELOCITY    = 58.23        (M/S)
+
+     VALVE: Prod_Choke_1, BRANCH: Tubing_1, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.924e-003   (M2)
+     CHOKE OPENING = 0.50         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.845e+005   (PA)
+     CHOKE MASS FLOW   = 15.94        (KG/S)
+     CHOKE PRESSURE    = 2.487e+006   (PA)
+     CHOKE TEMPERATURE = 87.67        (C)
+     CHOKE VELOCITY    = 68.57        (M/S)
+
+     VALVE: Valve, BRANCH: Pipeline, PIPE: PIPE-5, SECTION: 11
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.366e-002   (M2)
+     CHOKE OPENING = 0.55         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 9.474e+004   (PA)
+     CHOKE MASS FLOW   = 33.36        (KG/S)
+     CHOKE PRESSURE    = 4.462e+005   (PA)
+     CHOKE TEMPERATURE = 51.00        (C)
+     CHOKE VELOCITY    = 97.42        (M/S)
+
+     VALVE: VALVE-6, BRANCH: Oil-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 9.121e-003   (M2)
+     CHOKE OPENING = 0.50         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.008e+004   (PA)
+     CHOKE MASS FLOW   = 11.47        (KG/S)
+     CHOKE PRESSURE    = 4.418e+005   (PA)
+     CHOKE TEMPERATURE = 64.73        (C)
+     CHOKE VELOCITY    = 52.63        (M/S)
+
+     VALVE: VALVE-7, BRANCH: Gas-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.291e-002   (M2)
+     CHOKE OPENING = 0.52         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.398e+004   (PA)
+     CHOKE MASS FLOW   = 21.89        (KG/S)
+     CHOKE PRESSURE    = 3.834e+005   (PA)
+     CHOKE TEMPERATURE = 55.97        (C)
+     CHOKE VELOCITY    = 79.28        (M/S)
+
+     VALVE: Gaslift_Valve_2, BRANCH: Annulus_2, PIPE: PIPE_1B, SECTION: 10
+     ===========================================================

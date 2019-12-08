@@ -1,0 +1,15 @@
+OLGA license check(s) failed
+
+"olga 2014.1" failed with code -15.
+Cannot connect to license server system.
+ The license server manager (lmgrd) has not been started yet,
+ the wrong port@host or license file is being used, or the
+ port or hostname in the license file has been changed.
+Feature:       olga
+Server name:   lisens03.ivt.ntnu.no
+License path:  @lisens03.ivt.ntnu.no;C:\Program Files (x86)\SPT Group\Licenses\olga.lic;
+FLEXnet Licensing error:-15,570
+For further information, refer to the FLEXnet Licensing documentation,
+available at "www.flexerasoftware.com".
+
+Please also see the file "Licenses\debug.log" in the OLGA installation directory.

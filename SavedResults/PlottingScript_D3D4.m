@@ -132,8 +132,8 @@ ylabel('L [\$/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_GOR
-print -depsc C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
-print -dpdf C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\cost_Loss_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\cost_Loss_GOR
 %%
 figure('Name','Distirbances-GOR')
 clf
@@ -141,7 +141,7 @@ rect = [0, 0, 12, 10];
 set(gcf,'Color',[1,1,1],'PaperUnits','centimeters','PaperSize',[12 10],'PaperPosition',rect)
 subplot(2,1,1,'OuterPosition',[0 1/2 1 1/2])
 plot(time,yOlgaMoni(N1:N2,11),'LineWidth',1)
-title('Well A reservoir pressure','Interpreter','latex')
+title('Well A gas-oil ratio','Interpreter','latex')
 hold on
 plot(time,yKfMoni(N1:N2,11),'--','Color',col2,'LineWidth',1)
 leg1 = legend('Actual (Olga Simulator)','EKF Estimation (Dynamic Model)');
@@ -154,7 +154,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 subplot(2,1,2,'OuterPosition',[0 0 1 1/2])
 plot(time,yOlgaMoni(N1:N2,12),'LineWidth',1)
-title('Well B reservoir pressure','Interpreter','latex')
+title('Well B gas-oil ratio','Interpreter','latex')
 hold on
 plot(time,yKfMoni(N1:N2,12),'--','Color',col2,'LineWidth',1)
 leg2 = legend('Actual (Olga Simulator)','EKF Estimation (Dynamic Model)');
@@ -166,8 +166,8 @@ ylabel('$GOR_{\textrm{B}}$ [-]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_GOR
-print -depsc C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
-print -dpdf C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\disturbances_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\disturbances_GOR
 %%
 figure('Name','Inputs--Gor')
 clf
@@ -204,8 +204,8 @@ ylabel('$w_{\textrm{inj,B}}$ [kg/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_GOR
-print -depsc C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
-print -dpdf C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\injections_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\injections_GOR
 %%
 if(plotInputs)
     nu = length(u_NMPC(1,:));

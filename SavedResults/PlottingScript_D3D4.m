@@ -133,7 +133,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_GOR
 print -depsc C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
-print -depdf C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
 %%
 figure('Name','Distirbances-GOR')
 clf
@@ -167,7 +167,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_GOR
 print -depsc C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
-print -depdf C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
 %%
 figure('Name','Inputs--Gor')
 clf
@@ -205,7 +205,7 @@ axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_GOR
 print -depsc C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
-print -depdf C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
 %%
 if(plotInputs)
     nu = length(u_NMPC(1,:));

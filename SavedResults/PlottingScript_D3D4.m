@@ -5,9 +5,9 @@ close all
 format shortG
 
 % GOR distirbance
-load SimData_SOC2_GOR_2018.06.11.mat
-load SimData_NMPC_GOR_2018.06.23_Olga.mat
-load SimData_OnSOC_GOR_2018.06.21_Olga.mat
+load D3D4_SelfOptimizing.mat
+load D3D4_NMPC.mat
+load D3D4_FeedbackRTO.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -132,7 +132,8 @@ ylabel('L [\$/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_GOR
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\cost_Loss_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
+print -depdf C:\Git\PlantwideControl\SavedResults\Figurescost_Loss_GOR
 %%
 figure('Name','Distirbances-GOR')
 clf
@@ -165,7 +166,8 @@ ylabel('$GOR_{\textrm{B}}$ [-]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_GOR
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\disturbances_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
+print -depdf C:\Git\PlantwideControl\SavedResults\Figuresdisturbances_GOR
 %%
 figure('Name','Inputs--Gor')
 clf
@@ -202,7 +204,8 @@ ylabel('$w_{\textrm{inj,B}}$ [kg/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_GOR
-print -depsc C:\Users\Admin\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_GOR
+print -depsc C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
+print -depdf C:\Git\PlantwideControl\SavedResults\Figuresinjections_GOR
 %%
 if(plotInputs)
     nu = length(u_NMPC(1,:));

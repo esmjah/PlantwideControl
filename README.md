@@ -7,8 +7,10 @@ The purpose of this repository is that our results can be re-produced by other r
 ### Simplified dynamic model:
 The simplified dynamic model of the process is implemented in Modelica. The model components have been developed and testes using the [Dymola](https://www.3ds.com/products-services/catia/products/dymola/) software. The models used in our simulation are availabe the [networkModels](networkModels/) directory.
 
-The Modelica model consists of two main components:
-
+The Modelica model consists of three main components:
+- Well
+- Manifold
+- Pipeline-riser
 
 # CasADi
 The Modelica compiler generates a functional mock-up unit (FMU), which is a standard model component that can be shared with other applications. The resulting model was imported to CasADi

@@ -12,12 +12,13 @@ This project relied on the following open-source third-party libraries:
 * [Python v. 2.7.10](https://www.python.org/downloads/release/python-2710/), together with libraries from the de facto package-management system like numpy and scipy.
 
 Further, this project relied on the following proprietary software
-* Olga
-* Dymola
-* Matlab
+* [Olga](https://www.software.slb.com/products/olga)
+* [Dymola](https://www.3ds.com/products-services/catia/products/dymola/)
+* [Matlab](https://www.mathworks.com/products/matlab.html)
 
 # Models
-### The processThe oil production network modeled in Olga is regarded as the process to be controlled. This model is available on this repository on the path /PlantwideControl/olgaModels/. The oil production network model in Olga also holds stabilizing low-level PID controllers
+### The process
+The oil production network, modeled in Olga, is regarded as the process to be controlled. This model is available on this repository on the path /PlantwideControl/olgaModels/. The oil production network model in Olga also holds stabilizing low-level PID controllers
 The communication between the Olga Simulator and the controllers was done by OPC Data Access where the Olga OPC Server is a built-in module of the simulator and the OPC client is coded in Python.
 ### Simplified dynamic model:
 The simplified dynamic model of the process is implemented in Modelica. The model components have been developed and tested using the [Dymola](https://www.3ds.com/products-services/catia/products/dymola/) software. The models used in our simulation are available the [networkModels](networkModels/) directory.  
@@ -26,6 +27,7 @@ The Modelica model consists of four main components:
 - Well
 - Manifold
 - Pipeline-riser
+- Separator
 
 The simplified model in Modelica is compiled to a Functional Mock-up Unit (FMU) and imported with CasADi to implement a Nonlinear Model Predictive Control (NMPC).  We implement an Extended Kalman Filter (EKF) (see, /PlantwideControl/StateEstimator/) to estimate the fluid flow state in the oil production network. Then, the latest state estimate is used to instantiate an Open-Loop Nonlinear Optimal Control Problem based on Single-Shooting (see, /PlantwideControl/NMPC).  The NPMC tools relies on Automatic Differentiation tools in CasADi coupled to the IDAS package in SUNDIALS for the solution of differential-algebraic equations (DAE) systems and Ipopt for the solution of the associated Nonlinear Programming problem. Further, the simplified models are also used for analyses aiming at control structure design, e.g., to check controllability, observability, and other input-output gains.
 

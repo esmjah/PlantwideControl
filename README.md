@@ -3,7 +3,7 @@ This repository contains the code and models for simulations in the article "Pla
 
 The purpose of this repository is to increase the transparency of our simulation results and provide inspiration for other researchers. The root folder of this repository contains the scripts for the experiments in the paper. However, the software is provided 'as is', without warranty of any kind. Particularly, this software relies on third-party libraries and proprietary software that are constantly updated.  Thus, the authors take no responsibility for code maintenance and installation instructions of any kind.
 
-This project relied on the following open-source third-party libraries:
+This project relies on the following open-source third-party libraries:
 * [CasADi](https://web.casadi.org/) v 2.0.0
 * [JModelica.org](https://jmodelica.org/) v 1.17
 * [Ipopt](https://github.com/coin-or/Ipopt)

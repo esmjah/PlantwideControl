@@ -383,4 +383,4 @@ for k in range(k0, NIT):
         #    thebug
 
 execfile('SavedResults\\SaveSimData_SelfOptimizing_olga.py')
-execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\plotCurves_olga.py')

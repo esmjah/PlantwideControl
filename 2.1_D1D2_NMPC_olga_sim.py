@@ -461,7 +461,7 @@ for k in range(0, NIT+1):
             print 'MonitorModelica', HEst.getOutput()  # /monitorScale
             sys.stdout.flush()
 
-    if k % 36 == 0:
+    if k % 10 == 0:
         if monitor:
             monitoredOlgah.append(yMonitor)
             monitoredModelicah.append(HEst.getOutput())
@@ -474,5 +474,5 @@ for k in range(0, NIT+1):
         Juh_NMPC.append(Ju)
         simTime.append(k*DT)
 
-execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\plotCurves_olga.py')
 execfile('SavedResults\\SaveSimData_NMPC_olga.py')

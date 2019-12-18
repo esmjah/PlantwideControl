@@ -521,10 +521,7 @@ package gasliftNetworks
 
     replaceable package components = networkModels.networkComponents;
 
-    parameter Real[15] x0 = {1.28004, 9.99901e+006, 4745.12, 332.637, 8060.01, 1.30071, 1.04357e+007, 4917.94, 323.47, 8538.99, 2.51954e+006, 1795.42, 26909.2, 46.339, 1576.8};
-
-    // {160, 1, 1.0165e+007, 5078.23, 273.556, 7973.3, 170, 1, 1.06757e+007, 5230.69, 267.252, 8657.19, 2.19496e+006, 1411.81, 26432.9, 38.3596, 2130.84};
-    // x0 = {160, 1, 1.01845e+007, 5107.89, 274.462, 8208.55, 170, 1, 1.0658e+007, 5241.01, 265.91, 8831.32, 2.08477e+006, 1485.67, 26310.4, 43.4316, 1716.27};
+    parameter Real[15] x0 = {1.29622, 9.9943e+006, 4855.59, 337.873, 8066.91, 1.32441, 1.04289e+007, 5028.53, 330.103, 8549.66, 2.543e+006, 1812.14, 26909, 46.412, 1563.45};
 
     SI.Pressure Dp_w1(min=0,nominal=1e5);
     SI.Pressure Dp_w2(min=0,nominal=1e5);
@@ -566,18 +563,18 @@ package gasliftNetworks
   end netSim;
 
   model netSim_PIDstruc2
-    extends networkModels.gasliftNetworks.netSim;
+      extends networkModels.gasliftNetworks.netSim;
 
     import SI = Modelica.SIunits;
     import Modelica.Constants.R;
     import Modelica.Constants.pi;
 
-    parameter Real u0PCINL(min = 0, max = 1) = 0.573572;
+    parameter Real u0PCINL(min = 0, max = 1) = 0.577059;
     parameter Real ZcINL = p.par.Z_c0; //x0[13]/p.par.P1; //1 + 1e-5*(x0[13] - p.par.P_z)*p.par.Slope_z;
     parameter Real y0PCINL(min = 2e6, max = 4e6) = ZcINL * x0[12] * R * p.par.T1 / (p.par.M_Gp * (p.V1 - x0[13] / p.par.rho_L));
     //Modelica.Blocks.Interfaces.RealInput pipelinePressureSetPoint(start=y0PCINL);
-    parameter Real KcPCINL = 2e-5;
-    parameter Real TiPCINL = 300;
+    parameter Real KcPCINL = 4e-6;
+    parameter Real TiPCINL = 120;
     parameter Real x0PCINL = -TiPCINL*u0PCINL/KcPCINL;
 
     components.PI PCINL(Kc=KcPCINL, Ti=TiPCINL, maxSetPoint=40e5, minSetPoint=20e5, satMax=1,satMin=0,intError(start=x0PCINL, nominal=3.00778e7), u(start = u0PCINL));
@@ -586,17 +583,17 @@ package gasliftNetworks
     parameter Real ZcTOP = p.par.Z_c0; //x0[13]/p.par.P1; //1 + 1e-5*(x0[13] - p.par.P_z)*p.par.Slope_z;
     parameter Real y0PCTOP(min = 0) = ZcTOP*x0[14]*R*p.par.T2/(p.par.M_Gr*((pi * p.par.r2 ^ 2) * (p.par.L2 + p.par.L3) - x0[15] / p.par.rho_L)) - sep.Psep_nom;
     Modelica.Blocks.Interfaces.RealInput valveDP_top_SetPoint(start=y0PCTOP);
-    parameter Real KcPCTOP = -5e-006;
-    parameter Real TiPCTOP = 900;
+    parameter Real KcPCTOP = -2e-7;
+    parameter Real TiPCTOP = 300;
     parameter Real x0PCTOP = -TiPCTOP*u0PCTOP/KcPCTOP;
 
     components.PI PCTOP(Kc=KcPCTOP, Ti=TiPCTOP, satMax=1,satMin=0,intError(start=x0PCTOP, nominal=1.08894e8), u(start = u0PCTOP));
 
-    parameter Real u0PCA1(min = 0, max = 1) = 0.580034;
+    parameter Real u0PCA1(min = 0, max = 1) = 0.580743;
     parameter Real ZcA1 = w1sim.par.Z_ca; //x0[3]/100e5;//1 + 1e-5*(x0[3] - w1sim.par.P_z)*w1sim.par.Slope_z;
     parameter Real y0PCA1(min = 60e5, max = 100e5) = ZcA1 * R * w1sim.par.T_a * x0[3] / (w1sim.par.M_G_a * w1sim.par.V_a);
     parameter Real KcPCA1 = 3e-5;
-    parameter Real TiPCA1 = 300;
+    parameter Real TiPCA1 = 600;
     parameter Real x0PCA1 = -TiPCA1*u0PCA1/KcPCA1;
 
     components.PI PCA1(Kc=KcPCA1,Ti=TiPCA1, maxSetPoint=110e5, minSetPoint=70e5, satMax=1, satMin=0, intError(start=x0PCA1, nominal=3.02824e7), u(start=u0PCA1));
@@ -605,17 +602,17 @@ package gasliftNetworks
     parameter Real ZcT1 = w1sim.par.Z_ct; //x0[3]/100e5; //1 + 1e-5*(x0[3] - w1sim.par.P_z)*w1sim.par.Slope_z;
     parameter Real y0PCT1(min = 0) = ZcT1*x0[4]*R*w1sim.par.T_r/((w1sim.V_r - (x0[5]-w1sim.par.rho_L*w1sim.par.L_bh*w1sim.par.S_bh)/w1sim.par.rho_L)*w1sim.par.M_G_r_t) - y0PCINL - m.Fric;
     Modelica.Blocks.Interfaces.RealInput valveDP_whd1_SetPoint(start=y0PCT1);
-    parameter Real KcPCT1 = -0.004e-5;
-    parameter Real TiPCT1 = 900;
+    parameter Real KcPCT1 = -4e-9;
+    parameter Real TiPCT1 = 100;
     parameter Real x0PCT1 = -TiPCT1*u0PCT1/KcPCT1;
 
     components.PI PCT1(Kc=KcPCT1,Ti=TiPCT1, satMax=1,satMin=0,intError(start=x0PCT1, nominal=9.25742e9), u(start = u0PCT1));
 
-    parameter Real u0PCA2(min = 0, max = 1) = 0.607185;
+    parameter Real u0PCA2(min = 0, max = 1) = 0.608612;
     parameter Real ZcA2 = w2sim.par.Z_ca; //x0[9]/100e5; //1 + 1e-5*(x0[9] - w1sim.par.P_z)*w2sim.par.Slope_z;
     parameter Real y0PCA2(min = 60e5, max = 100e5) = ZcA2 * R * w2sim.par.T_a * x0[8] / (w2sim.par.M_G_a * w2sim.par.V_a);
     parameter Real KcPCA2 = 3e-5;
-    parameter Real TiPCA2 = 300;
+    parameter Real TiPCA2 = 600;
     parameter Real x0PCA2 = -TiPCA2*u0PCA2/KcPCA2;
 
     components.PI PCA2(Kc=KcPCA2,Ti=TiPCA2, maxSetPoint=115e5, minSetPoint=75e5, satMax=1, satMin=0, intError(start=x0PCA2, nominal=3.02436e7), u(start=u0PCA2));
@@ -624,55 +621,36 @@ package gasliftNetworks
     parameter Real ZcT2 = w2sim.par.Z_ct; //x0[9]/100e5; //1 + 1e-5*(x0[9] - w1sim.par.P_z)*w2sim.par.Slope_z;
     parameter Real y0PCT2(min = 0) = ZcT2*x0[9]*R*w2sim.par.T_r/((w2sim.V_r - (x0[10]-w2sim.par.rho_L*w2sim.par.L_bh*w2sim.par.S_bh)/w2sim.par.rho_L)*w2sim.par.M_G_r_t) - y0PCINL - m.Fric;
     Modelica.Blocks.Interfaces.RealInput valveDP_whd2_SetPoint(start=y0PCT2);
-    parameter Real KcPCT2 = -0.004e-5;
-    parameter Real TiPCT2 = 900;
+    parameter Real KcPCT2 = -4e-9;
+    parameter Real TiPCT2 = 100;
     parameter Real x0PCT2 = -TiPCT2*u0PCT2/KcPCT2;
 
     components.PI PCT2(Kc=KcPCT2,Ti=TiPCT2, satMax=1, satMin=0, intError(start=x0PCT2, nominal=8.86107e9), u(start = u0PCT2));
 
-    //components.firstOrder SPTOPFilter(k=1, T=300, y(start = y0PCTOP, nominal = 1e5));
-
-    components.firstOrder PCT1Filter(k=1, T=300, y(start = u0PCT1, nominal = 1));
-    components.firstOrder PCT2Filter(k=1, T=300, y(start = u0PCT2, nominal = 1));
-    components.firstOrder PCTOPFilter(k=1, T=300, y(start = u0PCTOP, nominal = 1));
-
-    components.firstOrder PCA1Filter(k=1, T=0.1, y(start = u0PCA1, nominal = 1));
-    components.firstOrder PCA2Filter(k=1, T=0.1, y(start = u0PCA2, nominal = 1));
-    components.firstOrder PCINLFilter(k=1, T=0.1, y(start = u0PCINL, nominal = 1));
-
   equation
-  connect(valveDP_whd1_SetPoint,PCT1.extSetPoint);
-  PCT1.measurement = w1sim.deltaP_valve;
+    connect(valveDP_whd1_SetPoint,PCT1.extSetPoint);
+    PCT1.measurement = w1sim.deltaP_valve;
 
-  connect(valveDP_whd2_SetPoint,PCT2.extSetPoint);
-  PCT2.measurement = w2sim.deltaP_valve;
+    connect(valveDP_whd2_SetPoint,PCT2.extSetPoint);
+    PCT2.measurement = w2sim.deltaP_valve;
 
-  //valveDP_top_SetPoint = SPTOPFilter.y;
-  connect(valveDP_top_SetPoint,PCTOP.extSetPoint);
-  PCTOP.measurement = p.deltaP_valve;
+    connect(valveDP_top_SetPoint,PCTOP.extSetPoint);
+    PCTOP.measurement = p.deltaP_valve;
 
-  connect(PCT1.u,PCT1Filter.u);
-  connect(PCT1Filter.y,PCA1.extSetPoint);
-  PCA1.measurement = w1sim.fin.p;
+    connect(PCT1.u,PCA1.extSetPoint);
+    PCA1.measurement = w1sim.fin.p;
 
-  connect(PCT2.u,PCT2Filter.u);
-  connect(PCT2Filter.y,PCA2.extSetPoint);
-  PCA2.measurement = w2sim.fin.p;
+    connect(PCT2.u,PCA2.extSetPoint);
+    PCA2.measurement = w2sim.fin.p;
 
-  connect(PCTOP.u,PCTOPFilter.u);
-  connect(PCTOPFilter.y,PCINL.extSetPoint);
-  PCINL.measurement = p.fin.p;
+    connect(PCTOP.u,PCINL.extSetPoint);
+    PCINL.measurement = p.fin.p;
 
-  connect(PCA1.u,PCA1Filter.u);
-  connect(PCA2.u,PCA2Filter.u);
-  connect(PCINL.u,PCINLFilter.u);
+    connect(PCA1.u,w1sim.z1);
+    connect(PCA2.u,w2sim.z1);
+    connect(PCINL.u,p.z);
 
-  connect(PCA1Filter.y,w1sim.z1);
-  connect(PCA2Filter.y,w2sim.z1);
-  //connect(PCINL.u,p.z);
-  connect(PCINLFilter.y,p.z);
-
-  //connect(pipelinePressureSetPoint,p.Pin_ss);
+    //connect(pipelinePressureSetPoint,p.Pin_ss);
 
     annotation (experiment(
         StopTime=36000,
@@ -703,9 +681,8 @@ package gasliftNetworks
 
     //2.27915000e+06;
     parameter SI.Pressure PCTOPSetPoint = netPid.ZcTOP*netPid.x0[14]*R*netPid.p.par.T2/(netPid.p.par.M_Gr*((pi * netPid.p.par.r2 ^ 2) * (netPid.p.par.L2 + netPid.p.par.L3) - netPid.x0[15] / netPid.p.par.rho_L)) - netPid.sep.Psep_nom;
-
-     components.gasManifoldStep gm1(offset = 1.28004,  height = 0.05, startTime=2*3600, fout(p(start=86.5e5)));
-     components.gasManifoldStep gm2(offset = 1.30071,  height = 0.05, startTime=4*3600, fout(p(start=91.6e5)));
+     components.gasManifoldStep gm1(offset = 1.29633,  height = 0.03, startTime=2*3600, fout(p(start=86.5e5)));
+     components.gasManifoldStep gm2(offset = 1.32452,  height = 0.03, startTime=4*3600, fout(p(start=91.6e5)));
      //Modelica.Blocks.Sources.Step gm1_step(offset = 1,  height = 0.07, startTime=4*3600);
      //Modelica.Blocks.Sources.Step gm2_step(offset = 1,  height = 0.07, startTime=4*3600);
 
@@ -721,8 +698,11 @@ package gasliftNetworks
      Modelica.Blocks.Sources.Step u4(offset = PCT1SetPoint,  height = -0.1e5, startTime=7*3600);
      Modelica.Blocks.Sources.Step u5(offset = PCT2SetPoint,  height = -0.1e5, startTime=8*3600);
 
-     Modelica.Blocks.Sources.Step GOR1(offset = 0,  height = 0.01, startTime=5*3600);
-     Modelica.Blocks.Sources.Step GOR2(offset = 0,  height = 0.01, startTime=5*3600);
+     //Modelica.Blocks.Sources.Constant GOR1(k = 0);
+     //Modelica.Blocks.Sources.Constant GOR2(k = 0);
+
+     Modelica.Blocks.Sources.Step GOR1(offset = 0, height = 0.005, startTime=2*3600);
+     Modelica.Blocks.Sources.Step GOR2(offset = 0, height = 0.005, startTime=4*3600);
 
      //Modelica.Blocks.Sources.Constant Pr1(k = 160);
      //Modelica.Blocks.Sources.Constant Pr2(k = 170);
@@ -747,17 +727,12 @@ package gasliftNetworks
      connect(u4.y, netPid.valveDP_whd1_SetPoint);
      connect(u5.y, netPid.valveDP_whd2_SetPoint);
      connect(d_Psep.y,netPid.sep.d_Psep)
-    annotation (experiment(
-        StopTime=36000,
-        Interval=10,
-        Tolerance=1e-008,
-        Algorithm="Dassl"), __Dymola_experimentSetupOutput);
+  annotation (experiment(
+      StopTime=36000,
+      Interval=10,
+      Tolerance=1e-008,
+      Algorithm="Dassl"));
 
-    annotation (experiment(
-        StopTime=36000,
-        Interval=10,
-        Tolerance=1e-008,
-        Algorithm="Dassl"));
   end netSim_PIDstruc2_Simulate;
 
   partial model netGOR

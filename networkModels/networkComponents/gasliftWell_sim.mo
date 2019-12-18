@@ -38,8 +38,8 @@ model gasliftWell_Sim
 
 parameter SI.Length r_r=par.D_w/2;
 parameter SI.Volume V_r=pi*((par.D_w/2)^2)*par.L_h+pi*((par.D_w/2)^2)*par.L_r;
-parameter SI.Volume V_bh = par.L_bh*par.S_bh;
 
+parameter SI.Volume V_bh = par.L_bh*par.S_bh;
 Real alpha_G_m_in(min=0,max=1,start=0);
 //Real Z_c(min=0.5, max=1.5, start=1);
 
@@ -79,7 +79,6 @@ SI.Pressure F_b(start=14e5);
 //// Bottom-hole pressure
 SI.Pressure P_bh(start=6.13e6,min=0,max=par.P_r,nominal=1e5);
 SI.Pressure P_bh_f(start=90e5,min=80e5,max=par.P_r,nominal=90e5);
-//Real P_res_f(min = 150, max = 200, start=160, nominal=160);
 /// Injection point pressure
 SI.Pressure P_r_b(start=6.13e6,min=0);
 
@@ -143,7 +142,7 @@ alpha_L_av= m_Lw/(par.rho_L*(V_bh+V_r));
 P_r_t=par.Z_ct*rho_G_r*R*par.T_r/(par.M_G_r_t);
 //P_r_t = max(fout.p,P_r_t);
 
-//Usg_av= (alpha_G_m_in*par.w_res_in+par.w_g_a_in)/(rho_G_r*pi*(r_r^2));
+//Usg_av= ((alpha_G_m_in0 + alpha_G_m_in)*par.w_res_in+par.w_g_a_in)/(rho_G_r*pi*(r_r^2));
 Usg_av*(rho_G_r*pi*(r_r^2)) = (alpha_G_m_in*par.w_res_in+w_G_f);
 
 U_M_av = Usl_av+Usg_av;
@@ -253,13 +252,10 @@ w_G_iph = par.K_i*w_L_r_in;
 GOR_m_t = w_G_out/w_L_out;
 
 //// Derivatives
-//der(P_res_f) = (P_res - P_res_f)/par.Tp2;
 der(w_G_f) = (fin.w - w_G_f)/par.Tp1;  // Transportation lag in annulus
 der(P_bh_f) = (P_bh - P_bh_f)/par.Tp2; // Transportation lag in tubing
 der(m_Ga) = w_G_f  - w_G_inj;  // Annulus volume integrating state
 der(m_Gw) = w_G_r_in + w_G_iph + w_G_inj + fout.w[1];
 der(m_Lw) = w_L_r_in - w_G_iph + fout.w[2];
-//der(P_bth) = (P_bh - P_bth)/tun.Tau;
-
   annotation (DymolaStoredErrors);
 end gasliftWell_Sim;

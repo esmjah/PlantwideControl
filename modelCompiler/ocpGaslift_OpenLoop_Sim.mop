@@ -1,0 +1,108 @@
+within ;
+
+
+
+optimization ocpGaslift_OpenLoop_Sim(objectiveIntegrand=net.p.fout.w[2]+gasPrice*(inputGas1+inputGas2)+0.1*(zManifold1+zManifold2+zPipe),startTime=0,finalTime=3600)
+
+networkModels.gasliftNetworks.netSim net(
+
+p.P2_t(min = 5.5e5),
+
+//w1sim.alpha_G_m_in(min = 0, max = 0,  nominal=1),
+//w2sim.alpha_G_m_in(min = 0, max = 0,  nominal=1),
+
+
+w1sim.P_bh_f(min = 80e5, max = 120e5, nominal = 1e5),
+w1sim.m_Ga(min = 3500, max = 6000, nominal = 4700),
+w1sim.m_Gw(min = 150,  max = 600, nominal = 400),
+w1sim.m_Lw(min = 5000, max = 12000, nominal = 7000),
+
+w2sim.P_bh_f(min = 80e5, max = 120e5, nominal = 1e5),
+w2sim.m_Ga(min = 3500, max = 6000, nominal = 4700),
+w2sim.m_Gw(min = 150, max = 600, nominal = 400),
+w2sim.m_Lw(min = 5000, max = 12000, nominal = 7500),
+
+p.m_gp(min = 1000, max = 2500, nominal = 2000),
+p.m_lp(min = 26000, max = 27800, nominal = 26350),
+p.m_gr(min = 10, max = 65, nominal = 45),
+p.m_lr(min = 1000, max = 4000,nominal = 2000)
+
+
+);
+
+
+parameter Real gasPrice(min =0, start =0) = 0.5;
+
+input Real Alpha1(min= 0,max=1,start=0,nominal=1);
+input Real Alpha2(min= 0,max=1,start=0,nominal=1);
+input Real P_res1(min= 160,max=160,start=160);
+input Real P_res2(min= 170,max=170,start=170);
+input Real inputGas1(min= 0.2,max=2,start=1);
+input Real inputGas2(min= 0.2,max=2,start=1);
+input Real zManifold1(min= 0.1,max=1,start=0.5);
+input Real zManifold2(min= 0.1,max=1,start=0.5);
+input Real zPipe(min= 0.04,max=1,start = 0.5);
+
+
+//input Real d_PI1(min= 0,max=0,start=0);
+//input Real d_PI2(min= 0,max=0,start=0);
+//input Real Alpha_Gm1(min= 0,max=0,start=0);
+//input Real Alpha_Gm2(min= 0,max=0,start=0);
+//input Real d_Psep(min= 0,max=0,start=0);
+
+
+Modelica.Blocks.Sources.Constant Pr1(k = P_res1);
+Modelica.Blocks.Sources.Constant Pr2(k = P_res2);
+Modelica.Blocks.Sources.Constant Alpha_Gm1(k = Alpha1);
+Modelica.Blocks.Sources.Constant Alpha_Gm2(k = Alpha2);
+networkModels.networkComponents.gasManifold gm1(u = inputGas1);
+networkModels.networkComponents.gasManifold gm2(u = inputGas2);
+Modelica.Blocks.Sources.Constant u1(k = zManifold1);
+Modelica.Blocks.Sources.Constant u2(k = zManifold2);
+Modelica.Blocks.Sources.Constant up(k = zPipe);
+Modelica.Blocks.Sources.Constant dPI1(k = 0);
+Modelica.Blocks.Sources.Constant dPI2(k = 0);
+Modelica.Blocks.Sources.Constant dPsep(k = 0);
+
+//Modelica.Blocks.Sources.Constant dPI1(k = d_PI1);
+//Modelica.Blocks.Sources.Constant dPI2(k = d_PI2);
+//Modelica.Blocks.Sources.Constant dPsep(k = d_Psep);
+
+Real Obj(min=0,max=100);
+
+initial equation
+
+
+//net.p.Alpha_L1_av = net.p.par.wL_in*net.p.rho_G1/(net.p.par.wL_in*net.p.rho_G1 + net.p.par.wG_in*net.p.par.rho_L);
+//net.p.h1ss = net.p.par.k_h*net.p.Alpha_L1_av*net.p.hc;
+//net.p.m_lp0t = net.p.V1*net.p.par.rho_L*net.p.Alpha_L1_av;
+
+
+equation
+
+Obj = 1e-5*16*3600*(net.w1sim.fout.w[2]+net.w2sim.fout.w[2]+gasPrice*(inputGas1+inputGas2));
+
+connect(Pr1.y, net.w1sim.P_res);
+connect(Pr2.y, net.w2sim.P_res);
+connect(Alpha_Gm1.y, net.w1sim.alpha_Gm);
+connect(Alpha_Gm2.y, net.w2sim.alpha_Gm);
+connect(gm1.fout, net.w1sim.fin);
+connect(gm2.fout, net.w2sim.fin);
+connect(u1.y, net.w1sim.z1);
+connect(u2.y, net.w2sim.z1);
+connect(up.y,net.p.z);
+connect(dPI1.y, net.w1sim.d_PI);
+connect(dPI2.y, net.w2sim.d_PI);
+connect(dPsep.y, net.sep.d_Psep);
+
+constraint
+
+net.p.P2_t <= 10e5;
+
+
+end ocpGaslift_OpenLoop_Sim;
+
+
+
+
+

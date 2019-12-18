@@ -355,5 +355,5 @@ for k in range(k0, NIT+1):
         Juh_OnSOC.append(Ju)
         simTime.append(k * DT)
 
-execfile('SavedResults\\plotCurves_struc2.py')
+execfile('SavedResults\\plotCurves_olga.py')
 execfile('SavedResults\\SaveSimData_FeedbackRTO_olga.py')

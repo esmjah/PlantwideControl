@@ -4,13 +4,13 @@ This repository contains the code and models for simulations in the article "Pla
 The purpose of this repository is to increase the transparency of our simulation results and provide inspiration for other researchers. The root folder of this repository contains the scripts for the experiments in the paper. However, the software is provided 'as is', without warranty of any kind. Particularly, this software relies on third-party libraries and proprietary software that are constantly updated.  Thus, the authors take no responsibility for code maintenance and installation instructions of any kind.
 
 This project relies on the following open-source third-party libraries:
+* [Python v. 2.7.10](https://www.python.org/downloads/release/python-2710/), together with libraries from the de facto package-management system like numpy and scipy.
 * [CasADi](https://web.casadi.org/) v 2.0.0
 * [JModelica.org](https://jmodelica.org/) v 1.17
 * [Ipopt](https://github.com/coin-or/Ipopt)
 * [SUNDIALS](https://computing.llnl.gov/projects/sundials) v 0.5
 * [OpenOPC for Python](http://openopc.sourceforge.net/) v 1.3.1
 * [Python Control Systems Library](https://sourceforge.net/projects/python-control/) v 0.7.0
-* [Python v. 2.7.10](https://www.python.org/downloads/release/python-2710/), together with libraries from the de facto package-management system like numpy and scipy.
 
 Further, this project relied on the following proprietary software
 * [Olga](https://www.software.slb.com/products/olga)

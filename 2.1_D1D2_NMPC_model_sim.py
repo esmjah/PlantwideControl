@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+# Authors: Andres Codas, Esmaeil Jahanshahi
+# Norwegian University of Science and Technology
+
+# This is a test script to run the simulation without using the Olga simulator.
+# This script runs NMPC in presence of disturbances in reservoir pressures (D1 and D2)
+# Two Modelica models are used here:
+# - ocpGaslift_Sim.mop used to simulate the gas-lift network
+# - ocpGaslift_D1D2.mop used to solve the optimal problem. It has 2 augmented state to estimate the reservoir pressures
+
 import sys
 import os
 import casadi as ca

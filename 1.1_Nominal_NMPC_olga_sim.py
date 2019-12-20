@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+
+# Authors: Andres Codas, Esmaeil Jahanshahi
+# Norwegian University of Science and Technology
+
+# This simulation requires the Olga Simulator. The Olga OPC Server must be running as Administrator user.
+# The Olga case for this simulation is provider in the repository (\olgaModels\NetworkOPC\Network_Nominal.opi)
+# This script runs NMPC in when process is at nominal conditions (no disturbances)
+# Simulations starts from an initial point where the gas injection rate is 1 kg/s and all valves are 50% open
+# Optimization steers the process to the steady-state optimal point
+# The Modelica model "ocpGaslift_Nominal.mop" defines the Optimal Contrtrol Problem (OPC)
+
 import sys
 import os
 import casadi as ca
@@ -281,20 +292,6 @@ if monitor:
     HEst = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
     HEst.init()
 
-    A_g = ocp.beq('net.p.A_g')
-    A_l = ocp.beq('net.p.A_l')
-    A_1 = ocp.beq('net.p.A1')
-
-    h1 = ocp.beq('net.p.h1')
-    h1ss = ocp.beq('net.p.h1ss')
-    hc = ocp.beq('net.p.hc')
-
-    Alpha_Lt = ocp.beq('net.p.Alpha_Lt')
-    Alpha_L2_av = ocp.beq('net.p.Alpha_L2_av')
-
-    check = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [
-        ca.vertcat([A_g / A_1 * 100, A_l / A_1 * 100, h1 / hc * 100, h1ss / hc * 100, Alpha_Lt, Alpha_L2_av])])
-    check.init()
 
 if openLoop or controlOlga:  # testing state estimation on
     if controlOlga and not openLoop:

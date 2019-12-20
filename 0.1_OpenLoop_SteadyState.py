@@ -47,7 +47,7 @@ ocp.eliminateAlgebraic()
 # u = C.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
 
 u = np.array([1, 1, 0.5, 0.5, 0.5])  # Initial conditions
-# u = np.array([0.580464, 0.608216, 0.576931])  # Steady-state optimal
+# u = np.array([1.29622, 1.32441, 0.580464, 0.608216, 0.576931])  # Steady-state optimal
 
 daeModel = DaeModel.DaeModel()
 DT = 10

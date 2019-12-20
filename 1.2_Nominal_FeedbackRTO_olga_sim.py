@@ -189,21 +189,6 @@ if monitor:
     HEst = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
     HEst.init()
 
-    A_g = ocp.beq('net.p.A_g')
-    A_l = ocp.beq('net.p.A_l')
-    A_1 = ocp.beq('net.p.A1')
-
-    h1 = ocp.beq('net.p.h1')
-    h1ss = ocp.beq('net.p.h1ss')
-    hc = ocp.beq('net.p.hc')
-
-    Alpha_Lt = ocp.beq('net.p.Alpha_Lt')
-    Alpha_L2_av = ocp.beq('net.p.Alpha_L2_av')
-
-    check = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [
-        ca.vertcat([A_g / A_1 * 100, A_l / A_1 * 100, h1 / hc * 100, h1ss / hc * 100, Alpha_Lt, Alpha_L2_av])])
-    check.init()
-
 if openLoop or controlOlga:  # testing state estimation on
     if controlOlga and not openLoop:
         y0Olga = Olga.OLGA_read_tags(da, measurementTagsOlga)
@@ -317,12 +302,6 @@ for k in range(k0, NIT):
         HEst.setInput(uk, 'p')
         HEst.setInput((k + 1) * DT, 't')
         HEst.evaluate()
-
-        check.setInput(x_hat, 'x')
-        check.setInput(z_hat, 'z')
-        check.setInput(uk, 'p')
-        check.setInput((k + 1) * DT, 't')
-        check.evaluate()
 
         yMonitor = Olga.OLGA_read_tags(da, measurementsMonitorOlga)
 

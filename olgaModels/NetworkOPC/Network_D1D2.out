@@ -1,0 +1,72 @@
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Annulus_1'.
+Ratio 0.049 between PIPE=PIPE_3, SECTION=2 and PIPE=PIPE_2, SECTION=1.
+Ratio 25 between PIPE=PIPE_2, SECTION=20 and PIPE=PIPE_1B, SECTION=1.
+Ratio 0.2 between PIPE=PIPE_1B, SECTION=10 and PIPE=PIPE_1A, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Tubing_1'.
+Ratio 2.1 between PIPE=PIPE_3, SECTION=18 and PIPE=PIPE_2, SECTION=1.
+Ratio 4.9 between PIPE=PIPE_2, SECTION=3 and PIPE=PIPE_1, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Pipeline'.
+Ratio 3 between PIPE=PIPE-4, SECTION=10 and PIPE=PIPE-5, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Annulus_2'.
+Ratio 0.049 between PIPE=PIPE_3, SECTION=2 and PIPE=PIPE_2, SECTION=1.
+Ratio 25 between PIPE=PIPE_2, SECTION=20 and PIPE=PIPE_1B, SECTION=1.
+Ratio 0.2 between PIPE=PIPE_1B, SECTION=10 and PIPE=PIPE_1A, SECTION=1.
+Violation of recommended ratio for neighboring section lengths found (recommended ratio is between 0.5 and 2.0). Reported in NETWORKCOMPONENT 'Tubing_2'.
+Ratio 2.1 between PIPE=PIPE_3, SECTION=18 and PIPE=PIPE_2, SECTION=1.
+Ratio 4.9 between PIPE=PIPE_2, SECTION=3 and PIPE=PIPE_1, SECTION=1.
+
+
+
+     **************************************************************
+     *                                                            *
+     *                                                            *
+     *    XXXXXXX     XXX               XXXXXXX        XXXXXXX    *
+     *   XX     XX    XXX              XX     XX      XX     XX   *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     * XXX       XXX  XXX            XXX            XXX       XXX *
+     * XXX       XXX  XXX            XXX   XXXXXXX  XXXXXXXXXXXXX *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     * XXX       XXX  XXX            XXX       XXX  XXX       XXX *
+     *   XX     XX    XXX              XX     XX    XXX       XXX *
+     *    XXXXXXX     XXXXXXXXXXXXX     XXXXXXX     XXX       XXX *
+     *                                                            *
+     *                                                            *
+     **************************************************************
+
+
+
+     A  T R A N S I E N T,  O N E  D I M E N S I O N A L  M O D E L
+
+     F O R  T H R E E - P H A S E  F L O W  I N  P I P E L I N E S
+
+
+
+     DELIVERED BY    :   Schlumberger
+
+     VERSION         :   OLGA 2014.1.0.122363
+
+     SUPPORT         :   OlgaSupport@slb.com
+
+     DATE            :   19-12-18
+
+     PROJECT         :   Petronics
+     TITLE           :   Gas Lift Well
+     AUTHOR          :   Gisle Otto Eikrem
+     CASE NAME       :   C:\Git\PlantwideControl\olgaModels\NetworkOPC\Network_D1D2
+     INPUT FILE      :   Network_D1D2.genkey
+     PVT FILE        :   gisle.tab
+
+     FLOWMODEL       :   OLGA
+
+     CPU CORES USED  :   4
+     CORES AVAILABLE :   8
+     PHYSICAL CPUs   :   4
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Injection_2': 0.2 m3
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Injection_1': 0.2 m3
+
+VOLUME OF INTERNAL NODE WITH LABEL 'Separator': 37.6991 m3
+
+
+Internal node with label 'Manifold' is assigned default volume (0.219656 m3)

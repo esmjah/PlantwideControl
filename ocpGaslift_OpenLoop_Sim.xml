@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmodelicaModelDescription xmlns:exp="https://svn.jmodelica.org/trunk/XML/daeExpressions.xsd" xmlns:equ="https://svn.jmodelica.org/trunk/XML/daeEquations.xsd" xmlns:fun="https://svn.jmodelica.org/trunk/XML/daeFunctions.xsd" xmlns:opt="https://svn.jmodelica.org/trunk/XML/daeOptimization.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-fmiVersion="1.0" modelName="ocpGaslift_OpenLoop_Sim" modelIdentifier="ocpGaslift_OpenLoop_Sim" guid="319e9152001c8016464af48b05a24cd" generationTool="JModelica.org" generationDateAndTime="2019-12-18T02:12:11" variableNamingConvention="structured" numberOfContinuousStates="15" numberOfEventIndicators="0">
+fmiVersion="1.0" modelName="ocpGaslift_OpenLoop_Sim" modelIdentifier="ocpGaslift_OpenLoop_Sim" guid="319e9152001c8016464af48b05a24cd" generationTool="JModelica.org" generationDateAndTime="2019-12-18T12:39:14" variableNamingConvention="structured" numberOfContinuousStates="15" numberOfEventIndicators="0">
 	<UnitDefinitions>
 		<BaseUnit unit="kg/m3">
 			<DisplayUnitDefinition displayUnit="g/cm3" gain="1" offset="0"/>

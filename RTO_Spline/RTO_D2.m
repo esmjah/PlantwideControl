@@ -4,7 +4,7 @@ clear all
 warning off
 close all
 
-addpath('C:\Git\PlantwideControl\RTO_Splinter\splinter-matlab\matlab')
+addpath('C:\Git\PlantwideControl\RTO_Spline\splinter-matlab\matlab')
 addpath('C:\Git\PlantwideControl\PyIPOPT\lib64')
 load_libSplinter()
 %load 'Well_165_Data.mat';

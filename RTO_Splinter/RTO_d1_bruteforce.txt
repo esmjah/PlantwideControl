@@ -1,0 +1,22 @@
+This solution is same as the nominal optimal
+(Do not re-optimize)
+Winj1 = 1.28
+Winj2 = 1.3017
+
+OlgaObj = -27.2951
+=============================================
+
+If we re-optimize 
+
+Obj. = -27.2917
+Winj1 = 1.2686
+Winj2 = 1.2959
+
+OlgaObj = -27.2955
+
+difference is just numerical implementation error
+
+
+
+
+

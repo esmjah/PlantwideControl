@@ -19540,4 +19540,1108 @@ Mass error information:
      CHOKE VELOCITY    = 293.36       (M/S)
 
      VALVE: Gaslift_Valve_2, BRANCH: Annulus_2, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.338e+004   (PA)
+     CHOKE MASS FLOW   = 0.92         (KG/S)
+     CHOKE PRESSURE    = 9.816e+006   (PA)
+     CHOKE TEMPERATURE = 106.08       (C)
+     CHOKE VELOCITY    = 40.05        (M/S)
+
+     VALVE: Prod_Choke_2, BRANCH: Tubing_2, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.351e-003   (M2)
+     CHOKE OPENING = 0.61         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 1.999e+005   (PA)
+     CHOKE MASS FLOW   = 17.63        (KG/S)
+     CHOKE PRESSURE    = 2.556e+006   (PA)
+     CHOKE TEMPERATURE = 90.31        (C)
+     CHOKE VELOCITY    = 60.50        (M/S)
+
+*****************************************************
+      Results at Simulation Time: 1.91e+005s
+*****************************************************
+
+
+
+Time step information:
+
+--*++*-- Time: 1.908e+005s. Step no: 792633/838364. Current step-size: 2.362e-001s --*++*--
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: PIPELINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: OIL-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: GAS-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+     MASS SOURCE INFORMATION:
+     ************************
+     SOURCE    BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  TEMP
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    SOURCE
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     Gas_Source_1 Annulus_1 PIPE_3    1     0.93      0.00      0.00      1.673e+004 60.00     
+     Gas_Source_2 Annulus_2 PIPE_3    1     0.92      0.00      0.00      1.639e+004 60.00     
+
+
+     WELL PRODUCTION INFORMATION:
+     ****************************
+     WELL      BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  RESERVOIR
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    TEMP
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     IPR_1     WellFlow_1 PIPE_1    1     0.46      14.86     0.00      -2.328e+006 108.00    
+     IPR_2     WellFlow_2 PIPE_1    1     0.50      16.22     0.00      -2.536e+006 108.00    
+
+
+     CHOKE INFORMATION:
+     ******************
+
+
+     VALVE: Gaslift_Valve_1, BRANCH: Annulus_1, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.731e+004   (PA)
+     CHOKE MASS FLOW   = 0.93         (KG/S)
+     CHOKE PRESSURE    = 9.387e+006   (PA)
+     CHOKE TEMPERATURE = 106.34       (C)
+     CHOKE VELOCITY    = 42.77        (M/S)
+
+     VALVE: Prod_Choke_1, BRANCH: Tubing_1, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.241e-003   (M2)
+     CHOKE OPENING = 0.58         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.000e+005   (PA)
+     CHOKE MASS FLOW   = 16.25        (KG/S)
+     CHOKE PRESSURE    = 2.559e+006   (PA)
+     CHOKE TEMPERATURE = 90.00        (C)
+     CHOKE VELOCITY    = 61.56        (M/S)
+
+     VALVE: Valve, BRANCH: Pipeline, PIPE: PIPE-5, SECTION: 11
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.463e-002   (M2)
+     CHOKE OPENING = 0.59         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 7.000e+004   (PA)
+     CHOKE MASS FLOW   = 33.88        (KG/S)
+     CHOKE PRESSURE    = 4.566e+005   (PA)
+     CHOKE TEMPERATURE = 55.38        (C)
+     CHOKE VELOCITY    = 95.61        (M/S)
+
+     VALVE: VALVE-6, BRANCH: Oil-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 3.834e-003   (M2)
+     CHOKE OPENING = 0.21         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.168e+004   (PA)
+     CHOKE MASS FLOW   = 30.57        (KG/S)
+     CHOKE PRESSURE    = 4.384e+005   (PA)
+     CHOKE TEMPERATURE = 62.67        (C)
+     CHOKE VELOCITY    = 12.84        (M/S)
+
+     VALVE: VALVE-7, BRANCH: Gas-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 5.500e-003   (M2)
+     CHOKE OPENING = 0.22         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 8.279e+004   (PA)
+     CHOKE MASS FLOW   = 3.32         (KG/S)
+     CHOKE PRESSURE    = 3.787e+005   (PA)
+     CHOKE TEMPERATURE = 51.96        (C)
+     CHOKE VELOCITY    = 293.36       (M/S)
+
+     VALVE: Gaslift_Valve_2, BRANCH: Annulus_2, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.338e+004   (PA)
+     CHOKE MASS FLOW   = 0.92         (KG/S)
+     CHOKE PRESSURE    = 9.816e+006   (PA)
+     CHOKE TEMPERATURE = 106.20       (C)
+     CHOKE VELOCITY    = 40.05        (M/S)
+
+     VALVE: Prod_Choke_2, BRANCH: Tubing_2, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.351e-003   (M2)
+     CHOKE OPENING = 0.61         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 1.999e+005   (PA)
+     CHOKE MASS FLOW   = 17.63        (KG/S)
+     CHOKE PRESSURE    = 2.556e+006   (PA)
+     CHOKE TEMPERATURE = 90.32        (C)
+     CHOKE VELOCITY    = 60.51        (M/S)
+
+*****************************************************
+      Results at Simulation Time: 1.94e+005s
+*****************************************************
+
+
+
+Time step information:
+
+--*++*-- Time: 1.944e+005s. Step no: 807877/838364. Current step-size: 2.362e-001s --*++*--
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: PIPELINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: OIL-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: GAS-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+     MASS SOURCE INFORMATION:
+     ************************
+     SOURCE    BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  TEMP
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    SOURCE
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     Gas_Source_1 Annulus_1 PIPE_3    1     0.93      0.00      0.00      1.673e+004 60.00     
+     Gas_Source_2 Annulus_2 PIPE_3    1     0.92      0.00      0.00      1.639e+004 60.00     
+
+
+     WELL PRODUCTION INFORMATION:
+     ****************************
+     WELL      BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  RESERVOIR
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    TEMP
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     IPR_1     WellFlow_1 PIPE_1    1     0.46      14.86     0.00      -2.328e+006 108.00    
+     IPR_2     WellFlow_2 PIPE_1    1     0.50      16.22     0.00      -2.536e+006 108.00    
+
+
+     CHOKE INFORMATION:
+     ******************
+
+
+     VALVE: Gaslift_Valve_1, BRANCH: Annulus_1, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.731e+004   (PA)
+     CHOKE MASS FLOW   = 0.93         (KG/S)
+     CHOKE PRESSURE    = 9.387e+006   (PA)
+     CHOKE TEMPERATURE = 106.35       (C)
+     CHOKE VELOCITY    = 42.77        (M/S)
+
+     VALVE: Prod_Choke_1, BRANCH: Tubing_1, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.241e-003   (M2)
+     CHOKE OPENING = 0.58         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.000e+005   (PA)
+     CHOKE MASS FLOW   = 16.25        (KG/S)
+     CHOKE PRESSURE    = 2.559e+006   (PA)
+     CHOKE TEMPERATURE = 90.00        (C)
+     CHOKE VELOCITY    = 61.56        (M/S)
+
+     VALVE: Valve, BRANCH: Pipeline, PIPE: PIPE-5, SECTION: 11
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.463e-002   (M2)
+     CHOKE OPENING = 0.59         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 7.000e+004   (PA)
+     CHOKE MASS FLOW   = 33.88        (KG/S)
+     CHOKE PRESSURE    = 4.566e+005   (PA)
+     CHOKE TEMPERATURE = 55.38        (C)
+     CHOKE VELOCITY    = 95.61        (M/S)
+
+     VALVE: VALVE-6, BRANCH: Oil-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 3.834e-003   (M2)
+     CHOKE OPENING = 0.21         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.168e+004   (PA)
+     CHOKE MASS FLOW   = 30.57        (KG/S)
+     CHOKE PRESSURE    = 4.384e+005   (PA)
+     CHOKE TEMPERATURE = 62.67        (C)
+     CHOKE VELOCITY    = 12.84        (M/S)
+
+     VALVE: VALVE-7, BRANCH: Gas-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 5.500e-003   (M2)
+     CHOKE OPENING = 0.22         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 8.279e+004   (PA)
+     CHOKE MASS FLOW   = 3.32         (KG/S)
+     CHOKE PRESSURE    = 3.787e+005   (PA)
+     CHOKE TEMPERATURE = 51.97        (C)
+     CHOKE VELOCITY    = 293.36       (M/S)
+
+     VALVE: Gaslift_Valve_2, BRANCH: Annulus_2, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.339e+004   (PA)
+     CHOKE MASS FLOW   = 0.92         (KG/S)
+     CHOKE PRESSURE    = 9.816e+006   (PA)
+     CHOKE TEMPERATURE = 106.30       (C)
+     CHOKE VELOCITY    = 40.06        (M/S)
+
+     VALVE: Prod_Choke_2, BRANCH: Tubing_2, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.351e-003   (M2)
+     CHOKE OPENING = 0.61         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.000e+005   (PA)
+     CHOKE MASS FLOW   = 17.63        (KG/S)
+     CHOKE PRESSURE    = 2.556e+006   (PA)
+     CHOKE TEMPERATURE = 90.32        (C)
+     CHOKE VELOCITY    = 60.51        (M/S)
+
+*****************************************************
+      Results at Simulation Time: 1.98e+005s
+*****************************************************
+
+
+
+Time step information:
+
+--*++*-- Time: 1.980e+005s. Step no: 823121/838364. Current step-size: 2.362e-001s --*++*--
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_1
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: PIPELINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: OIL-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: GAS-LINE
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: ANNULUS_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: WELLFLOW_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+---------------------------
+Variables for FlowPath: TUBING_2
+---------------------------
+
+
+
+
+Variables in control volumes:
+
+
+Variables at control volume boundaries:
+
+
+
+Wall information from each control volume:
+
+
+Mass error information:
+
+
+
+
+
+     MASS SOURCE INFORMATION:
+     ************************
+     SOURCE    BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  TEMP
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    SOURCE
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     Gas_Source_1 Annulus_1 PIPE_3    1     0.93      0.00      0.00      1.673e+004 60.00     
+     Gas_Source_2 Annulus_2 PIPE_3    1     0.92      0.00      0.00      1.639e+004 60.00     
+
+
+     WELL PRODUCTION INFORMATION:
+     ****************************
+     WELL      BRANCH    PIPE      SECT  GAS       OIL       WATER     ENTHALPY  RESERVOIR
+     LABEL     LABEL     LABEL     NO    SOURCE    SOURCE    SOURCE    SOURCE    TEMP
+                                         (KG/S)    (KG/S)    (KG/S)    (W)       (C)
+     --------- --------- --------- ----- --------- --------- --------- --------- ---------
+     IPR_1     WellFlow_1 PIPE_1    1     0.46      14.86     0.00      -2.328e+006 108.00    
+     IPR_2     WellFlow_2 PIPE_1    1     0.50      16.22     0.00      -2.536e+006 108.00    
+
+
+     CHOKE INFORMATION:
+     ******************
+
+
+     VALVE: Gaslift_Valve_1, BRANCH: Annulus_1, PIPE: PIPE_1B, SECTION: 10
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 4.909e-004   (M2)
+     CHOKE OPENING = 1.00         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.731e+004   (PA)
+     CHOKE MASS FLOW   = 0.93         (KG/S)
+     CHOKE PRESSURE    = 9.387e+006   (PA)
+     CHOKE TEMPERATURE = 106.35       (C)
+     CHOKE VELOCITY    = 42.77        (M/S)
+
+     VALVE: Prod_Choke_1, BRANCH: Tubing_1, PIPE: PIPE_1, SECTION: 4
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 2.241e-003   (M2)
+     CHOKE OPENING = 0.58         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 2.000e+005   (PA)
+     CHOKE MASS FLOW   = 16.25        (KG/S)
+     CHOKE PRESSURE    = 2.559e+006   (PA)
+     CHOKE TEMPERATURE = 90.00        (C)
+     CHOKE VELOCITY    = 61.56        (M/S)
+
+     VALVE: Valve, BRANCH: Pipeline, PIPE: PIPE-5, SECTION: 11
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 1.463e-002   (M2)
+     CHOKE OPENING = 0.59         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 7.000e+004   (PA)
+     CHOKE MASS FLOW   = 33.88        (KG/S)
+     CHOKE PRESSURE    = 4.566e+005   (PA)
+     CHOKE TEMPERATURE = 55.38        (C)
+     CHOKE VELOCITY    = 95.61        (M/S)
+
+     VALVE: VALVE-6, BRANCH: Oil-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 3.834e-003   (M2)
+     CHOKE OPENING = 0.21         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 4.168e+004   (PA)
+     CHOKE MASS FLOW   = 30.57        (KG/S)
+     CHOKE PRESSURE    = 4.384e+005   (PA)
+     CHOKE TEMPERATURE = 62.68        (C)
+     CHOKE VELOCITY    = 12.84        (M/S)
+
+     VALVE: VALVE-7, BRANCH: Gas-Line, PIPE: PIPE-1, SECTION: 2
+     ===================================================================
+
+     CRITICAL FLOWMODEL: FROZEN       
+
+     CHOKE AREA IS CONSTANT
+
+     CHOKE AREA    = 5.500e-003   (M2)
+     CHOKE OPENING = 0.22         
+
+     FLOW CONDITION: SUBCRITICAL
+
+     PRESSURE DROP     = 8.279e+004   (PA)
+     CHOKE MASS FLOW   = 3.32         (KG/S)
+     CHOKE PRESSURE    = 3.787e+005   (PA)
+     CHOKE TEMPERATURE = 51.97        (C)
+     CHOKE VELOCITY    = 293.36       (M/S)
+
+     VALVE: Gaslift_Valve_2, BRANCH: Annulus_2, PIPE: PIPE_1B, SECTION: 10
      ===========================================================

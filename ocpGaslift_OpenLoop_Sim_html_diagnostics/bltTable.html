@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Model diagnosis</title>
+
+
+<style type="text/css">div.blt {
+    position:relative;
+    margin-left:200px;
+    margin-top:200px;
+    border:1px solid black;
+    font-family:sans-serif;
+    font-size:10px;
+}
+div.block {
+    position:absolute;
+    box-sizing:border-box;
+    border:1px solid black;
+}
+div.incidence {
+    position:absolute;
+    cursor:pointer;
+}
+div.incidence div{
+    width:15px;
+    height:15px;
+    overflow:hidden;
+    display:table-cell;
+    text-align:center;
+    vertical-align:middle;
+}
+div.equation {
+    position:absolute;
+    left:-200px;
+    width:200px;
+    box-sizing:border-box;
+    height:16px;
+    border-top:1px solid black;
+    border-bottom:1px solid black;
+    overflow:hidden;
+    white-space:nowrap;
+}
+div.variable {
+    position:absolute;
+    top:-109px;
+    box-sizing:border-box;
+    height:16px;
+    width:200px;
+    border-top:1px solid black;
+    border-bottom:1px solid black;
+    overflow:hidden;
+    white-space:nowrap;
+    transform:rotate(270deg);
+    -ms-transform:rotate(270deg);
+    -webkit-transform:rotate(270deg);
+    -moz-transform:rotate(270deg);
+}
+table.incidenceMatrix {
+    border-collapse:collapse;
+}
+
+th.var {
+    border-right:1px solid black;
+    border-left:1px solid black;
+}
+
+div.var {
+    width:30px;
+    overflow:hidden;
+    white-space:nowrap;
+}
+
+th.eqn {
+    text-align:right;
+    border-top:1px solid black;
+    border-bottom:1px solid black;
+}
+
+div.eqn {
+    max-width:200px;
+    overflow:hidden;
+    white-space:nowrap;
+}
+
+table.incidenceMatrix td {
+text-align:center;
+height:30px;
+}
+
+div#rowHighlight,
+div#colHighlight {
+    position:absolute;
+    z-index:1000;
+    background:#999;
+    opacity: 0.3;
+}
+
+div#rowLockHighlight,
+div#colLockHighlight {
+    position:absolute;
+    z-index:900;
+    background:#999;
+    opacity: 0.3;
+}
+
+</style>
+<script tyle="text/javascript">
+
+var currentHightlight = null;
+var currentLockHightlight = null;
+
+function hightlight(incidence) {
+    var row = document.getElementById('rowHighlight');
+    var col = document.getElementById('colHighlight');
+    var blt = incidence.parentElement;
+    setHighlight(incidence, blt, row, col)
+}
+function unhighlight(incidence) {
+    var row = document.getElementById('rowHighlight');
+    row.style.display = 'none';
+    var col = document.getElementById('colHighlight');
+    col.style.display = 'none';
+}
+
+function lockHighlight(incidence) {
+    var row = document.getElementById('rowLockHighlight');
+    var col = document.getElementById('colLockHighlight');
+    var blt = incidence.parentElement;
+    setHighlight(incidence, blt, row, col)
+}
+
+function setHighlight(incidence, blt, row, col) {
+    row.style.width = blt.offsetWidth + 'px';
+    row.style.height = (incidence.offsetHeight + 1)+ 'px';
+    row.style.top = (offsetTop(incidence) + 1) + 'px';
+    row.style.left = offsetLeft(blt) + 'px';
+    row.style.display = 'block';
+    col.style.width = (incidence.offsetWidth + 1) + 'px';
+    col.style.height = blt.offsetHeight + 'px';
+    col.style.top = offsetTop(blt) + 'px';
+    col.style.left = (offsetLeft(incidence) + 1) + 'px';
+    col.style.display = 'block';
+}
+
+function offsetTop(obj) {
+    var res = 0;
+    while (obj != null) {
+        res += obj.offsetTop;
+        obj = obj.offsetParent;
+    }
+    return res;
+}
+function offsetLeft(obj) {
+    var res = 0;
+    while (obj != null) {
+        res += obj.offsetLeft;
+        obj = obj.offsetParent;
+    }
+    return res;
+}
+</script>
+</head>
+<body>
+</body>
+</html>

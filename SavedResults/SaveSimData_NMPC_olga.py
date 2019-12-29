@@ -116,5 +116,5 @@ simData['yOptimal'] = yOptimal
 simData['J_NMPC'] = J
 simData['Ju_NMPC'] = Ju_NMPC
 simData['simTime'] = sim_time
-
-sio.savemat('SavedResults\\D3D4_NMPC_long.mat', simData)
+simData['compTime'] = computation_time/3600
+sio.savemat('SavedResults\\Nominal_NMPC_600_10.mat', simData)

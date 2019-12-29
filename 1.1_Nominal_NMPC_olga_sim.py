@@ -19,7 +19,9 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import ConfigParser
+import time
 
+tic = time.time()
 _path = os.path.dirname(os.path.realpath(__file__))
 
 os.chdir(_path)
@@ -83,7 +85,8 @@ ocp.eliminateDependentParameterInterdependencies()
 ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
-DTMPC = 3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
+DTMPC = 600  ## for the MPC algorithm  Please always choose one to be multiple of the other
+prediction_horizon = 3600 * 10
 
 scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -193,7 +196,7 @@ if MPC:
         solver = MultipleShooting.MultipleShooting()
     else:
         solver = SingleShooting.SingleShooting()
-    deltaUCons = np.array([0.03, 0.03, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
+    deltaUCons = np.array([0.015, 0.015, 1.0e3, 2.0e3, 2.0e3]) / DTMPC  # given in SI
 
     # check consistency
     if deltaUCons.size != 0:
@@ -317,7 +320,7 @@ for k in range(nX):
 if MPC:
     uk, objValue, stats = solver.solveProblem(x0=x_hat, u0=u)
     print 'controlInput', uk  # /scaleU
-    print 'Obj. Value:', objValue / (3600 * 16)
+    print 'Obj. Value:', objValue / prediction_horizon
     print 'Iterations:', stats['iter_count']
     print 'Comp. Time:', stats['t_mainloop']
     if 'return_status' in stats:
@@ -370,7 +373,7 @@ for k in range(k0, NIT):
     if (np.mod((k - k0MPC) * DT, DTMPC) == 0) and (k >= k0MPC):
         uk, objValue, stats = solver.solveProblem(x_hat, uk)
         print 'controlInput', uk  # /scaleU
-        print 'Obj. Value:', objValue / (3600 * 16)
+        print 'Obj. Value:', objValue / prediction_horizon
         print 'Iterations:', stats['iter_count']
         print 'Comp. Time:', stats['t_mainloop']
         if 'return_status' in stats:
@@ -423,21 +426,15 @@ for k in range(k0, NIT):
         HEst.setInput((k + 1) * DT, 't')
         HEst.evaluate()
 
-        check.setInput(x_hat, 'x')
-        check.setInput(z_hat, 'z')
-        check.setInput(uk, 'p')
-        check.setInput((k + 1) * DT, 't')
-        check.evaluate()
-
         yMonitor = Olga.OLGA_read_tags(da, measurementsMonitorOlga)
 
         Obj_k = gasPrice * (uk[0] + uk[1]) - (y[0] + y[2])
         Obj_total = Obj_total + Obj_k
 
         doPrint = True
-        if doPrint and np.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+        if doPrint and np.mod((k + 1 - k0MPC) * DT, 3600 / 10.0) == 0:
             print "====================================================="
-            print 'Simulation time:', (k + 1) * DT / (3600.0), 'hours'
+            print 'Simulation time:', (k + 1) * DT / 3600.0, 'hours'
             print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling
             print 'Control input', uk  # /scaleU
             print 'Objective', ca.DMatrix([Obj_k, Obj_total])
@@ -462,8 +459,9 @@ for k in range(k0, NIT):
         Juh_NMPC.append(Ju)
         simTime.append(k * DT)
 
-        # if(k==359):
-        #    thebug
 
+toc = time.time()
+computation_time = toc - tic
+print 'computation time: ', computation_time
 execfile('SavedResults\\plotCurves_olga.py')
 execfile('SavedResults\\SaveSimData_NMPC_olga.py')

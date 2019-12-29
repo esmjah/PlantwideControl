@@ -1,7 +1,7 @@
 within ;
 
 
-optimization ocpGaslift_D3D4(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*16)
+optimization ocpGaslift_D3D4(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*6)
 
 networkModels.gasliftNetworks.netGOR_PIDstruc2 net(
 

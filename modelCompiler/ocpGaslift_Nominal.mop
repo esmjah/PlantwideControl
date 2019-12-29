@@ -1,7 +1,7 @@
 within ;
 
 
-optimization ocpGaslift_Nominal(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*10)
+optimization ocpGaslift_Nominal(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*16)
 
 networkModels.gasliftNetworks.net_PIDstruc2 net(
 

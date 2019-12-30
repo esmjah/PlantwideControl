@@ -87,7 +87,7 @@ ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
 DTMPC = 600  ## for the MPC algorithm  Please always choose one to be multiple of the other
-prediction_horizon = 10 * 3600
+prediction_horizon = 8 * 3600
 
 scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -197,13 +197,13 @@ if MPC:
         solver = MultipleShooting.MultipleShooting()
     else:
         solver = SingleShooting.SingleShooting()
-    deltaUCons = np.array([0.015, 0.015, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
+    deltaUCons = np.array([0.01, 0.01, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
 
     # check consistency
     if deltaUCons.size != 0:
         assert deltaUCons.size == ocp.u.size()
 
-    controlCost = 2e3 * np.diag([10.0, 10.0, 1.0, 1.0, 1.0])
+    controlCost = 2e4 * np.diag([10.0, 10.0, 1.0, 1.0, 1.0])
     finalStateCost = 0.0
     solver.defineOCP(ocp, DT=DTMPC, controlCost=controlCost, xOpt=x0, uOpt=u, finalStateCost=finalStateCost,
                      deltaUCons=deltaUCons)
@@ -433,7 +433,7 @@ for k in range(k0, NIT):
         Obj_total = Obj_total + Obj_k
 
         doPrint = True
-        if doPrint and np.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+        if doPrint and np.mod((k + 1 - k0MPC) * DT, 360.0) == 0:
             print "====================================================="
             print 'Simulation time:', (k + 1) * DT / (3600.0), 'hours'
             print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling

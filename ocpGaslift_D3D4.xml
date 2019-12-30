@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmodelicaModelDescription xmlns:exp="https://svn.jmodelica.org/trunk/XML/daeExpressions.xsd" xmlns:equ="https://svn.jmodelica.org/trunk/XML/daeEquations.xsd" xmlns:fun="https://svn.jmodelica.org/trunk/XML/daeFunctions.xsd" xmlns:opt="https://svn.jmodelica.org/trunk/XML/daeOptimization.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-fmiVersion="1.0" modelName="ocpGaslift_D3D4" modelIdentifier="ocpGaslift_D3D4" guid="ed0cce9adaf02a87f48331bef651bd19" generationTool="JModelica.org" generationDateAndTime="2019-12-24T22:17:36" variableNamingConvention="structured" numberOfContinuousStates="23" numberOfEventIndicators="0">
+fmiVersion="1.0" modelName="ocpGaslift_D3D4" modelIdentifier="ocpGaslift_D3D4" guid="fcc657f0f0a6a0e344aec0cfa6dc5f7" generationTool="JModelica.org" generationDateAndTime="2019-12-28T07:47:04" variableNamingConvention="structured" numberOfContinuousStates="23" numberOfEventIndicators="0">
 	<UnitDefinitions>
 		<BaseUnit unit="kg/m3">
 			<DisplayUnitDefinition displayUnit="g/cm3" gain="1" offset="0"/>
@@ -150,7 +150,7 @@ fmiVersion="1.0" modelName="ocpGaslift_D3D4" modelIdentifier="ocpGaslift_D3D4" g
 			<VariableCategory>dependentParameter</VariableCategory>
 		</ScalarVariable>
 		<ScalarVariable name="finalTime" valueReference="223" variability="parameter" causality="internal" alias="noAlias">
-			<Real relativeQuantity="false" start="57600.0" free="false" initialGuess="0.0" />
+			<Real relativeQuantity="false" start="21600.0" free="false" initialGuess="0.0" />
 			<QualifiedName>
 				<exp:QualifiedNamePart name="finalTime">
 				</exp:QualifiedNamePart>
@@ -9525,7 +9525,7 @@ fmiVersion="1.0" modelName="ocpGaslift_D3D4" modelIdentifier="ocpGaslift_D3D4" g
 				</exp:QualifiedNamePart>
 </equ:Parameter>
 			<equ:BindingExp>
-				<exp:IntegerLiteral>57600</exp:IntegerLiteral>
+				<exp:IntegerLiteral>21600</exp:IntegerLiteral>
 			</equ:BindingExp>
 		</equ:BindingEquation>
 		<equ:BindingEquation>
@@ -21507,7 +21507,7 @@ fmiVersion="1.0" modelName="ocpGaslift_D3D4" modelIdentifier="ocpGaslift_D3D4" g
 			<opt:InitialGuess>0.0</opt:InitialGuess>
 		</opt:IntervalStartTime>
 		<opt:IntervalFinalTime>
-			<opt:Value>57600.0</opt:Value>
+			<opt:Value>21600.0</opt:Value>
 			<opt:Free>false</opt:Free>
 			<opt:InitialGuess>1.0</opt:InitialGuess>
 		</opt:IntervalFinalTime>

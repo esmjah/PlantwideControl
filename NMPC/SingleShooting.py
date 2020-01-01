@@ -17,8 +17,8 @@ class SingleShooting:
     IPOPT_constr_viol_tol = 1e-3  ## primal infeasibility 1e-3
     IPOPT_compl_inf_tol = 1e-2  ## complementarity
     IPOPT_print_level = 5
-    IPOPT_max_iter = 30
-    IPOPT_max_cpu_time = 60 * 3600 * 24  ## one day of computation should be enough right? :)
+    IPOPT_max_iter = 200
+    IPOPT_max_cpu_time = 600  ## one day of computation should be enough right? :)
 
     n_x = None
     n_u = None
@@ -198,7 +198,7 @@ class SingleShooting:
             Z, QF, zf = C.integratorOut(G(C.integratorIn(x0=Z, p=self.U[k], z0=zf)), "xf", "qf", "zf")
 
             errU = self.U[k] - U0
-            obj = obj + QF #+ C.mul(C.mul(errU.T, controlCost), errU)
+            obj = obj + QF + C.mul(C.mul(errU.T, controlCost), errU)
 
             U0 = self.U[k]
 

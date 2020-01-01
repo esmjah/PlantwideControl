@@ -203,7 +203,7 @@ if MPC:
     if deltaUCons.size != 0:
         assert deltaUCons.size == ocp.u.size()
 
-    controlCost = 2e4 * np.diag([10.0, 10.0, 1.0, 1.0, 1.0])
+    controlCost = 2e3 * np.diag([10.0, 10.0, 1.0, 1.0, 1.0])
     finalStateCost = 0.0
     solver.defineOCP(ocp, DT=DTMPC, controlCost=controlCost, xOpt=x0, uOpt=u, finalStateCost=finalStateCost,
                      deltaUCons=deltaUCons)

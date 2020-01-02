@@ -246,11 +246,11 @@
         </ControlPoints>
       </VisualObject>
       <VisualObject Id="SIGNALCONNECTION_15">
-        <Bounds top="-103.175606" left="133.877838" width="172.687134" height="0.861724854" />
+        <Bounds top="-103.175606" left="133.877838" width="172.687134" height="0.8617172" />
         <ControlPoints>
           <PointF>
             <X>306.264984</X>
-            <Y>-102.613884</Y>
+            <Y>-102.613892</Y>
           </PointF>
           <PointF>
             <X>134.177841</X>
@@ -958,14 +958,14 @@
         <Bounds top="-100.688873" left="300.01416" width="12.3444643" height="5.98568058" />
       </VisualObject>
       <VisualObject Id="Transmitter_line_FLOWPATH_4.TRANSMITTER_1">
-        <Bounds top="-45.61637" left="131.585526" width="0.685180664" height="8.604607" />
+        <Bounds top="-45.61637" left="131.608032" width="0.670166" height="8.604782" />
         <ControlPoints>
           <PointF>
-            <X>131.885529</X>
-            <Y>-37.3117638</Y>
+            <X>131.908035</X>
+            <Y>-37.31159</Y>
           </PointF>
           <PointF>
-            <X>131.9707</X>
+            <X>131.9782</X>
             <Y>-45.3163719</Y>
           </PointF>
         </ControlPoints>
@@ -974,14 +974,14 @@
         <Bounds top="-59.2968063" left="124.762772" width="14.5009222" height="5.98568058" />
       </VisualObject>
       <VisualObject Id="Transmitter_line_FLOWPATH_4.TRANSMITTER_1FLOWPATH_4.TRANSMITTER_2">
-        <Bounds top="-99.0041351" left="305.8949" width="0.609985352" height="3.78858948" />
+        <Bounds top="-99.0041351" left="305.894867" width="0.609954834" height="3.78858948" />
         <ControlPoints>
           <PointF>
-            <X>306.2049</X>
+            <X>306.204834</X>
             <Y>-95.51555</Y>
           </PointF>
           <PointF>
-            <X>306.1949</X>
+            <X>306.194855</X>
             <Y>-98.70413</Y>
           </PointF>
         </ControlPoints>

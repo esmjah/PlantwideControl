@@ -4,6 +4,9 @@ import os
 import casadi as ca
 import control
 import numpy as np
+import time
+
+tic = time.time()
 
 _path = os.path.dirname(os.path.realpath(__file__))
 
@@ -210,7 +213,7 @@ for k in range(nX):
     xMin[k] = ocp.variable(ocp.x[k].getName()).min.getValue()
     xMax[k] = ocp.variable(ocp.x[k].getName()).max.getValue()
 
-NIT = int(np.ceil(3600 * 36 / DT))
+NIT = int(np.ceil(3600 * 22 / DT))
 KalmanStopk = 2 * NIT
 
 Obj_total = 0.0
@@ -232,17 +235,17 @@ IntegralError = np.array(np.zeros(ocp.u.size()), np.float64)
 Error_k = np.array(np.zeros(ocp.u.size()), np.float64)
 Error_k_1 = np.array(np.zeros(ocp.u.size()), np.float64)
 
-Kp = 0.005*np.array([1, 0.8, 0.2, 3, 3], np.float64)
+Kp = 0.005*np.array([1, 0.8, 0.3, 4, 4], np.float64)
 scale_U = np.transpose(np.array(scaleUModelica))[0]
-Ti = 14
+Ti = 10
 Td = 0
-du_max = np.array([3e-4,   3e-4,   1.0e2,   2.0e2,   2.0e2])
+du_max = np.array([4e-4,   4e-4,   1.0e2,   2.0e2,   2.0e2])
 
 for k in range(k0, NIT):
     sys.stdout.flush()
 
     if (k > 3600 * 1 / DT) and (k <= 3600 * 11 / DT):
-        KF.R = R0 - 0.027 * (k - 3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
+        KF.R = R0 - 0.0277 * (k - 3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
 
     funcJacs.setInput(x_hat, 'x')
     funcJacs.setInput(uk, 'p')
@@ -337,8 +340,9 @@ for k in range(k0, NIT):
         Juh_OnSOC.append(Ju)
         simTime.append(k * DT)
 
-        # if(k==359):
-        #    thebug
+toc = time.time()
+computation_time = toc - tic
+print 'computation time: ', computation_time
 
 execfile('SavedResults\\plotCurves_olga.py')
 execfile('SavedResults\\SaveSimData_FeedbackRTO_olga.py')

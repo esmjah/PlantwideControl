@@ -87,7 +87,7 @@ ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
 DTMPC = 600  ## for the MPC algorithm  Please always choose one to be multiple of the other
-prediction_horizon = 10 * 3600
+prediction_horizon = 6 * 3600
 
 scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -197,7 +197,7 @@ if MPC:
         solver = MultipleShooting.MultipleShooting()
     else:
         solver = SingleShooting.SingleShooting()
-    deltaUCons = np.array([0.015, 0.015, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
+    deltaUCons = np.array([0.01, 0.01, 1.0e3, 5.0e3, 5.0e3]) / DTMPC  # given in SI
 
     # check consistency
     if deltaUCons.size != 0:
@@ -213,69 +213,10 @@ print '----'
 sys.stdout.flush()
 
 # Start Simulator
-openLoop = False
-controlOlga = True
-NIT = int(np.ceil(3600 * 36 / DT))
+da = Olga.OLGA_connect(serverIP=serverIP, modelPrefix=model)
+y0Olga = Olga.OLGA_read_tags(da, measurementTagsOlga)
+
 xSh = []
-if not openLoop:
-    if controlOlga:
-        da = Olga.OLGA_connect(serverIP=serverIP, modelPrefix=model)
-        # Olga.OLGA_restart_time(da,True)
-    else:
-        xSim = np.copy(x0) + ca.vertcat([np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())])
-        zSim = np.copy(z0)
-        xSh.append(xSim)
-
-else:
-    readPreviousSimulation = True
-    if readPreviousSimulation:
-        # dataFile ='Network-march16.mat'
-        dataFile = 'yerrSim.mat'
-        data = sio.loadmat(dataFile)
-
-        yh = data['yh']
-        olgaTags = data['olgaTags']
-
-        olgaTags = [str(ti).rstrip() for ti in olgaTags]
-        OlgaTagIndex = {}
-
-        for k in range(len(olgaTags)):
-            OlgaTagIndex[olgaTags[k]] = k
-
-        NIT = min(int(np.floor(yh[-1][OlgaTagIndex["TIME"]] / DT)), NIT)
-
-        OlgaF = {}
-        for k in olgaTags:
-            OlgaF[k] = interp1d([yi[OlgaTagIndex['TIME']] for yi in yh], [yi[OlgaTagIndex[k]] for yi in yh])
-
-    else:
-        mh = []
-        time = []
-        x0k = x0 + [np.random.normal() * scaleX[k] / 10 for k in range(ocp.x.size())]
-        xSh.append(x0k)
-        zf = None
-        for k in range(NIT):
-            [x0k, zf, y] = daeModel.oneStep(x0k, u, zf)
-            mh.append(y)
-            time.append((k + 1) * DT)
-            xSh.append(x0k)
-
-        OlgaF = {}
-        for k in range(len(measurementTagsOlga)):
-            OlgaF[measurementTagsOlga[k]] = interp1d(time, [yi[k] for yi in mh])
-
-        for k in range(len(controlTagsOlga)):
-            OlgaF[controlTagsOlga[k]] = interp1d([0] + time, [u[k]] + [u[k] for j in range(NIT)])
-
-        plotSimulation = True
-        if plotSimulation:
-            for sit in range(len(measurementTagsOlga)):
-                plt.figure()
-                plt.plot([(ti + 1) * DT for ti in range(NIT)],
-                         [OlgaF[measurementTagsOlga[sit]](ti + 1) * DT for ti in range(NIT)],
-                         label=measurementTagsModelica[sit])
-                plt.legend()
-
 xh = []
 uh = []
 yh = []
@@ -295,11 +236,6 @@ if monitor:
     measure_funcEst = ocp.beq(measurementsEst)
     HEst = ca.SXFunction(ca.daeIn(x=ocp.x, z=ocp.z, p=ocp.u, t=ocp.t), [measure_funcEst])
     HEst.init()
-
-
-if openLoop or controlOlga:  # testing state estimation on
-    if controlOlga and not openLoop:
-        y0Olga = Olga.OLGA_read_tags(da, measurementTagsOlga)
 
 extendedKalman = True
 # u0 =  ca.vertcat([ocp.variable(xit.getName()).initialGuess.getValue() for xit in ocp.u])
@@ -357,6 +293,7 @@ if MPC:
         A_inv = np.linalg.inv(-A)
         Ju = np.array(C * (A_inv * B) + D)[0]
 
+NIT = int(np.ceil(3600 * 22 / DT))
 KalmanStopk = 2 * NIT
 
 Obj_total = 0.0
@@ -369,7 +306,7 @@ for k in range(k0, NIT):
     sys.stdout.flush()
 
     if (k > 3600 * 1 / DT) and (k <= 3600 * 11 / DT):
-        KF.R = R0 - 0.027 * (k - 3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
+        KF.R = R0 - 0.0277 * (k - 3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
 
     if (np.mod((k - k0MPC) * DT, DTMPC) == 0) and (k >= k0MPC):
         uk, objValue, stats = solver.solveProblem(x_hat, uk)
@@ -433,7 +370,7 @@ for k in range(k0, NIT):
         Obj_total = Obj_total + Obj_k
 
         doPrint = True
-        if doPrint and np.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+        if doPrint and np.mod((k + 1 - k0MPC) * DT, 360.0) == 0:
             print "====================================================="
             print 'Simulation time:', (k + 1) * DT / (3600.0), 'hours'
             print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling

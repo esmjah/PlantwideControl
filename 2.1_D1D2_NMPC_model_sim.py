@@ -14,6 +14,9 @@ import casadi as ca
 import control
 import numpy as np
 import ConfigParser
+import time
+
+tic = time.time()
 
 _path = os.path.dirname(os.path.realpath(__file__))
 
@@ -82,7 +85,8 @@ ocpSim.eliminateDependentParameterInterdependencies()
 ocpSim.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
-DTMPC = 3600  ## for the MPC algorithm  Please always choose one to be multiple of the other
+DTMPC = 600  ## for the MPC algorithm  Please always choose one to be multiple of the other
+prediction_horizon = 8 * 3600
 
 scaleXModelica = ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -253,7 +257,7 @@ if MPC:
     print 'xMin:', xMin[6], ',', xMin[12]
     uk, objValue, stats = solver.solveProblem(x0=x_hat, u0=uk)
     print 'controlInput', uk  # /scaleU
-    print 'Obj. Value:', objValue / (3600 * 16)
+    print 'Obj. Value:', objValue / prediction_horizon
     print 'Iterations:', stats['iter_count']
     print 'Comp. Time:', stats['t_mainloop']
     if 'return_status' in stats:
@@ -293,13 +297,13 @@ gasPrice = ocp.variable('gasPrice').start
 
 NIT = int(np.ceil(3600 * 55 / DT))
 k0 = int(0)
-k0MPC = 2*DTMPC / DT
+k0MPC = 2*3600 / DT
 
 for k in range(k0, NIT+1):
     sys.stdout.flush()
 
-    if (k > DTMPC * 10 / DT) and (k <= DTMPC * 20 / DT):
-        KF.R = R0 - 0.0275 * (k - 10*DTMPC / DT) * np.diag(np.ones(len(measurementTagsSim)))
+    if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
+        KF.R = R0 - 0.0275 * (k - 10*3600 / DT) * np.diag(np.ones(len(measurementTagsSim)))
 
     if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
         P_res1 -= dP_res * DT
@@ -324,7 +328,7 @@ for k in range(k0, NIT+1):
         print 'xMin:', xMin[6], ',', xMin[12]
         uk, objValue, stats = solver.solveProblem(x_hat, uk)
         print 'controlInput', uk  # /scaleU
-        print 'Obj. Value:', objValue/(3600*16)
+        print 'Obj. Value:', objValue / prediction_horizon
         print 'Iterations:', stats['iter_count']
         print 'Comp. Time:', stats['t_mainloop']
         if 'return_status' in stats:
@@ -381,7 +385,7 @@ for k in range(k0, NIT+1):
     HEst.evaluate()
 
     doPrint = True
-    if doPrint and k % 36 == 0:  # and np.mod((k + 1 - k0MPC) * DT, DTMPC / 10.0) == 0:
+    if doPrint and np.mod((k + 1 - k0MPC) * DT, 3600 / 10.0) == 0:
         print "====================================================="
         print 'Simulation time:', k * DT / 3600.0, 'hours'
         print 'PredictedMeasurmentError', (y - yP)  # /KF.measurementScaling
@@ -412,5 +416,9 @@ for k in range(k0, NIT+1):
         yh.append(y)
         Juh_NMPC.append(Ju)
         simTime.append(k * DT)
+
+toc = time.time()
+computation_time = toc - tic
+print 'computation time: ', computation_time
 
 execfile('SavedResults\\plotCurves_model.py')

@@ -73,8 +73,8 @@ ocp.eliminateDependentParameterInterdependencies()
 ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
-DTMPC = 600  ## for the MPC algorithm  Please always choose one to be multiple of the other
-prediction_horizon = 8 * 3600
+DTMPC = 1200  ## for the MPC algorithm  Please always choose one to be multiple of the other
+prediction_horizon = 10 * 3600
 
 scaleXModelica = Ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = Ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])
@@ -191,7 +191,7 @@ if MPC:
     else:
         solver = SingleShooting.SingleShooting()
 
-    deltaUCons = NP.array([0.01, 0.01, 1.0e3, 2.0e3, 2.0e3]) / DTMPC  ## given in SI
+    deltaUCons = NP.array([0.02, 0.02, 1.0e3, 2.0e3, 2.0e3]) / DTMPC  ## given in SI
 
     ## check consistency
     if deltaUCons.size != 0:

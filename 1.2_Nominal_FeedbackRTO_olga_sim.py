@@ -284,7 +284,7 @@ for k in range(k0, NIT):
             if u_k[i] < uMin[i]: u_k[i] = uMin[i]
             if u_k[i] > uMax[i]: u_k[i] = uMax[i]
 
-        u_k_1 = uk_PID
+        u_k_1 = u_k
         Error_k_1 = Error_k
 
     uk = ca.DMatrix([u_k[0], u_k[1], u_k[2], u_k[3], u_k[4]])

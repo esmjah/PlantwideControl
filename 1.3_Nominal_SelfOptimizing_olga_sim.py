@@ -262,7 +262,7 @@ scale_U = np.transpose(np.array(scaleUModelica))[0]
 Ti = 150
 Td = 0
 
-du_max = np.array([3e-4,   3e-4,   4.0e2,   6.0e2,   6.0e2])
+du_max = np.array([6e-4,   6e-4,   4.0e2,   6.0e2,   6.0e2])
 
 r_WG1 = 1.305436
 r_WG2 = 1.3344603

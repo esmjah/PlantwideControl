@@ -239,7 +239,7 @@ Kp = 0.005*np.array([1, 0.8, 0.6, 8, 8], np.float64)
 scale_U = np.transpose(np.array(scaleUModelica))[0]
 Ti = 6
 Td = 0
-du_max = np.array([3e-4,   3e-4,   4.0e2,   6.0e2,   6.0e2])
+du_max = np.array([2e-4,   2e-4,   4.0e2,   6.0e2,   6.0e2])
 
 for k in range(k0, NIT):
     sys.stdout.flush()

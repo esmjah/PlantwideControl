@@ -1,7 +1,7 @@
 within ;
 
 
-optimization ocpGaslift_D1D2(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*10)
+optimization ocpGaslift_D1D2(objectiveIntegrand=(net.w1.fout.w[2]+net.w2.fout.w[2]+gasPrice*(inputGas1+inputGas2)),startTime=0,finalTime=3600*12)
 
 networkModels.gasliftNetworks.netPres_PIDstruc2 net(
 
@@ -87,9 +87,9 @@ parameter Real gasPrice(min =0, start =1) = 1;
 input Real inputGas1(min= 0.5,max=2,start=initialU[1],nominal=1);
 input Real inputGas2(min= 0.5,max=2,start=initialU[2],nominal=1);
 
-input Real uTOP(min=0.7e5, max=2e5, start=initialU[3], nominal =1e5 );
-input Real uWHD1(min=2.0e5, max=5e5, start=initialU[4],   nominal =1e5 );
-input Real uWHD2(min=2.0e5, max=5e5, start=initialU[5], nominal =1e5 );
+input Real uTOP(min=initialU[3], max=initialU[3], start=initialU[3], nominal =1e5 );
+input Real uWHD1(min=initialU[4], max=initialU[4], start=initialU[4],   nominal =1e5 );
+input Real uWHD2(min=initialU[5], max=initialU[5], start=initialU[5], nominal =1e5 );
 
 networkModels.networkComponents.gasManifold gm1(u = inputGas1);
 networkModels.networkComponents.gasManifold gm2(u = inputGas2);

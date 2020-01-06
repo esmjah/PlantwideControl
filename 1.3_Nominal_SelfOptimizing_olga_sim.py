@@ -234,7 +234,7 @@ for k in range(nX):
     xMin[k] = ocp.variable(ocp.x[k].getName()).min.getValue()
     xMax[k] = ocp.variable(ocp.x[k].getName()).max.getValue()
 
-NIT = int(np.ceil(3600 * 36 / DT))
+NIT = int(np.ceil(3600 * 22 / DT))
 KalmanStopk = 2 * NIT
 
 Obj_total = 0.0
@@ -248,6 +248,7 @@ np.copyto(u_k, np.reshape(np.array(u), ocp.u.size()))
 np.copyto(u_k_1, np.reshape(np.array(u), ocp.u.size()))
 np.copyto(u0, np.reshape(np.array(u), ocp.u.size()))
 uk = u
+u_PID_k_1 = np.transpose(np.array(u, np.float64))[0]
 k0 = int(0)
 k0Control = 3600 / DT
 
@@ -258,9 +259,10 @@ Error_k_1 = np.array(np.zeros(ocp.u.size()), np.float64)
 
 Kp = np.array([0.025, 0.025, 5e-7, 5e-7, 5e-7], np.float64)
 scale_U = np.transpose(np.array(scaleUModelica))[0]
-Ti = 300
+Ti = 150
 Td = 0
-du_max = np.array([3e-4,   3e-4,   1.0e2,   2.0e2,   2.0e2])
+
+du_max = np.array([6e-4,   6e-4,   4.0e2,   6.0e2,   6.0e2])
 
 r_WG1 = 1.305436
 r_WG2 = 1.3344603
@@ -305,7 +307,7 @@ for k in range(k0, NIT):
         du = uk_PID - u_k_1
 
         for i in range(ocp.u.size()):
-            if np.abs(du[i]) < du_max[i]:
+            if np.abs(du[i]) <= du_max[i]:
                 u_k[i] = uk_PID[i]
             else:
                 u_k[i] = u_k_1[i] + np.sign(du[i]) * du_max[i]

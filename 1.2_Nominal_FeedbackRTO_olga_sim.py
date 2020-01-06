@@ -235,11 +235,11 @@ IntegralError = np.array(np.zeros(ocp.u.size()), np.float64)
 Error_k = np.array(np.zeros(ocp.u.size()), np.float64)
 Error_k_1 = np.array(np.zeros(ocp.u.size()), np.float64)
 
-Kp = 0.005*np.array([1, 0.8, 0.3, 4, 4], np.float64)
+Kp = 0.005*np.array([1, 0.8, 0.6, 8, 8], np.float64)
 scale_U = np.transpose(np.array(scaleUModelica))[0]
-Ti = 10
+Ti = 6
 Td = 0
-du_max = np.array([4e-4,   4e-4,   1.0e2,   2.0e2,   2.0e2])
+du_max = np.array([2e-4,   2e-4,   4.0e2,   6.0e2,   6.0e2])
 
 for k in range(k0, NIT):
     sys.stdout.flush()
@@ -276,7 +276,7 @@ for k in range(k0, NIT):
         du = uk_PID - u_k_1
 
         for i in range(ocp.u.size()):
-            if np.abs(du[i]) < du_max[i]:
+            if np.abs(du[i]) <= du_max[i]:
                 u_k[i] = uk_PID[i]
             else:
                 u_k[i] = u_k_1[i] + np.sign(du[i]) * du_max[i]

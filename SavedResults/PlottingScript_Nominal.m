@@ -6,7 +6,7 @@ load Nominal_SelfOptimizing.mat
 simTime_SOC = simTime/3600;
 
 load Nominal_FeedbackRTO.mat
-load Nominal_NMPC.mat
+load Nominal_NMPC_1200_12.mat
 
 
 plotStates = 0;
@@ -40,7 +40,7 @@ nU = length(u(1,:));
 NIT = length(x(:,1));
 dt = 100;
 time = simTime/3600;%(0:dt:(NIT-1)*dt)'/3600;
-x_lim = [0 30];
+x_lim = [0 20];
 N = length(time);
 
 if(plotStates)
@@ -183,6 +183,9 @@ xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,A}}$ [Pa]','Interpreter','latex')
 leg2 = legend('Optimal Setpoint','Olga Simulator','Dynamic Model','Active Constraint');
 set(leg2,'Location','NorthEast','Interpreter','latex','NumColumns',2)
+axs = gca;
+axs.TickLabelInterpreter = 'latex';
+
 subplot(3,1,3,'OuterPosition',[0 0 1 1/3])
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
@@ -193,7 +196,7 @@ plot(time,yKfMeas(:,8),'--','Color',[0 .5 0],'LineWidth',1)
 plot(time,uOptimal(5)*ones(NIT,1),':k','LineWidth',1)
 title('Pressure drop of well B wellhead valve','Interpreter','latex')
 xlim(x_lim)
-ylim([1.8e5 3e5])
+ylim([1.8e5 3.2e5])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,B}}$ [Pa]','Interpreter','latex')
 leg3 = legend('Optimal Setpoint','Olga Simulator','Dynamic Model','Active Constraint');
@@ -205,7 +208,7 @@ axs.TickLabelInterpreter = 'latex';
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls
 print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls
 %%
-load SimData_OnSOC_Nominal_2018.06.25_Olga.mat
+load Nominal_FeedbackRTO.mat
 figure('Name','Feedback RTO Pressure Controls')
 clf
 rect = [0, 0, 12, 14];
@@ -218,7 +221,7 @@ plot(time,yKfMeas(1:N,9),'--','Color',[0 .5 0],'LineWidth',1)
 plot(time,uOptimal(3)*ones(NIT,1),':k','LineWidth',1)
 title('Pressure drop of topside valve','Interpreter','latex')
 xlim(x_lim)
-ylim([5e4 9e4])
+ylim([3e4 9e4])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{top}}$ [Pa]','Interpreter','latex')
 axs = gca;
@@ -259,7 +262,7 @@ set(leg3,'Location','NorthEast','Interpreter','latex','NumColumns',2)
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\FeedbackRTO_pressure_controls
 print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\FeedbackRTO_pressure_controls
 %%
-load SimData_SOC2_Nominal_2019.03.02.mat
+load Nominal_SelfOptimizing.mat
 simTime_SOC = simTime/3600;
 figure('Name','Self-Optimizing Pressure Controls')
 clf
@@ -272,7 +275,7 @@ hold on
 plot(time,uOptimal(3)*ones(NIT,1),':k','LineWidth',1)
 title('Pressure drop of topside valve','Interpreter','latex')
 xlim(x_lim)
-ylim([5e4 9e4])
+ylim([3e4 9e4])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{top}}$ [Pa]','Interpreter','latex')
 axs = gca;

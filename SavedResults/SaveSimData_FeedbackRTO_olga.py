@@ -117,4 +117,4 @@ simData['R0'] = R0
 simData['R'] = KF.R
 simData['compTime'] = computation_time/3600
 
-sio.savemat('SavedResults\\Nominal_FeedbackRTO.mat', simData)
+sio.savemat('SavedResults\\Nominal_FeedbackRTO_rate_limiter.mat', simData)

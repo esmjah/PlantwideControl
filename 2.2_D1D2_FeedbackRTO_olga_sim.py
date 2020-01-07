@@ -4,7 +4,9 @@ import os
 import casadi as ca
 import control
 import numpy as np
+import time
 
+tic = time.time()
 _path = os.path.dirname(os.path.realpath(__file__))
 
 os.chdir(_path)
@@ -230,7 +232,7 @@ np.copyto(u_k, np.reshape(np.array(uOpt), ocp.u.size()))
 np.copyto(u_k_1, np.reshape(np.array(uOpt), ocp.u.size()))
 np.copyto(u0, np.reshape(np.array(uOpt), ocp.u.size()))
 k0 = int(0)
-k0Control = 5*3600 / DT
+k0Control = 2*3600 / DT
 
 
 uk = ca.DMatrix(u_k)
@@ -251,9 +253,9 @@ for k in range(k0, NIT+1):
     sys.stdout.flush()
 
     if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
-        KF.R = R0 - 0.0275 * (k - 10*3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
+        KF.R = R0 - 0.0277 * (k - 10*3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
 
-    if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
+    if (k > 3600 * 20 / DT) and (k <= 3600 * 30 / DT):
         P_res1 -= dP_res * DT
     if (k > 3600 * 30 / DT) and (k <= 3600 * 40 / DT):
         P_res2 -= dP_res * DT
@@ -354,8 +356,10 @@ for k in range(k0, NIT+1):
         Juh_OnSOC.append(Ju)
         simTime.append(k * DT)
 
-    # if(k==359):
-    #    thebug
+
+toc = time.time()
+computation_time = toc - tic
+print 'computation time: ', computation_time
 
 execfile('SavedResults\\plotCurves_olga.py')
 execfile('SavedResults\\SaveSimData_FeedbackRTO_olga.py')

@@ -8,7 +8,7 @@ format shortG
 %compTime = 68.846; % hours
 %load D3D4_NMPC_1200_6.mat
 %compTime = 21.207; % hours
-load D1D2_NMPC_1200_10.mat
+load D1D2_NMPC_1200_12.mat
 
 J_NMPC_new = J_NMPC;
 Ju_NMPC_new = Ju_NMPC;
@@ -18,7 +18,7 @@ yOlgaMeas_new = yOlgaMeas;
 yOlgaMoni_new = yOlgaMoni;
 yKfMoni_new = yKfMoni;
 
-load D1D2_NMPC_600_8.mat
+load D1D2_NMPC.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));

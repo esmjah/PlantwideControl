@@ -6,7 +6,7 @@ format shortG
 
 % Pres distirbance
 load D1D2_SelfOptimizing.mat
-load D1D2_NMPC.mat
+load D1D2_NMPC_1200_12.mat
 load D1D2_FeedbackRTO.mat
 
 figure('Name','getDefaultColors')

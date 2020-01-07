@@ -74,7 +74,7 @@ ocp.eliminateAlgebraic()
 
 DT = 10  # for simulation and kalman filtering
 DTMPC = 1200  ## for the MPC algorithm  Please always choose one to be multiple of the other
-prediction_horizon = 10 * 3600
+prediction_horizon = 12 * 3600
 
 scaleXModelica = Ca.vertcat([ocp.variable(ocp.x[k].getName()).nominal for k in range(ocp.x.size())])
 scaleZModelica = Ca.vertcat([ocp.variable(ocp.z[k].getName()).nominal for k in range(ocp.z.size())])

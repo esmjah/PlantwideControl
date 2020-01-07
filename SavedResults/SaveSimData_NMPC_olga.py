@@ -118,4 +118,4 @@ simData['Ju_NMPC'] = Ju_NMPC
 simData['simTime'] = sim_time
 simData['compTime'] = computation_time/3600
 
-sio.savemat('SavedResults\\D3D4_NMPC_1200_12.mat', simData)
+sio.savemat('SavedResults\\D1D2_NMPC_1200_12.mat', simData)

@@ -273,7 +273,7 @@ for k in range(k0, NIT+1):
     sys.stdout.flush()
 
     if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
-        KF.R = R0 - 0.0275 * (k - 10*3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
+        KF.R = R0 - 0.0277 * (k - 10*3600 / DT) * np.diag(np.ones(len(measurementTagsOlga)))
 
     if (k > 3600 * 10 / DT) and (k <= 3600 * 20 / DT):
         alpha_Gm1 += d_alpha * DT

@@ -6,8 +6,9 @@ format shortG
 
 % GOR distirbance
 load D3D4_SelfOptimizing.mat
-load D3D4_NMPC_600_6.mat
-load D3D4_FeedbackRTO.mat
+%load D3D4_NMPC_1200_12.mat
+load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
+load D3D4_FeedbackRTO_new.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -56,32 +57,32 @@ u1_ideal = [u1_ideal_nominal*ones(1,5*36) linspace(u1_ideal_nominal,u1_ideal_d3,
 u2_ideal = [u2_ideal_nominal*ones(1,5*36) linspace(u2_ideal_nominal,u2_ideal_d3,10*36) u2_ideal_d3*ones(1,10*36) linspace(u2_ideal_d3,u2_ideal_d4,10*36) u2_ideal_d4*ones(1,N-35*36)];
 
 J_SOC2 = J_SOC(N1:N2);
-J_OnSOC2 = J_OnSOC(N1:N2);
+J_FBRTO2 = J_OnSOC(N1:N2);
 J_NMPC2 = J_NMPC(N1:N2);
 Loss_NMPC = J_NMPC2-J_ideal;
-Loss_OnSOC = J_OnSOC2-J_ideal;
+Loss_FBRTO = J_FBRTO2-J_ideal;
 Loss_SOC = J_SOC2-J_ideal;
 
 Loss_NMPC_Nominal = Loss_NMPC(5*36-1)
-Loss_OnSOC_Nominal = Loss_OnSOC(5*36-1)
+Loss_FBRTO_Nominal = Loss_FBRTO(5*36-1)
 Loss_SOC_Nominal = Loss_SOC(5*36-1)
 
 Loss_NMPC_d3 = Loss_NMPC(25*36-1)
-Loss_OnSOC_d3 = Loss_OnSOC(25*36-1)
+Loss_FBRTO_d3 = Loss_FBRTO(25*36-1)
 Loss_SOC_d3 = Loss_SOC(25*36-1)
 
 Loss_NMPC_d4 = Loss_NMPC(50*36-1)
-Loss_OnSOC_d4 = Loss_OnSOC(50*36-1)
+Loss_FBRTO_d4 = Loss_FBRTO(50*36-1)
 Loss_SOC_d4 = Loss_SOC(50*36-1)
 %%
 figure('Name','Cost')
-plot(time,J_OnSOC2,time,J_NMPC2,'--',time,J_SOC2,'--k',time,J_ideal,'--g')
+plot(time,J_FBRTO2,time,J_NMPC2,'--',time,J_SOC2,'--k',time,J_ideal,'--g')
 legend('Proposed','NMPC','Self-Optimizng','Ideal')
 %%
 figure('Name','Loss')
 clf
 subplot(3,1,1)
-plot(time,Loss_OnSOC,time,Loss_NMPC,'--',time,Loss_SOC,'--k',time,zeros(size(time)),'--g','LineWidth',1)
+plot(time,Loss_FBRTO,time,Loss_NMPC,'--',time,Loss_SOC,'--k',time,zeros(size(time)),'--g','LineWidth',1)
 title('Loss')
 xlim(x_lim)
 ylim([-0.1 0.2])
@@ -106,7 +107,7 @@ plot(time,J_NMPC2,'Color',col1,'LineWidth',1)
 title('Cost','Interpreter','latex')
 hold on
 plot(time,J_SOC2,'-','Color',col3,'LineWidth',1)
-plot(time,J_OnSOC2,'--','Color',col2,'LineWidth',1)
+plot(time,J_FBRTO2,'--','Color',col2,'LineWidth',1)
 plot(time,J_ideal,':','Color',[0 .5 0],'LineWidth',1)
 leg1 = legend('EMPC','Self-Optimizng','Feedback-RTO','Steady-State Optimal');
 set(leg1,'Location','Best','Interpreter','latex','NumColumns',2)
@@ -121,7 +122,7 @@ plot(time,Loss_NMPC,'Color',col1,'LineWidth',1)
 title('Loss','Interpreter','latex')
 hold on
 plot(time,Loss_SOC,'-','Color',col3,'LineWidth',1)
-plot(time,Loss_OnSOC,'--','Color',col2,'LineWidth',1)
+plot(time,Loss_FBRTO,'--','Color',col2,'LineWidth',1)
 plot(time,zeros(size(time)),':','Color',[0 .5 0],'LineWidth',1)
 leg2 = legend('EMPC','Self-Optimizng','Feedback-RTO','Steady-State Optimal');
 set(leg2,'Location','Best','Interpreter','latex','NumColumns',2)

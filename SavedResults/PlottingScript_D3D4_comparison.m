@@ -233,7 +233,7 @@ xlim(x_lim)
 ylim([5e4 9e4])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{top}}$ [Pa]','Interpreter','latex')
-leg1 = legend('Optimal Setpoint','EMPC (Interval=3600 s)','EMPC (Interval=1200 s)');
+leg1 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
 set(leg1,'Location','Best','Interpreter','latex','NumColumns',3)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
@@ -247,7 +247,7 @@ title('Pressure drop of well A wellhead valve','Interpreter','latex')
 xlim(x_lim)
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,A}}$ [Pa]','Interpreter','latex')
-leg2 = legend('Optimal Setpoint','EMPC (Interval=3600 s)','EMPC (Interval=1200 s)');
+leg2 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
 set(leg2,'Location','Best','Interpreter','latex','NumColumns',3)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
@@ -262,8 +262,8 @@ xlim(x_lim)
 ylim([1.8e5 2.5e5])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,B}}$ [Pa]','Interpreter','latex')
-leg3 = legend('Optimal Setpoint','EMPC (Interval=3600 s)','EMPC (Interval=1200 s)');
-set(leg3,'Location','Best','Interpreter','latex','NumColumns',3)
+leg3 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
+set(leg3,'Location','Best','Interpreter','latex','NumColumns',1)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 

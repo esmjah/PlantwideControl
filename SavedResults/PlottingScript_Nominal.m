@@ -4,10 +4,11 @@ close all
 %load('SimData_NCO_d1_2017.05.18_testModel.mat')
 load Nominal_SelfOptimizing.mat
 simTime_SOC = simTime/3600;
-
+yOlgaMeas_soc = yOlgaMeas;
 load Nominal_FeedbackRTO.mat
+yOlgaMeas_fbrto = yOlgaMeas;
 load Nominal_NMPC_1200_12.mat
-
+yOlgaMeas_nmpc = yOlgaMeas;
 
 plotStates = 0;
 plotInputs = 1;
@@ -346,6 +347,7 @@ axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\nominal_injections
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\nominal_SOC_CVs
 print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\nominal_SOC_CVs
+
 %%
 plotInputs = 0;
 if(plotInputs)

@@ -4,10 +4,11 @@ close all
 
 format shortG
 
-%load D3D4_NMPC_long.mat
-%compTime = 68.846; % hours
-%load D3D4_NMPC_1200_6.mat
-%compTime = 21.207; % hours
+load D3D4_FeedbackRTO_new.mat
+yOlgaMeas_fbrto = yOlgaMeas;
+yOlgaMoni_fbrto = yOlgaMoni;
+u_fbrto = u_OnSOC;
+
 load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
 
 J_NMPC_new = J_NMPC;
@@ -66,6 +67,8 @@ J_ideal = [J_ideal_nominal*ones(1,5*36) linspace(J_ideal_nominal,J_ideal_d3,10*3
 u1_ideal = [u1_ideal_nominal*ones(1,5*36) linspace(u1_ideal_nominal,u1_ideal_d3,10*36) u1_ideal_d3*ones(1,10*36) linspace(u1_ideal_d3,u1_ideal_d4,10*36) u1_ideal_d4*ones(1,N-35*36)];
 u2_ideal = [u2_ideal_nominal*ones(1,5*36) linspace(u2_ideal_nominal,u2_ideal_d3,10*36) u2_ideal_d3*ones(1,10*36) linspace(u2_ideal_d3,u2_ideal_d4,10*36) u2_ideal_d4*ones(1,N-35*36)];
 
+J_fbrto = J_OnSOC(N1:N2);
+Loss_fbrto = J_fbrto-J_ideal;
 
 J_NMPC2 = J_NMPC(N1:N2);
 Loss_NMPC = J_NMPC2-J_ideal;
@@ -117,12 +120,13 @@ clf
 rect = [0, 0, 12, 10];
 set(gcf,'Color',[1,1,1],'PaperUnits','centimeters','PaperSize',[12 10],'PaperPosition',rect)
 subplot(2,1,1,'OuterPosition',[0 1/2 1 1/2])
-plot(time,J_NMPC2,'Color',col1,'LineWidth',1)
+plot(time,J_NMPC2,'Color',col2,'LineWidth',1)
 title('Cost','Interpreter','latex')
 hold on
-plot(time,J_NMPC2_new,'-','Color',col2,'LineWidth',1)
+plot(time,J_NMPC2_new,'-','Color',col1,'LineWidth',1)
+plot(time,J_fbrto,'-','Color',col3,'LineWidth',1)
 plot(time,J_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Feedback-RTO','Steady-State Optimal');
 set(leg1,'Location','NorthEast','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -131,12 +135,13 @@ ylabel('J [\$/s]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 subplot(2,1,2,'OuterPosition',[0 0 1 1/2])
-plot(time,Loss_NMPC,'Color',col1,'LineWidth',1)
+plot(time,Loss_NMPC,'Color',col2,'LineWidth',1)
 title('Loss','Interpreter','latex')
 hold on
-plot(time,Loss_NMPC_new,'-','Color',col2,'LineWidth',1)
+plot(time,Loss_NMPC_new,'-','Color',col1,'LineWidth',1)
+plot(time,Loss_fbrto,'-','Color',col3,'LineWidth',1)
 plot(time,zeros(size(time)),':','Color',[0 .5 0],'LineWidth',1)
-leg2 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
+leg2 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Feedback-RTO','Steady-State Optimal');
 set(leg2,'Location','NorthWest','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -191,8 +196,9 @@ plot(time,u_NMPC(N1:N2,1),'Color',col1,'LineWidth',1)
 title('Well A gas injection rate','Interpreter','latex')
 hold on
 plot(time,u_NMPC_new(N1:N2,1),'-','Color',col2,'LineWidth',1)
+plot(time,u_fbrto(N1:N2,1),'-','Color',col3,'LineWidth',1)
 plot(time,u1_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Feedback-RTO','Steady-State Optimal');
 set(leg1,'Location','NorthEast','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -205,8 +211,9 @@ plot(time,u_NMPC(N1:N2,2),'Color',col1,'LineWidth',1)
 title('Well B gas injection rate','Interpreter','latex')
 hold on
 plot(time,u_NMPC_new(N1:N2,2),'-','Color',col2,'LineWidth',1)
+plot(time,u_fbrto(N1:N2,2),'-','Color',col3,'LineWidth',1)
 plot(time,u2_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Feedback-RTO','Steady-State Optimal');
 set(leg1,'Location','SouthWest','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -228,13 +235,14 @@ plot(time,u_NMPC(N1:N2,3),'--','Color',[0 .5 0],'LineWidth',1)
 hold on
 plot(time,yOlgaMeas(N1:N2,9),'-','Color',col2,'LineWidth',1)
 plot(time,yOlgaMeas_new(N1:N2,9),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,9),'-','Color',col3,'LineWidth',1)
 title('Pressure drop of topside valve','Interpreter','latex')
 xlim(x_lim)
 ylim([5e4 9e4])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{top}}$ [Pa]','Interpreter','latex')
-leg1 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
-set(leg1,'Location','Best','Interpreter','latex','NumColumns',3)
+leg1 = legend('Setpoint','Interval=3600 s','Interval=1200 s', 'Feedback-RTO');
+set(leg1,'Location','SouthEast','Interpreter','latex','NumColumns',3)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 
@@ -243,11 +251,12 @@ plot(time,u_NMPC(N1:N2,4),'--','Color',[0 .5 0],'LineWidth',1)
 hold on
 plot(time,yOlgaMeas(N1:N2,7),'-','Color',col2,'LineWidth',1)
 plot(time,yOlgaMeas_new(N1:N2,7),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,7),'-','Color',col3,'LineWidth',1)
 title('Pressure drop of well A wellhead valve','Interpreter','latex')
 xlim(x_lim)
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,A}}$ [Pa]','Interpreter','latex')
-leg2 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
+leg2 = legend('Setpoint','Interval=3600 s','Interval=1200 s', 'Feedback-RTO');
 set(leg2,'Location','Best','Interpreter','latex','NumColumns',3)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
@@ -257,16 +266,16 @@ plot(time,u_NMPC(N1:N2,5),'--','Color',[0 .5 0],'LineWidth',1)
 hold on
 plot(time,yOlgaMeas(N1:N2,8),'-','Color',col2,'LineWidth',1)
 plot(time,yOlgaMeas_new(N1:N2,8),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,8),'-','Color',col3,'LineWidth',1)
 title('Pressure drop of well B wellhead valve','Interpreter','latex')
 xlim(x_lim)
 ylim([1.8e5 2.5e5])
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,B}}$ [Pa]','Interpreter','latex')
-leg3 = legend('Setpoint','Interval=3600 s','Interval=1200 s');
+leg3 = legend('Setpoint','Interval=3600 s','Interval=1200 s', 'Feedback-RTO');
 set(leg3,'Location','Best','Interpreter','latex','NumColumns',1)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 
-%print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2\Figures\constrained_inputs
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls_comp
 print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls_cmp

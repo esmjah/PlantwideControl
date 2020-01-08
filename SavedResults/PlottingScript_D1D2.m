@@ -6,8 +6,8 @@ format shortG
 
 % Pres distirbance
 load D1D2_SelfOptimizing.mat
+load D1D2_FeedbackRTO_new.mat
 load D1D2_NMPC_1200_12.mat
-load D1D2_FeedbackRTO.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -140,10 +140,10 @@ clf
 rect = [0, 0, 12, 10];
 set(gcf,'Color',[1,1,1],'PaperUnits','centimeters','PaperSize',[12 10],'PaperPosition',rect)
 subplot(2,1,1,'OuterPosition',[0 1/2 1 1/2])
-plot(time,yOlgaMoni(N1:N2,11),'LineWidth',1)
+plot(time,yOlgaMoni(N1:N2,12),'LineWidth',1)
 title('Well A reservoir pressure','Interpreter','latex')
 hold on
-plot(time,yKfMoni(N1:N2,11),'--','Color',col2,'LineWidth',1)
+plot(time,yKfMoni(N1:N2,12),'--','Color',col2,'LineWidth',1)
 leg1 = legend('Actual (Olga Simulator)','EKF Estimation (Dynamic Model)');
 set(leg1,'Location','Best','Interpreter','latex')
 xlim(x_lim)
@@ -153,10 +153,10 @@ ylabel('$P_{\textrm{res,A}}$ [bar]','Interpreter','latex')
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 subplot(2,1,2,'OuterPosition',[0 0 1 1/2])
-plot(time,yOlgaMoni(N1:N2,12),'LineWidth',1)
+plot(time,yOlgaMoni(N1:N2,13),'LineWidth',1)
 title('Well B reservoir pressure','Interpreter','latex')
 hold on
-plot(time,yKfMoni(N1:N2,12),'--','Color',col2,'LineWidth',1)
+plot(time,yKfMoni(N1:N2,13),'--','Color',col2,'LineWidth',1)
 leg2 = legend('Actual (Olga Simulator)','EKF Estimation (Dynamic Model)');
 set(leg2,'Location','Best','Interpreter','latex')
 xlim(x_lim)

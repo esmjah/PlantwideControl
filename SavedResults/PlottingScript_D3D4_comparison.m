@@ -8,7 +8,8 @@ format shortG
 %compTime = 68.846; % hours
 %load D3D4_NMPC_1200_6.mat
 %compTime = 21.207; % hours
-load D3D4_NMPC_600_6.mat
+load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
+%load SimData_NMPC_GOR_2018.09.01_Olga_fine.mat
 
 J_NMPC_new = J_NMPC;
 Ju_NMPC_new = Ju_NMPC;
@@ -122,7 +123,7 @@ title('Cost','Interpreter','latex')
 hold on
 plot(time,J_NMPC2_new,'-','Color',col2,'LineWidth',1)
 plot(time,J_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=600 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
 set(leg1,'Location','NorthEast','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -136,7 +137,7 @@ title('Loss','Interpreter','latex')
 hold on
 plot(time,Loss_NMPC_new,'-','Color',col2,'LineWidth',1)
 plot(time,zeros(size(time)),':','Color',[0 .5 0],'LineWidth',1)
-leg2 = legend('EMPC (Interval=3600 s)','EMPC (Interval=600 s)','Steady-State Optimal');
+leg2 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
 set(leg2,'Location','NorthWest','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -192,7 +193,7 @@ title('Well A gas injection rate','Interpreter','latex')
 hold on
 plot(time,u_NMPC_new(N1:N2,1),'-','Color',col2,'LineWidth',1)
 plot(time,u1_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=600 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
 set(leg1,'Location','NorthEast','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])
@@ -206,7 +207,7 @@ title('Well B gas injection rate','Interpreter','latex')
 hold on
 plot(time,u_NMPC_new(N1:N2,2),'-','Color',col2,'LineWidth',1)
 plot(time,u2_ideal,':','Color',[0 .5 0],'LineWidth',1)
-leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=600 s)','Steady-State Optimal');
+leg1 = legend('EMPC (Interval=3600 s)','EMPC (Interval=1200 s)','Steady-State Optimal');
 set(leg1,'Location','SouthWest','Interpreter','latex','NumColumns',1)
 xlim(x_lim)
 %ylim([0.9 1.4])

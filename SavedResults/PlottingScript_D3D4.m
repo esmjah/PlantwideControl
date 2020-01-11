@@ -6,9 +6,20 @@ format shortG
 
 % GOR distirbance
 load D3D4_SelfOptimizing.mat
+simTime_soc = simTime;
+u_NMPC_soc = u_SOC;
+yOlgaMeas_soc = yOlgaMeas;
+yOlgaMoni_soc = yOlgaMoni;
+yKfMoni_soc = yKfMoni;
 %load D3D4_NMPC_1200_12.mat
-load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
 load D3D4_FeedbackRTO_new.mat
+yOlgaMeas_fbrto = yOlgaMeas;
+yOlgaMoni_fbrto = yOlgaMoni;
+yKfMoni_fbrto = yKfMoni;
+u_fbrto = u_OnSOC;
+
+load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
+
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -207,6 +218,61 @@ axs.TickLabelInterpreter = 'latex';
 %print -depsc Z:\Dropbox\OptimumSeeking\Manuscript2_revised\Figures\injections_GOR
 print -depsc C:\Git\PlantwideControl\SavedResults\Figures\injections_GOR
 print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\injections_GOR
+%%
+figure('Name','NMPC Pressure Controls')
+clf
+rect = [0, 0, 12, 14];
+set(gcf,'Color',[1,1,1],'PaperUnits','centimeters','PaperSize',[12 14],'PaperPosition',rect)
+
+subplot(3,1,1,'OuterPosition',[0 2/3 1 1/3])
+plot(time,u_NMPC(N1:N2,3),':','Color',[0 .5 0],'LineWidth',1)
+hold on
+plot(time,yOlgaMeas(N1:N2,9),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_soc(N1:N2,9),'-','Color',col3,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,9),'--','Color',col2,'LineWidth',1)
+title('Pressure drop of topside valve','Interpreter','latex')
+xlim(x_lim)
+ylim([5e4 9e4])
+xlabel('time [h]','Interpreter','latex')
+ylabel('$\Delta P_{\textrm{top}}$ [Pa]','Interpreter','latex')
+leg1 = legend('Setpoint','EMPC','Self-Optimizng','Feedback-RTO');
+set(leg1,'Location','SouthEast','Interpreter','latex','NumColumns',2)
+axs = gca;
+axs.TickLabelInterpreter = 'latex';
+
+subplot(3,1,2,'OuterPosition',[0 1/3 1 1/3])
+plot(time,u_NMPC(N1:N2,4),':','Color',[0 .5 0],'LineWidth',1)
+hold on
+plot(time,yOlgaMeas(N1:N2,7),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_soc(N1:N2,7),'-','Color',col3,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,7),'--','Color',col2,'LineWidth',1)
+title('Pressure drop of well A wellhead valve','Interpreter','latex')
+xlim(x_lim)
+xlabel('time [h]','Interpreter','latex')
+ylabel('$\Delta P_{\textrm{wh,A}}$ [Pa]','Interpreter','latex')
+leg2 = legend('Setpoint','EMPC','Self-Optimizng','Feedback-RTO');
+set(leg2,'Location','Best','Interpreter','latex','NumColumns',2)
+axs = gca;
+axs.TickLabelInterpreter = 'latex';
+
+subplot(3,1,3,'OuterPosition',[0 0 1 1/3])
+plot(time,u_NMPC(N1:N2,5),':','Color',[0 .5 0],'LineWidth',1)
+hold on
+plot(time,yOlgaMeas(N1:N2,8),'-','Color',col1,'LineWidth',1)
+plot(time,yOlgaMeas_soc(N1:N2,8),'-','Color',col3,'LineWidth',1)
+plot(time,yOlgaMeas_fbrto(N1:N2,8),'--','Color',col2,'LineWidth',1)
+title('Pressure drop of well B wellhead valve','Interpreter','latex')
+xlim(x_lim)
+ylim([1.8e5 2.5e5])
+xlabel('time [h]','Interpreter','latex')
+ylabel('$\Delta P_{\textrm{wh,B}}$ [Pa]','Interpreter','latex')
+leg3 = legend('Setpoint','EMPC','Self-Optimizng','Feedback-RTO');
+set(leg3,'Location','Best','Interpreter','latex','NumColumns',2)
+axs = gca;
+axs.TickLabelInterpreter = 'latex';
+
+print -depsc C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls_GOR
+print -dpdf C:\Git\PlantwideControl\SavedResults\Figures\MPC_pressure_controls_GOR
 %%
 if(plotInputs)
     nu = length(u_NMPC(1,:));

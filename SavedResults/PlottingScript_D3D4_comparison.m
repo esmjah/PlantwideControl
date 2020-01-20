@@ -3,15 +3,15 @@ clear all
 close all
 
 format shortG
-
+warning('off','all')
 load D3D4_FeedbackRTO_new.mat
 yOlgaMeas_fbrto = yOlgaMeas;
 yOlgaMoni_fbrto = yOlgaMoni;
 yKfMoni_fbrto = yKfMoni;
 u_fbrto = u_OnSOC;
 
-load D3D4_NMPC_3600_16.mat
-%load SimData_NMPC_GOR_2018.06.23_Olga.mat
+%load D3D4_NMPC_600_12.mat
+load D3D4_NMPC_3600_12_new.mat
 
 J_NMPC_new = J_NMPC;
 Ju_NMPC_new = Ju_NMPC;
@@ -21,8 +21,8 @@ yOlgaMeas_new = yOlgaMeas;
 yOlgaMoni_new = yOlgaMoni;
 yKfMoni_new = yKfMoni;
 
-load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
-%load D3D4_NMPC_1200_12.mat
+%load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
+load D3D4_NMPC_1200_12_new.mat
 
 figure('Name','getDefaultColors')
 h = plot(eye(6));
@@ -79,21 +79,35 @@ Loss_NMPC = J_NMPC2-J_ideal;
 J_NMPC2_new = J_NMPC_new(N1:N2);
 Loss_NMPC_new = J_NMPC2_new-J_ideal;
 
+cost_NMPC_Nominal = J_NMPC2(5*36-1);
+Loss_NMPC_Nominal = Loss_NMPC(5*36-1);
+cost_NMPC_Nominal_new = J_NMPC2_new(5*36-1);
+Loss_NMPC_Nominal_new = Loss_NMPC_new(5*36-1);
 
-disp(['cost_NMPC_Nominal = ', num2str(J_NMPC2(5*36-1))])
-disp(['Loss_NMPC_Nominal = ', num2str(Loss_NMPC(5*36-1))])
-disp(['cost_NMPC_Nominal_new = ', num2str(J_NMPC2_new(5*36-1))])
-disp(['Loss_NMPC_Nominal_new = ', num2str(Loss_NMPC_new(5*36-1))])
+cost_NMPC_d3 = J_NMPC2(25*36-1);
+Loss_NMPC_d3 = Loss_NMPC(25*36-1);
+cost_NMPC_d3_new = J_NMPC2_new(25*36-1);
+Loss_NMPC_d3_new = Loss_NMPC_new(25*36-1);
 
-disp(['cost_NMPC_d3 = ', num2str(J_NMPC2(25*36-1))])
-disp(['Loss_NMPC_d3 = ', num2str(Loss_NMPC(25*36-1))])
-disp(['cost_NMPC_d3_new = ', num2str(J_NMPC2_new(25*36-1))])
-disp(['Loss_NMPC_d3_new = ', num2str(Loss_NMPC_new(25*36-1))])
+cost_NMPC_d4 = J_NMPC2(50*36-1);
+Loss_NMPC_d4 = Loss_NMPC(50*36-1);
+cost_NMPC_d4_new = J_NMPC2_new(50*36-1);
+Loss_NMPC_d4_new = Loss_NMPC_new(50*36-1);
 
-disp(['cost_NMPC_d4 = ', num2str(J_NMPC2(50*36-1))])
-disp(['Loss_NMPC_d4 = ', num2str(Loss_NMPC(50*36-1))])
-disp(['cost_NMPC_d4_new = ', num2str(J_NMPC2_new(50*36-1))])
-disp(['Loss_NMPC_d4_new = ', num2str(Loss_NMPC_new(50*36-1))])
+disp(['cost_NMPC_Nominal = ', num2str(cost_NMPC_Nominal)])
+disp(['Loss_NMPC_Nominal = ', num2str(Loss_NMPC_Nominal)])
+disp(['cost_NMPC_Nominal_new = ', num2str(cost_NMPC_Nominal_new)])
+disp(['Loss_NMPC_Nominal_new = ', num2str(Loss_NMPC_Nominal_new)])
+
+disp(['cost_NMPC_d3 = ', num2str(cost_NMPC_d3)])
+disp(['Loss_NMPC_d3 = ', num2str(Loss_NMPC_d3)])
+disp(['cost_NMPC_d3_new = ', num2str(cost_NMPC_d3_new)])
+disp(['Loss_NMPC_d3_new = ', num2str(Loss_NMPC_d3_new)])
+
+disp(['cost_NMPC_d4 = ', num2str(cost_NMPC_d4)])
+disp(['Loss_NMPC_d4 = ', num2str(Loss_NMPC_d4)])
+disp(['cost_NMPC_d4_new = ', num2str(cost_NMPC_d4_new)])
+disp(['Loss_NMPC_d4_new = ', num2str(Loss_NMPC_d4_new)])
 %%
 figure('Name','Cost')
 plot(time,J_NMPC2,time,J_NMPC2_new,'-r',time,J_ideal,'--g')
@@ -264,7 +278,7 @@ xlim(x_lim)
 xlabel('time [h]','Interpreter','latex')
 ylabel('$\Delta P_{\textrm{wh,A}}$ [Pa]','Interpreter','latex')
 leg2 = legend('Setpoint','EMPC ($T_c$=1200 s)','EMPC ($T_c$=3600 s)', 'Feedback-RTO ($T_c$=10 s)');
-set(leg2,'Location','Best','Interpreter','latex','NumColumns',3)
+set(leg2,'Location','Best','Interpreter','latex','NumColumns',1)
 axs = gca;
 axs.TickLabelInterpreter = 'latex';
 

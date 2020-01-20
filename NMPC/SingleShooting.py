@@ -18,7 +18,7 @@ class SingleShooting:
     IPOPT_compl_inf_tol = 1e-2  ## complementarity
     IPOPT_print_level = 5
     IPOPT_max_iter = 200
-    IPOPT_max_cpu_time = 1200  ## one day of computation should be enough right? :)
+    IPOPT_max_cpu_time = 24*3600  ## one day of computation should be enough right? :)
 
     n_x = None
     n_u = None

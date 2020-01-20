@@ -4,9 +4,9 @@
 
 # This script calculates the sates at the stationary point (x*) of the open-loop system for given u, where f(x*,u)=0
 # The x* is used to initialize the dynamic simulations
-# Also, we get the liner state-space model (A, B, C, D) of the open-loop
+# Also, we get the linear state-space model (A, B, C, D) of the open-loop
 # The liner state-space model (A, B, C, D) is used for controllability analysis in the regulatory control layer
-# This scripts uses "ocpGaslift_OpenLoop_Sim.mop" as the model. This model takes the 4 disturbances as inputs
+# This scripts uses "\modelCompiler\ocpGaslift_OpenLoop_Sim.mop" as the model. This model takes the 4 disturbances as inputs
 # The model has 9 inputs: [Alpha1, Alpha2, P_res1, P_res2, inputGas1, inputGas2, zManifold1, zManifold2, zPipe]
 
 import numpy as np

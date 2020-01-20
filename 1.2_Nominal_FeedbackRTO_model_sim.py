@@ -4,12 +4,12 @@
 
 # This simulation does not require the Olga Simulator. This is a test script to run the simulation without using Olga.
 # Here, another instance of the simplified dynamic model is simulated and treated as the process.
-# This script runs FeedbackRTO in when process is at nominal conditions (no disturbances)
+# This script runs FeedbackRTO when process is at nominal conditions (no disturbances)
 # Simulations starts from an initial point where the gas injection rate is 1 kg/s and all valves are 50% open.
 # Optimization steers the process to the steady-state optimal point.
 # Two Modelica models are used here:
-# - ocpGaslift_Sim.mop used to simulate the gas-lift network.
-# - ocpGaslift_Nominal.mop used to solve the optimal problem.
+# - "\modelCompiler\ocpGaslift_Sim.mop" used to simulate the gas-lift network.
+# - "\modelCompiler\ocpGaslift_Nominal.mop" used to solve the optimal problem.
 
 import sys
 import os

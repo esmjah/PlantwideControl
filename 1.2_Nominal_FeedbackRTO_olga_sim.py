@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+# Authors: Andres Codas, Esmaeil Jahanshahi
+# Norwegian University of Science and Technology
+
+# This simulation requires the Olga Simulator. The Olga OPC Server must be running as Administrator user.
+# The Olga case for this simulation is provider in the repository (\olgaModels\NetworkOPC\Network_Nominal.opi)
+# This script runs FeedbackRTO when process is at nominal conditions (no disturbances)
+# Simulations starts from an initial point where the gas injection rate is 1 kg/s and all valves are 50% open.
+# Optimization steers the process to the steady-state optimal point.
+# The Modelica model "\modelCompiler\ocpGaslift_Nominal.mop" defines the Optimal Contrtrol Problem (OPC)
+
 import sys
 import os
 import casadi as ca

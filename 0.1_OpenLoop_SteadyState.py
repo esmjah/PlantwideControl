@@ -2,7 +2,7 @@
 # Authors: Andres Codas, Esmaeil Jahanshahi
 # Norwegian University of Science and Technology
 
-# This script calculates the sates at the stationary point (x*) of the open-loop system for given u, where f(x*,u)=0
+# This script calculates the states at the stationary point (x*) of the open-loop system for given u, where f(x*,u)=0
 # The x* is used to initialize the dynamic simulations
 # Also, we get the linear state-space model (A, B, C, D) of the open-loop
 # The liner state-space model (A, B, C, D) is used for controllability analysis in the regulatory control layer

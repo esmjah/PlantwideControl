@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+# Authors: Andres Codas, Esmaeil Jahanshahi
+# Norwegian University of Science and Technology
+
+# This simulation requires the Olga Simulator. The Olga OPC Server must be running as Administrator user.
+# This script runs Self-optimizing control when process is at nominal conditions (no disturbances)
+# Simulations starts from an initial point where the gas injection rate is 1 kg/s and all valves are 50% open.
+# Self-optimizing control steers the process to the steady-state optimal point.
+# The Controlled Variavles (CV1) for Self-optimizing control are gas flow rates at the well-head ('WHD1.GG' and 'WHD2.GG').
+# In practice, simplified dynamic model is not required for Self-optimizing control.
+# ocpGaslift_Nominal used to estimate the gradients for comparison to other optimization methods.
+
 import sys
 import os
 import casadi as ca

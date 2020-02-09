@@ -1,5 +1,5 @@
 # Introduction 
-This repository contains the code and models for simulations in the article "Plantwide control of an oil production network", submitted to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is under review. A draft version of the article is available [here](Article/Manuscript_Revised.pdf).
+This repository contains the code and models for simulations in the article "Plantwide control of an oil production network", submitted to [Computers & Chemical Engineering](https://www.journals.elsevier.com/computers-and-chemical-engineering). The article is accepted for publication. A draft version of the article is available [here](Article/Manuscript_Revised.pdf).
 
 The purpose of this repository is to increase the transparency of our simulation results and provide inspiration for other researchers. The root folder of this repository contains the scripts for the experiments in the paper. However, the software is provided 'as is', without warranty of any kind. Particularly, this software relies on third-party libraries and proprietary software that are constantly updated.  Thus, the authors take no responsibility for code maintenance and installation instructions of any kind.
 
@@ -36,7 +36,7 @@ We use these model components to build different [network models](networkModels/
 The oil production network is simulated using the Olga simulator.
 The olga network is shown in the figure in below.
 
-![Olga Network](Article/OlgaNetwork.PNG)
+![Olga Network](Article/OlgaNetwork.PNG =500x)
 
 
 # Controller implementation

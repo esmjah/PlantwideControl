@@ -188,7 +188,7 @@ if MPC:
     else:
         solver = SingleShooting.SingleShooting()
 
-    deltaUCons = np.array([0.05, 0.05, 3.0e3, 5.0e3, 5.0e3]) / DTMPC  ## given in SI
+    deltaUCons = np.array([0.04, 0.04, 3.0e3, 5.0e3, 5.0e3]) / DTMPC  ## given in SI
 
     ## check consistency
     if deltaUCons.size != 0:

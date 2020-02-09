@@ -11,14 +11,15 @@ u_NMPC_soc = u_SOC;
 yOlgaMeas_soc = yOlgaMeas;
 yOlgaMoni_soc = yOlgaMoni;
 yKfMoni_soc = yKfMoni;
-%load D3D4_NMPC_1200_12.mat
+
 load D3D4_FeedbackRTO_new.mat
 yOlgaMeas_fbrto = yOlgaMeas;
 yOlgaMoni_fbrto = yOlgaMoni;
 yKfMoni_fbrto = yKfMoni;
 u_fbrto = u_OnSOC;
 
-load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
+load D3D4_NMPC_1200_12_new.mat
+%load SimData_NMPC_GOR_2018.08.25_Olga_fine.mat
 
 
 figure('Name','getDefaultColors')

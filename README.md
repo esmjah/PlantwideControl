@@ -36,7 +36,7 @@ We use these model components to build different [network models](networkModels/
 The oil production network is simulated using the Olga simulator.
 The olga network is shown in the figure in below.
 
-![Olga Network](Article/OlgaNetwork.PNG =500x)
+![Olga Network](Article/OlgaNetwork.PNG | width=500)
 
 
 # Controller implementation
